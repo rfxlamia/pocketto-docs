@@ -58,7 +58,7 @@ export function InstallTabs({ compact = false }: { compact?: boolean }) {
             tabIndex={tab === t.id ? 0 : -1}
             onKeyDown={onKeyDown}
             onClick={() => setTab(t.id)}
-            className="rounded-md px-3.5 py-2 font-mono text-xs uppercase tracking-[0.08em] transition-colors duration-150"
+            className="rounded-md px-3.5 py-2 text-xs uppercase tracking-[0.08em] transition-colors duration-150"
             style={
               tab === t.id
                 ? { background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid color-mix(in oklab, var(--accent) 40%, transparent)' }

@@ -146,7 +146,7 @@ body {
 @layer components {
   /* Field-manual section label: "01. PIPELINE" */
   .section-label {
-    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;

@@ -46,7 +46,7 @@ export function SiteFooter() {
               Structured AI coding workflows for Claude Code and Pi. AI writes the code. Pocketto makes the process
               accountable.
             </p>
-            <p className="mt-4 font-mono text-xs text-fg-faint">
+            <p className="mt-4 text-xs text-fg-faint">
               MIT License ©{' '}
               <a href={SITE.repo} target="_blank" rel="noreferrer noopener" className="link-underline">
                 {SITE.repoOwner}
@@ -55,7 +55,7 @@ export function SiteFooter() {
           </div>
           {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
-              <h3 className="font-mono text-xs uppercase tracking-[0.12em] text-fg-faint">{col.title}</h3>
+              <h3 className="text-xs uppercase tracking-[0.12em] text-fg-faint">{col.title}</h3>
               <ul className="mt-2">
                 {col.links.map((link) => (
                   <li key={link.url}>
@@ -79,7 +79,7 @@ export function SiteFooter() {
             </nav>
           ))}
         </div>
-        <div className="mt-12 flex flex-col gap-2 border-t border-line pt-6 font-mono text-xs text-fg-faint sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-2 border-t border-line pt-6 text-xs text-fg-faint sm:flex-row sm:items-center sm:justify-between">
           <span>
             Documenting {SITE.name} v{POCKETTO.version}, inspected at commit{' '}
             <a

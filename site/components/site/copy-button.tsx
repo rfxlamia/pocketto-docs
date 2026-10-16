@@ -36,7 +36,7 @@ export function CopyButton({ text, label }: { text: string; label?: string }) {
         type="button"
         onClick={copy}
         aria-label={`Copy${label ? ` ${label}` : ' to clipboard'}`}
-        className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-line-control px-2 py-1 font-mono text-[11px] text-fg-soft transition-colors duration-150 hover:border-fg-soft hover:text-fg"
+        className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-md border border-line-control px-2 py-1 text-[11px] text-fg-soft transition-colors duration-150 hover:border-fg-soft hover:text-fg"
       >
         {status === 'copied' && <Check className="size-3.5" style={{ color: 'var(--pass)' }} />}
         {status === 'failed' && <X className="size-3.5" style={{ color: 'var(--block)' }} />}

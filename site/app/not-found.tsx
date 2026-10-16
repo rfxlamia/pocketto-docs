@@ -23,7 +23,7 @@ export default function NotFound() {
             </Link>
           </div>
           <div className="mt-10 rounded-lg border border-line bg-bg-raised p-5 text-left">
-            <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-fg-faint">Looking for something specific?</p>
+            <p className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">Looking for something specific?</p>
             <ul className="mt-3 grid gap-2 text-sm text-fg-soft sm:grid-cols-2">
               <li>
                 <Link href="/docs/getting-started/quickstart" className="link-underline">

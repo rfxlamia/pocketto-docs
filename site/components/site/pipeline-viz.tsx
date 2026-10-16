@@ -102,7 +102,7 @@ export function PipelineViz() {
                 }
               >
                 <span
-                  className="block font-mono text-[10px] tracking-[0.14em]"
+                  className="block text-[10px] tracking-[0.14em]"
                   style={{ color: selected ? 'var(--accent)' : 'var(--fg-faint)' }}
                 >
                   {s.index}
@@ -131,8 +131,7 @@ export function PipelineViz() {
       >
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="font-mono text-xs tracking-[0.14em] text-fg-faint">STAGE {stage.index} / 06</span>
-            <span className="chip chip-accent">{stage.id}</span>
+            <span className="text-xs tracking-[0.14em] text-fg-faint">STAGE {stage.index} / 06</span>
           </div>
           <h3 className="display mt-3 text-2xl sm:text-[1.75rem]">{stage.name}</h3>
           <p className="mt-1 text-[15px] font-medium text-accent">{stage.tagline}</p>
@@ -152,7 +151,7 @@ export function PipelineViz() {
               key={fact.key}
               className={`grid gap-1 p-4 sm:grid-cols-[130px_1fr] sm:gap-4 ${i > 0 ? 'border-t border-line' : ''}`}
             >
-              <dt className="font-mono text-[11px] uppercase tracking-[0.1em] text-fg-faint">{fact.label}</dt>
+              <dt className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">{fact.label}</dt>
               <dd className="text-sm leading-relaxed text-fg">{stage[fact.key]}</dd>
             </div>
           ))}

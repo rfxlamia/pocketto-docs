@@ -191,7 +191,7 @@ function WhySection() {
                 key={f.problem}
                 className="group relative flex flex-col bg-bg p-5 transition-colors hover:bg-bg-sunk has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-inset has-[:focus-visible]:ring-accent"
               >
-                <span className="font-mono text-[10px] tracking-[0.14em] text-block">FAILURE 0{i + 1}</span>
+                <span className="text-[10px] tracking-[0.14em] text-block">FAILURE 0{i + 1}</span>
                 <h3 className="mt-2 text-[15px] font-semibold leading-snug">
                   <Link href={f.ref} className="outline-none after:absolute after:inset-0">
                     {f.problem}
@@ -229,13 +229,6 @@ function PipelineSection() {
               own review gate, and stops for your approval where the design says it must. Select a stage to see what it
               receives, what it produces, and where it needs you.
             </p>
-          </div>
-          <div className="hidden gap-2 sm:flex">
-            <span className="chip">WAITING</span>
-            <span className="chip chip-warn">REVIEW</span>
-            <span className="chip chip-pass">DONE</span>
-            <span className="chip chip-block">BLOCKED</span>
-            <span className="ml-1 self-center font-mono text-[10px] text-fg-faint">lifecycle states</span>
           </div>
         </div>
 
@@ -323,7 +316,7 @@ function CapabilitiesSection() {
               <cap.icon className="size-5" style={{ color: 'var(--accent)' }} aria-hidden />
               <h3 className="mt-3 text-[15px] font-semibold leading-snug">{cap.title}</h3>
               <p className="mt-2 text-[13.5px] leading-relaxed text-fg-soft">{cap.body}</p>
-              <span className="mt-auto inline-flex items-center gap-1 pt-4 font-mono text-[11px] uppercase tracking-[0.08em] text-fg-faint transition-colors group-hover:text-accent">
+              <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[11px] uppercase tracking-[0.08em] text-fg-faint transition-colors group-hover:text-accent">
                 docs <ArrowRight className="size-3 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
               </span>
             </Link>
@@ -390,7 +383,7 @@ function ChooserSection() {
             >
               <p className="display text-xl">{r.saying}</p>
               <p className="mt-3 text-sm leading-relaxed text-fg-soft">{r.body}</p>
-              <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-accent">
+              <span className="mt-5 inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.08em] text-accent">
                 {r.cta}
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
               </span>
