@@ -12,6 +12,7 @@
     "check:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "fumadocs-core": "16.17.3",
     "fumadocs-mdx": "15.4.7",
     "fumadocs-ui": "16.17.3",

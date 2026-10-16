@@ -2,6 +2,7 @@ import { RootProvider } from 'fumadocs-ui/provider/next';
 import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 import { SITE } from '@/lib/site';
 import './global.css';
 
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable}`}>
       <body className="flex min-h-screen flex-col font-sans">
         <RootProvider>{children}</RootProvider>
+        <Analytics />
       </body>
     </html>
   );
