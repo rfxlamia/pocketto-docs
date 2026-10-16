@@ -36,15 +36,25 @@ On failure, inspect the error and plan: recoverable causes (wrong path, malforme
 
 ## Outputs and artifacts
 
-```
-docs/pocket/plans/<date>-<slug>/
-├── execution-plan.md              (source plan)
-├── execution-plan/
-│   ├── index.md                   (task index in execution order)
-│   ├── tasks/T1-*.md              (one file per task)
-│   └── phase-N.md                 (only when the plan is multi-phase)
-└── log.json                       (created/updated by log init or structure)
-```
+<Files>
+  <Folder name="docs/pocket/plans/<date>-<slug>" defaultOpen>
+    <File name="execution-plan.md" />
+    <Folder name="execution-plan" defaultOpen>
+      <File name="index.md" />
+      <Folder name="tasks">
+        <File name="T1-*.md" />
+      </Folder>
+      <File name="phase-N.md" />
+    </Folder>
+    <File name="log.json" />
+  </Folder>
+</Files>
+
+- `execution-plan.md` is the source plan.
+- `index.md` is the task index in execution order.
+- `tasks/T1-*.md` holds one file per task.
+- `phase-N.md` exists only when the plan is multi-phase.
+- `log.json` is created or updated by `log init` or `structure`.
 
 Multi-phase manifests carry phase metadata ("Phase N of M", prerequisite, contained tasks, what it unlocks) and a `## Phase Completion Gate` section development evaluates verbatim.
 

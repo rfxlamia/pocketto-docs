@@ -55,13 +55,19 @@ Dependency order is **recommended**: development enforces actual sequencing.
 
 ## What structuring produces
 
-```text
-execution-plan/
-├── index.md        # Task Index table in execution (phase-group) order
-├── tasks/T1-*.md   # one file per task, opened on demand by development
-└── phase-N.md      # multi-phase plans only: "Phase N of M", prerequisite,
-                    # contained tasks, unlocks-next, ## Phase Completion Gate
-```
+<Files>
+  <Folder name="execution-plan" defaultOpen>
+    <File name="index.md" />
+    <Folder name="tasks">
+      <File name="T1-*.md" />
+    </Folder>
+    <File name="phase-N.md" />
+  </Folder>
+</Files>
+
+- `index.md` is the Task Index table in execution (phase-group) order.
+- `tasks/T1-*.md` is one file per task, opened on demand by development.
+- `phase-N.md` exists for multi-phase plans only: "Phase N of M", prerequisite, contained tasks, unlocks-next, and a `## Phase Completion Gate`.
 
 Single-phase plans still get the index + task files; there is no passthrough below a task-count threshold.
 

@@ -7,37 +7,74 @@ All durable Pocket artifacts live under `docs/pocket/`. Names are conventions th
 
 ## The tree
 
-```
-docs/pocket/
-├── spec/<date>-<slug>/
-│   ├── pitch-exploration.md            ← pocket-pitching
-│   └── <topic>.md                      ← pocket-grinding (the spec)
-├── plans/<date>-<slug>/                ← same slug as the spec, easy cross-reference
-│   ├── execution-plan.md               ← pocket-planning
-│   ├── execution-plan/
-│   │   ├── index.md                    ← structure CLI (task index, execution order)
-│   │   ├── tasks/T1-*.md               ← structure CLI (one file per task)
-│   │   └── phase-N.md                  ← structure CLI (multi-phase plans only)
-│   ├── log.json                        ← log CLI (the only writer)
-│   ├── reviews/
-│   │   ├── <task_id>-review.json       ← in-loop auditor (per-task verdict)
-│   │   ├── phase-pass-<phase_key>.json ← phase-level pass record
-│   │   └── phase-notes-<phase_key>.json← durable phase handoff notes
-│   └── closeout.md                     ← pocket-closing (append-only journal)
-├── research/<date>-<slug>/research-report.md   ← structured-research
-├── rule/creative-brief.md              ← brand-design (+ .claude/rules/brand-design.md)
-└── learning/<date>-<slug>.md           ← pocket-education (journal, when enabled)
-```
+<Files>
+  <Folder name="docs/pocket" defaultOpen>
+    <Folder name="spec" defaultOpen>
+      <Folder name="<date>-<slug>" defaultOpen>
+        <File name="pitch-exploration.md" />
+        <File name="<topic>.md" />
+      </Folder>
+    </Folder>
+    <Folder name="plans" defaultOpen>
+      <Folder name="<date>-<slug>" defaultOpen>
+        <File name="execution-plan.md" />
+        <Folder name="execution-plan" defaultOpen>
+          <File name="index.md" />
+          <Folder name="tasks">
+            <File name="T1-*.md" />
+          </Folder>
+          <File name="phase-N.md" />
+        </Folder>
+        <File name="log.json" />
+        <Folder name="reviews" defaultOpen>
+          <File name="<task_id>-review.json" />
+          <File name="phase-pass-<phase_key>.json" />
+          <File name="phase-notes-<phase_key>.json" />
+        </Folder>
+        <File name="closeout.md" />
+      </Folder>
+    </Folder>
+    <Folder name="research">
+      <Folder name="<date>-<slug>">
+        <File name="research-report.md" />
+      </Folder>
+    </Folder>
+    <Folder name="rule">
+      <File name="creative-brief.md" />
+    </Folder>
+    <Folder name="learning">
+      <File name="<date>-<slug>.md" />
+    </Folder>
+  </Folder>
+</Files>
+
+| Path | Written by |
+|------|------------|
+| `spec/<date>-<slug>/pitch-exploration.md` | pocket-pitching |
+| `spec/<date>-<slug>/<topic>.md` | pocket-grinding (the spec) |
+| `plans/<date>-<slug>/` | Same slug as the spec, easy cross-reference |
+| `execution-plan.md` | pocket-planning |
+| `execution-plan/index.md` | `structure` CLI (task index, execution order) |
+| `execution-plan/tasks/T1-*.md` | `structure` CLI (one file per task) |
+| `execution-plan/phase-N.md` | `structure` CLI (multi-phase plans only) |
+| `log.json` | `log` CLI (the only writer) |
+| `reviews/<task_id>-review.json` | In-loop auditor (per-task verdict) |
+| `reviews/phase-pass-<phase_key>.json` | Phase-level pass record |
+| `reviews/phase-notes-<phase_key>.json` | Durable phase handoff notes |
+| `closeout.md` | pocket-closing (append-only journal) |
+| `research/<date>-<slug>/research-report.md` | structured-research |
+| `rule/creative-brief.md` | brand-design (plus `.claude/rules/brand-design.md`) |
+| `learning/<date>-<slug>.md` | pocket-education (journal, when enabled) |
 
 Project-root files:
 
-```
-CLAUDE.md | AGENTS.md                   ← project guide + Education block (see Configuration)
-.pocket-meta.json                       ← meta CLI; Enterprise remote identity
-.pocket/lifecycle-adapter.json          ← enterprise install (the adapter registration)
-lifecycle.json                          ← committed with the spec directory (lifecycle CLI)
-.github/                                ← scaffold github (issue + PR templates, local)
-```
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` / `AGENTS.md` | Project guide + Education block (see Configuration) |
+| `.pocket-meta.json` | `meta` CLI; Enterprise remote identity |
+| `.pocket/lifecycle-adapter.json` | Enterprise install (the adapter registration) |
+| `lifecycle.json` | Committed with the spec directory (`lifecycle` CLI) |
+| `.github/` | `scaffold github`: issue and PR templates, local |
 
 ## Conventions that matter
 

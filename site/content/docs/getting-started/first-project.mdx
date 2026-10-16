@@ -74,18 +74,35 @@ Closeout: docs/pocket/plans/2026-06-01-jwt-refresh/closeout.md
 
 ## What you have at the end
 
-```text
-docs/pocket/spec/2026-06-01-jwt-refresh/session-flow.md
-docs/pocket/plans/2026-06-01-jwt-refresh/
-├── execution-plan.md
-├── execution-plan/index.md
-├── execution-plan/tasks/T1-jwt-store.md        (one file per task)
-├── log.json
-├── reviews/T1-review.json …                    (per-task verdicts)
-├── reviews/phase-pass-phase-1.json
-├── reviews/phase-notes-phase-1.json
-└── closeout.md
-```
+<Files>
+  <Folder name="docs/pocket" defaultOpen>
+    <Folder name="spec" defaultOpen>
+      <Folder name="2026-06-01-jwt-refresh" defaultOpen>
+        <File name="session-flow.md" />
+      </Folder>
+    </Folder>
+    <Folder name="plans" defaultOpen>
+      <Folder name="2026-06-01-jwt-refresh" defaultOpen>
+        <File name="execution-plan.md" />
+        <Folder name="execution-plan" defaultOpen>
+          <File name="index.md" />
+          <Folder name="tasks">
+            <File name="T1-jwt-store.md" />
+          </Folder>
+        </Folder>
+        <File name="log.json" />
+        <Folder name="reviews" defaultOpen>
+          <File name="T1-review.json" />
+          <File name="phase-pass-phase-1.json" />
+          <File name="phase-notes-phase-1.json" />
+        </Folder>
+        <File name="closeout.md" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+`tasks/` holds one file per task, and `reviews/` holds the per-task verdicts plus the phase-level records.
 
 The full artifact tree is documented in [Execution artifacts](/docs/pipeline/artifacts). The complete stage reference starts at the [Pipeline overview](/docs/pipeline).
 
