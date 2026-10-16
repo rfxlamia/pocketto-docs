@@ -1,178 +1,176 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ArrowDown } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowDown, ArrowRight, Check, ChevronDown, ChevronRight, FileText, LockKeyhole, MessageSquare, RotateCcw } from 'lucide-react';
+import { useEffect, useReducer, useRef, type CSSProperties, type KeyboardEvent, type MouseEvent } from 'react';
 import { PIPELINE_STAGES } from '@/lib/site';
-
-/**
- * Presentation copy for each stage, written from the stage SKILL.md files in
- * the Pocketto repository (inspected at the commit recorded in
- * SOURCE-INVENTORY.md). The structured facts come from PIPELINE_STAGES.
- */
-const DESCRIPTIONS: Record<string, string> = {
-  'pocket-pitching':
-    'For ideas that have not become problems yet. Pocketto scans your project, runs structured brainstorming methods, curates the results through an independent advisor, resolves technical unknowns with spikes, and converges on a problem statement with two or three approach directions. It stops there on purpose. Solutions come later.',
-  'pocket-grinding':
-    'Requirement discovery with BDD discipline: context scan, scope and boundaries, questioning from business, developer, and QA lenses, then concrete Given/When/Then scenarios. An independent edge-case-hunter subagent reviews the scenarios before any design is proposed, and architecture claims are validated against the actual codebase.',
-  'pocket-planning':
-    'Converts the approved spec into a TDD-structured execution plan: file mapping, dependency-annotated tasks, and a full Pocket Packet per task: objective, verification, stop conditions. A separate spec-reviewer subagent checks coverage, and the CLI dry-runs the plan to catch malformed dependencies before anything is approved.',
-  'pocket-structuring':
-    'The Pocket CLI decomposes the approved plan into execution-plan/index.md and one file per task, plus phase manifests when the plan spans multiple phases. The CLI owns parsing, decomposition, and log reconciliation; nothing is inferred from prose. Execution still requires its own approval.',
-  'pocket-development':
-    'The main agent coordinates; implementers write code; a read-only auditor reviews. Every delegation is a Pocket Packet contract: no packet, no spawn. Each task passes a mechanical gate and an independent audit; when every task is done, a phase-level pass reviews the whole phase before the phase may enter REVIEW.',
-  'pocket-closing':
-    'Closing never re-reviews code. It reconciles task verdicts against the execution log, refuses missing or stale verdicts, advances only a passing phase, and appends a readable section to closeout.md. When every phase is done, it closes the plan and records the final summary, because you asked, not because a verdict alone allowed it.',
-};
-
-const FACT_KEYS = [
-  { key: 'receives', label: 'Receives' },
-  { key: 'produces', label: 'Produces' },
-  { key: 'gate', label: 'Approval gate' },
-  { key: 'next', label: 'What happens next' },
-] as const;
-
-const count = PIPELINE_STAGES.length;
+import { INITIAL_WORKFLOW_STATE, WORKFLOW_GUIDANCE, workflowReducer, type StageGuidance } from '@/lib/workflow';
 
 export function PipelineViz() {
-  const [active, setActive] = useState(0);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const stage = PIPELINE_STAGES[active] ?? PIPELINE_STAGES[0]!;
-
-  const onKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      let next: number | null = null;
-      if (e.key === 'ArrowRight') next = (active + 1) % count;
-      else if (e.key === 'ArrowLeft') next = (active - 1 + count) % count;
-      else if (e.key === 'Home') next = 0;
-      else if (e.key === 'End') next = count - 1;
-      if (next !== null) {
-        e.preventDefault();
-        setActive(next);
-        tabRefs.current[next]?.focus();
-      }
-    },
-    [active],
-  );
+  const [state, dispatch] = useReducer(workflowReducer, INITIAL_WORKFLOW_STATE);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousStage = useRef(state.active);
+  const stage = PIPELINE_STAGES[state.active]!;
+  const guidance: StageGuidance = WORKFLOW_GUIDANCE[stage.id];
+  const isClosing = state.active === PIPELINE_STAGES.length - 1;
+  const outputShown = state.phase === 'output';
 
   useEffect(() => {
-    const el = tabRefs.current[active];
-    if (!el) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
-  }, [active]);
+    const changed = previousStage.current !== state.active;
+    previousStage.current = state.active;
+    if (!changed || state.input === 'keyboard' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const animation = panelRef.current?.animate(
+      [{ opacity: 0.4, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 180, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+    );
+    return () => animation?.cancel();
+  }, [state.active, state.input]);
+
+  function selectStage(index: number, input: 'pointer' | 'keyboard') {
+    dispatch({ type: 'select', index, input });
+  }
+
+  function onOptionKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    let next: number;
+    switch (event.key) {
+      case 'ArrowDown': next = (state.active + 1) % PIPELINE_STAGES.length; break;
+      case 'ArrowUp': next = (state.active - 1 + PIPELINE_STAGES.length) % PIPELINE_STAGES.length; break;
+      case 'Home': next = 0; break;
+      case 'End': next = PIPELINE_STAGES.length - 1; break;
+      default: return;
+    }
+    event.preventDefault();
+    selectStage(next, 'keyboard');
+    optionRefs.current[next]?.focus();
+  }
+
+  function advanceDemo(event: MouseEvent<HTMLButtonElement>) {
+    dispatch({
+      type: outputShown ? 'replay' : 'show-output',
+      input: event.detail === 0 ? 'keyboard' : 'pointer',
+    });
+  }
 
   return (
-    <div>
-      {/* Stage rail */}
-      <div className="relative">
-        <div
-          role="tablist"
-          aria-label="Pocket pipeline stages"
-          onKeyDown={onKeyDown}
-          className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-4 [scrollbar-color:var(--line-control)_transparent] [scrollbar-width:thin]"
-        >
-          {PIPELINE_STAGES.map((s, i) => {
-            const selected = i === active;
-            return (
-              <button
-                key={s.id}
-                ref={(el) => {
-                  tabRefs.current[i] = el;
-                }}
-                role="tab"
-                id={`pipeline-tab-${s.id}`}
-                aria-selected={selected}
-                aria-controls="pipeline-panel"
-                tabIndex={selected ? 0 : -1}
-                onClick={() => setActive(i)}
-                className="snap-start rounded-lg border px-4 py-3 text-left transition-[background-color,border-color,color,transform] duration-200 ease-out active:scale-[0.97]"
-                style={
-                  selected
-                    ? {
-                        background: 'var(--accent-soft)',
-                        borderColor: 'color-mix(in oklab, var(--accent) 45%, transparent)',
-                        color: 'var(--fg)',
-                      }
-                    : {
-                        background: 'var(--bg-raised)',
-                        borderColor: 'var(--line-control)',
-                        color: 'var(--fg-soft)',
-                      }
-                }
-              >
-                <span
-                  className="block text-[10px] tracking-[0.14em]"
-                  style={{ color: selected ? 'var(--accent-strong)' : 'var(--fg-faint)' }}
-                >
-                  {s.index}
-                </span>
-                <span className="mt-0.5 block whitespace-nowrap text-sm font-semibold">{s.name}</span>
-              </button>
-            );
-          })}
-        </div>
-        {/* Progress line */}
-        <div aria-hidden className="mt-1 h-px w-full bg-line">
+    <div className="workflow-explorer" data-input={state.input}>
+      <div className="workflow-layout">
+        <div className="workflow-picker">
+          <h3 id="workflow-question">What do you have?</h3>
+          <p>Choose the closest match.</p>
           <div
-            className="h-px transition-[width] duration-300 ease-out"
-            style={{ width: `${(active / (count - 1)) * 100}%`, background: 'var(--accent)' }}
-          />
-        </div>
-      </div>
-
-      {/* Detail panel */}
-      <div
-        role="tabpanel"
-        id="pipeline-panel"
-        aria-labelledby={`pipeline-tab-${stage.id}`}
-        key={stage.id}
-        className="ledger-card mt-6 grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.2fr_1fr] animate-panel"
-      >
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-xs tracking-[0.14em] text-fg-faint">STAGE {stage.index} / 06</span>
-          </div>
-          <h3 className="display mt-3 text-2xl sm:text-[1.75rem]">{stage.name}</h3>
-          <p className="mt-1 text-[15px] font-medium text-accent">{stage.tagline}</p>
-          <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-fg-soft">{DESCRIPTIONS[stage.id]}</p>
-          <Link
-            href={`/docs/${stage.slug}`}
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-accent-strong"
+            className="workflow-options"
+            role="tablist"
+            aria-labelledby="workflow-question"
+            aria-orientation="vertical"
+            onKeyDown={onOptionKeyDown}
           >
-            Read the {stage.name} stage docs
-            <ArrowRight className="size-4" aria-hidden />
+            <span className="workflow-selection" aria-hidden="true" style={{ '--selected-stage': state.active } as CSSProperties} />
+            {PIPELINE_STAGES.map((item, index) => {
+              const entry = WORKFLOW_GUIDANCE[item.id];
+              const selected = state.active === index;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="tab"
+                  id={`workflow-option-${item.id}`}
+                  aria-selected={selected}
+                  aria-controls="workflow-recommendation"
+                  tabIndex={selected ? 0 : -1}
+                  ref={(element) => { optionRefs.current[index] = element; }}
+                  onClick={(event) => selectStage(index, event.detail === 0 ? 'keyboard' : 'pointer')}
+                  className="workflow-option"
+                >
+                  <span className="workflow-option-number" aria-hidden="true">{item.index}</span>
+                  <span>
+                    <span className="workflow-option-title">{entry.situation}</span>
+                    <span className="workflow-option-detail">{entry.condition}</span>
+                  </span>
+                  <ChevronRight size={16} className="workflow-option-arrow" aria-hidden="true" />
+                </button>
+              );
+            })}
+          </div>
+          <a className="workflow-jump" href="#workflow-recommendation">
+            Your next step: <strong>{stage.name}</strong><ArrowDown size={16} aria-hidden="true" />
+          </a>
+          <Link className="workflow-offramp" href="/docs/getting-started/choosing-workflow">
+            Small change or a bug? Find a focused workflow.
+            <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
 
-        <div className="self-start overflow-hidden rounded-lg border border-line">
-          <dl className="grid gap-0">
-            {FACT_KEYS.map((fact, i) => (
-              <div
-                key={fact.key}
-                className={`grid gap-1 p-4 sm:grid-cols-[130px_1fr] sm:gap-4 ${i > 0 ? 'border-t border-line' : ''}`}
-              >
-                <dt className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">{fact.label}</dt>
-                <dd className="text-sm leading-relaxed text-fg">{stage[fact.key]}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="border-t border-line bg-bg-sunk p-4">
-            <span className="inline-flex items-center gap-2 text-[13px] text-fg-soft">
-              <ArrowDown className="size-3.5 text-fg-faint" aria-hidden />
-              {active < count - 1 ? (
-                <span>
-                  Next stage: <strong className="font-semibold text-fg">{PIPELINE_STAGES[active + 1]?.name}</strong>
-                </span>
-              ) : (
-                <span>
-                  The plan is closed. <strong className="font-semibold text-fg">closeout.md</strong> holds the full
-                  record.
-                </span>
-              )}
-            </span>
+        <div ref={panelRef} role="tabpanel" id="workflow-recommendation" aria-labelledby={`workflow-option-${stage.id}`} tabIndex={0} className="workflow-panel">
+          <div className="workflow-stage-heading">
+            <h3 className="display">{stage.name}</h3>
+            <span className="workflow-stage-position">Stage {stage.index} of 06</span>
           </div>
+          <p className="workflow-purpose">{guidance.purpose}</p>
+          <p className="workflow-input"><strong>Bring</strong> {stage.receives.charAt(0).toLowerCase() + stage.receives.slice(1)}.</p>
+          <Link className="workflow-guide" href={`/docs/${stage.slug}`}>
+            Read the {stage.name} guide <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+
+          <section className="workflow-demo" aria-labelledby="workflow-demo-title">
+            <div className="workflow-demo-heading">
+              <h4 id="workflow-demo-title">Input to output</h4>
+              <span>Illustrative drag-and-drop example</span>
+            </div>
+            <p className="workflow-transformation" aria-label={`Input through ${stage.name} becomes output`}>
+              <span>Input</span><ArrowRight size={14} aria-hidden="true" /><strong>{stage.name}</strong><ArrowRight size={14} aria-hidden="true" /><span>Output</span>
+            </p>
+            <div className="workflow-scene" data-phase={state.phase}>
+              <article className="workflow-example-input" aria-label={`Example input for ${stage.name}`}>
+                <div className="workflow-example-label"><MessageSquare size={17} aria-hidden="true" /><h5>Input for {stage.name}</h5></div>
+                <blockquote>{guidance.exampleInput.text}</blockquote>
+                {guidance.exampleInput.artifact && (
+                  <p className="workflow-input-artifact"><span>{guidance.exampleInput.artifact.label}</span><code>{guidance.exampleInput.artifact.path}</code></p>
+                )}
+              </article>
+              <div className="workflow-connector" aria-hidden="true">
+                <ArrowRight className="workflow-arrow-horizontal" size={18} /><ArrowDown className="workflow-arrow-vertical" size={18} />
+              </div>
+              <article className="workflow-document" aria-label={`Example output from ${stage.name}`}>
+                <p className="workflow-example-label">Output from {stage.name}</p>
+                <div className="workflow-document-title"><FileText size={20} aria-hidden="true" /><h5>{guidance.artifact}</h5></div>
+                <code>{guidance.artifactPath}</code>
+                <div className="workflow-output-body">
+                  <p className="workflow-output-hint" aria-hidden={outputShown}>Reveal the example to see what {stage.name} produces from this input.</p>
+                  <ul className="workflow-output-items" aria-hidden={!outputShown}>{guidance.outputItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+              </article>
+            </div>
+            <div className="workflow-demo-footer">
+              <div className="workflow-demo-status" role="status" aria-live="polite" aria-atomic="true">
+                <span className="workflow-status-icon" data-phase={state.phase}>{outputShown ? <Check size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}</span>
+                <p>{outputShown ? `${stage.name} example output shown. Compare it with the input.` : `See what ${stage.name} produces from this request.`}</p>
+              </div>
+              <button type="button" className={`btn ${outputShown ? 'btn-outline' : 'btn-primary'} workflow-demo-action`} onClick={advanceDemo}>
+                {outputShown && <RotateCcw size={15} aria-hidden="true" />}
+                {outputShown ? 'Replay example' : 'Show example output'}
+              </button>
+            </div>
+            <details className="workflow-approval" key={stage.id}>
+              <summary><LockKeyhole size={15} aria-hidden="true" /><span>Where you decide</span><ChevronDown size={15} aria-hidden="true" /></summary>
+              <div>
+                <h5>{guidance.gateTitle}</h5><p>{guidance.gateDetail}</p>
+                <p><strong>{isClosing ? 'Record' : 'Next stage'}: {guidance.receiver}.</strong> {guidance.nextUse}</p>
+              </div>
+            </details>
+            <p className="workflow-disclaimer">Illustrative only. No skills run and no project approvals are recorded.</p>
+          </section>
         </div>
+      </div>
+      <div className="workflow-map">
+        <p>Enter where you are.<br /><strong>Keep the whole picture.</strong></p>
+        <ol aria-label="Pipeline order; the highlighted stage is being viewed">
+          {PIPELINE_STAGES.map((item, index) => (
+            <li key={item.id} aria-current={index === state.active ? 'true' : undefined}>
+              <span>{item.index}</span><span>{item.name}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   );
