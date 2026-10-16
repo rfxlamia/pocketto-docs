@@ -479,15 +479,15 @@ function FinalCta() {
             Star on GitHub
           </a>
         </div>
-        <div className="mx-auto mt-10 max-w-md">
+        <div className="mx-auto mt-10 max-w-2xl">
           <div className="install-window">
             <div className="install-window-bar">
               <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-fg-faint">your first feature</span>
             </div>
             <div className="install-window-body">
               <span className="prompt">$</span>
-              <span>/pocketto:pocket-grinding &quot;add dark mode toggle&quot;</span>
-              <span className="ml-auto">
+              <span className="command">/pocketto:pocket-grinding &quot;add dark mode toggle&quot;</span>
+              <span className="copy">
                 <CopyButton text={'/pocketto:pocket-grinding "add dark mode toggle"'} />
               </span>
             </div>

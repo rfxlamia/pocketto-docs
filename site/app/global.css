@@ -304,8 +304,15 @@ body {
     padding: 0.875rem 1rem;
     font-family: var(--font-jetbrains), ui-monospace, monospace;
     font-size: 0.8125rem;
-    overflow-x: auto;
-    white-space: nowrap;
+  }
+  .install-window-body > .command {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    text-align: left;
+  }
+  .install-window-body > .copy {
+    margin-left: auto;
+    flex-shrink: 0;
   }
   .install-window-body .prompt {
     color: var(--fg-faint);
