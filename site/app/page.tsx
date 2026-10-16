@@ -475,7 +475,7 @@ function FinalCta() {
         <div className="mx-auto mt-10 max-w-2xl">
           <div className="install-window">
             <div className="install-window-bar">
-              <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-fg-faint">your first feature</span>
+              <span className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">your first feature</span>
             </div>
             <div className="install-window-body">
               <span className="prompt">$</span>

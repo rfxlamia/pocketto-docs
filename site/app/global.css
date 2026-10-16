@@ -227,7 +227,7 @@ body {
 
   /* Lifecycle state chips: the real vocabulary of the pipeline. */
   .chip {
-    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     font-size: 0.6875rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;

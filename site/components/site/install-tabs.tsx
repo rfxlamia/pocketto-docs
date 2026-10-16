@@ -78,7 +78,7 @@ export function InstallTabs({ compact = false }: { compact?: boolean }) {
         className="install-window mt-3 focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
       >
         <div className="install-window-bar">
-          <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-fg-faint">
+          <span className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">
             {tab === 'pi' ? 'shell' : 'claude code session'}
           </span>
           <span className="chip" style={{ fontSize: '0.625rem' }}>
