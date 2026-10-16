@@ -5,10 +5,15 @@ description: "The six-stage Pocketto pipeline: what each stage receives, produce
 
 The Pocket pipeline is six chained skills for real features and non-trivial work. Each stage produces an artifact that the next stage consumes, and each stage has explicit gates.
 
-```text
-pocket-pitching → pocket-grinding → pocket-planning → pocket-structuring → pocket-development ──PASS──→ pocket-closing
-   (explore)        (specify/BDD)      (plan/TDD)         (phase)          (execute + review)        (close)
-```
+<div style={{ background: '#faf8f3', borderRadius: 12, padding: '1rem' }}>
+  <img
+    src="/pipeline-overview.png"
+    width={2172}
+    height={724}
+    style={{ width: '100%', height: 'auto' }}
+    alt="The Pocket pipeline in order: pocket-pitching (explore), pocket-grinding (specify/BDD), pocket-planning (plan/TDD), pocket-structuring (phase), pocket-development (execute + review). A PASS gate sits between pocket-development and pocket-closing (close)."
+  />
+</div>
 
 ## The stages
 
