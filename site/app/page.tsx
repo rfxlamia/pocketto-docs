@@ -54,13 +54,13 @@ export default function HomePage() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pb-28">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-14 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pb-28">
         <div>
           <h1 className="display text-[2.6rem] leading-[1.04] sm:text-6xl lg:text-[4.2rem]">
             AI writes the code.
             <br />
             Pocketto makes the{' '}
-            <span className="relative whitespace-nowrap">
+            <span className="relative">
               <em className="not-italic" style={{ color: 'var(--accent)' }}>
                 process
               </em>{' '}
@@ -224,25 +224,21 @@ function WhySection() {
 
 function PipelineSection() {
   return (
-    <section id="pipeline" className="border-t border-line bg-bg-sunk/60">
+    <section id="pipeline" aria-labelledby="pipeline-heading" className="border-t border-line bg-bg-sunk/60">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <h2 className="display max-w-2xl text-3xl sm:text-4xl">
-              Six stages. Every stage hands an artifact to the next.
-            </h2>
-            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-soft">
-              This is the actual workflow, not a metaphor. Each stage consumes the previous stage&apos;s file, runs its
-              own review gate, and stops for your approval where the design says it must. Select a stage to see what it
-              receives, what it produces, and where it needs you.
-            </p>
-          </div>
+        <div className="grid items-end gap-5 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+          <h2 id="pipeline-heading" className="display max-w-xl text-4xl sm:text-5xl">
+            Start where your<br className="hidden sm:block" /> project is.
+          </h2>
+          <p className="max-w-xl text-[15px] leading-relaxed text-fg-soft">
+            You don&apos;t have to start at stage one. Choose what you already have, find your next step, and see what
+            that stage turns your input into. Your approval still controls what happens next.
+          </p>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-9 sm:mt-12">
           <PipelineViz />
         </div>
-
       </div>
     </section>
   );
@@ -407,7 +403,7 @@ function ChooserSection() {
 function InstallSection() {
   return (
     <section id="install" className="border-t border-line">
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:py-24 lg:grid-cols-[1fr_1fr] lg:gap-16">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-5 py-20 sm:py-24 lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div>
           <h2 className="display text-3xl sm:text-4xl">Two hosts. One install each.</h2>
           <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-fg-soft">
