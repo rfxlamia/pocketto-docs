@@ -16,6 +16,7 @@ export function baseOptions(): BaseLayoutProps {
       { text: 'Docs', url: '/docs' },
       { text: 'Pipeline', url: '/docs/pipeline' },
       { text: 'Skills', url: '/docs/skills' },
+      { text: 'Case studies', url: '/case-studies' },
       { text: 'GitHub', url: SITE.repo, external: true },
     ],
   };

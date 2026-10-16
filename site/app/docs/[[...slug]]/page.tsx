@@ -7,6 +7,7 @@ import { getMDXComponents } from '@/components/mdx';
 import { pageLastCommitDate } from '@/lib/git-date';
 import { POCKETTO, SITE } from '@/lib/site';
 import { source } from '@/lib/source';
+import { faqJsonLd } from '@/lib/structured-data';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -62,27 +63,8 @@ function JsonLd({ page }: { page: DocPage }) {
       ),
     });
   }
-  if (page.data.faq) {
-    const { headings, contents } = page.data.structuredData;
-    const mainEntity = headings
-      .filter((h) => h.content.trim().endsWith('?'))
-      .map((h) => ({
-        '@type': 'Question',
-        name: h.content.trim(),
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: contents
-            .filter((c) => c.heading === h.id)
-            // structuredData keeps inline markdown; schema.org answers are plain text.
-            .map((c) => c.content.replace(/\*\*|`/g, '').trim())
-            .join('\n\n'),
-        },
-      }))
-      .filter((q) => q.acceptedAnswer.text.length > 0);
-    if (mainEntity.length > 0) {
-      data.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity });
-    }
-  }
+  const faq = page.data.faq ? faqJsonLd(page.data.structuredData) : undefined;
+  if (faq) data.push(faq);
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
 

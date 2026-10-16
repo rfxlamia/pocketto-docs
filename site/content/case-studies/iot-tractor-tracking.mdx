@@ -1,0 +1,70 @@
+---
+title: Shrinking a live tracking database from 8 GB to 2.6 GB
+seoTitle: "IoT tractor tracking built with Pocketto"
+description: "A plantation team cut its live tractor-tracking database from 8 GB to 2.6 GB in one night, every check passing first time. Here is the work that made it boring."
+---
+
+At 00:35 WIB on October 5, 2026, a team running live GPS tracking for a plantation's tractor fleet stopped its gateway and froze the telemetry table at 3,134,278 rows. Over the next hour and forty minutes they replaced the production database with one that no longer stored every tracker message twice. The readings table went from 6.92 GB to 1.58 GB, and the whole database from 8.05 GB to 2.6 GB.
+
+One step in that window could not be undone. Once the new gateway acknowledged its first message, a rollback would lose data, because the trackers never resend a message that has been acknowledged. Every check before that step passed on the first try. Within five minutes of the restart, 10 of the 11 tracked units were back online and had replayed the messages they buffered during the outage.
+
+The night was boring because of the work that came before it. This page follows that work through the files Pocketto left in the repository: specs, execution logs, review reports, and closeouts. Client and internal feature names are removed. Every number on this page comes from those files.
+
+## The system
+
+A tracker on each tractor sends position and engine data (RPM, engine temperature, hour meter, fuel, battery voltage) to a Rust TCP gateway, which writes to PostgreSQL with PostGIS. A NestJS API serves two clients: a React dashboard where supervisors watch the fleet on a satellite map, and a Flutter app that operators use in the field for checklists and shift reports.
+
+The team adopted Pocketto in June 2026, about four months after the first commit. Between June 4 and October 16, its execution logs recorded 128 completed tasks. Each one has a review report written by a subagent that never edited the code it reviewed.
+
+## Measure before you design
+
+The team needed a daily work report for tractors doing rotary finishing. The existing report pipeline computed worked area as reported speed, summed, times implement width. That works for the sensor rig it was written for, which samples once per second.
+
+Before proposing a design, the [grinding](/docs/pipeline/grinding) session queried one working block for one day of live data. The tracker sampled every 2 seconds, so the old formula would already be off by a factor of about two. Then it found something worse: 81.4% of the 6,816 points reported a speed of 0, and the position changes across those same points showed the tractor moving at 3.8 km/h. Those "stationary" samples carried 73% of the distance the tractor covered that day.
+
+The spec dropped the speed column and derived distance from positions. The same session found that the old pipeline had been writing all-zero reports for every non-subsoil unit in production, and the plan closed that defect for the tracked units. After the work shipped, a backfill over historical data produced 528.86 ha against an expected band of 502 to 614 ha.
+
+Other specs started the same way:
+
+- **An ERP integration.** Measuring the upstream API first showed that its pagination dropped about 1.8% of rows in a single sweep while reporting the total count exactly, and the row set only converged after four sweeps. A check like "rows equal total, so we are done" would have passed and silently lost plans. The sync re-sweeps on purpose.
+- **A location master-data sync.** Switching the dormant sync back on unchanged would have added 111 new locations overlapping existing ones by more than half. The spec made location history append-only, so a report filed on a field before the field was split keeps pointing at the original field.
+
+## A reviewer has to prove it
+
+Every task gets a read-only reviewer, and a passing verdict has to explain itself. A fix after a task is marked done becomes a separate correction, and the next review checks that exact change.
+
+In the rotary plan, the engine that rebuilds a work day had a race. It decided whether to insert or update the day row using a read taken before it acquired the lock. The fix moved the decision to a read inside the lock, and the reviewer did not take the new test on trust. Its report explains that the earlier test fed both reads the same mocked sequence, so the buggy code passed it. It then shows that the new test holds the pre-lock read constant, which means reverting the fix fails the test: two inserts instead of one insert and one update.
+
+The same plan ported a segment cutter from older tracking code. The implementer reported that a heading bug in the original meant U-turn detection had never fired in production, and fixed it in the port. The reviewer confirmed the fix, then carried forward a finding that no test yet forces a U-turn to prove it.
+
+This is slower than accepting the first green run. Across the repository, 49 of 127 task reviews needed more than one cycle, and 44 corrections were recorded after tasks were marked done.
+
+## Guards decide the route
+
+The storage work started with a number. Raw JSON averaged about 1.57 KB per message. The fleet had 5 tracked units installed and 24 more planned, and a linear estimate at 30 units came to roughly 337 GB a year. The spec scoped the job to a disposable full-size clone and stated that production would need its own decision.
+
+The plan turned that sentence into code. The migration that drops the raw columns refuses to run without an explicit approval variable, and both the migration and the verification CLI accept only the clone's host, port, and database name. The rehearsal on the clone cut the readings table by 84.33%.
+
+The Pocketto plan stopped there, as its spec required. Cutting over production was a separate call the team made and ran by hand, and the guards the plan had built chose the route. The server had about 16 GB free, and an in-place clone needed about 25 GB. So they dumped production to a laptop, restored it under the one database name the guard accepts, and ran the migrations, backfill, drop, rewrite, and comparison there. The 429 MB result went back to the server, where they swapped databases by renaming them. No service needed a configuration change, and the comparison step reported 0 mismatches.
+
+## What it cost
+
+- **The log does not round up.** The storage plan's last task is still `WAITING`, even after production succeeded. Its review failed on size (a 3,759-line smoke checker and several long functions), and Pocketto does not close a task because something else went well. The production run was an operation the team performed and recorded in its own results file.
+- **Plans stay open until someone closes them.** Six of the 18 logs are still open, including two from the first week in June.
+- **Tooling breaks mid-plan.** In a mobile plan, the Dart code generator crashed on every run because of a compiler bug in the machine's global SDK. The task went to `BLOCKED` until the team pinned Flutter for the project with fvm in a separate commit.
+- **Instructions are not enforcement.** In a dashboard plan, an implementer ran a read-only schema query against a local copy of the production database that its task told it not to use. It reported this itself, and the reviewer recorded it as a process finding. Task scope and diff review catch this kind of thing after the fact; they do not make it impossible.
+- **Review is not a browser.** In a plan with a Friday code-freeze deadline, all six tasks passed review. Then the user opened the dev server and found the new screen unstyled. That became a correction and a second audit.
+
+Small changes skipped the full pipeline and went through the [hotfix](/docs/skills/hotfix) flow. See [choosing a workflow](/docs/getting-started/choosing-workflow).
+
+## Back to that night
+
+None of the steps on October 5 were new. The migration guard, the backfill, and the comparison CLI had already run against a full-size clone, and the one irreversible step had a name and a rollback kit waiting on the server. The team spent the cutover window running checks it already trusted, and the checks passed.
+
+## Related documentation
+
+- [Grinding stage](/docs/pipeline/grinding)
+- [Development stage](/docs/pipeline/development)
+- [Review reports](/docs/reference/review-reports)
+- [Closing stage](/docs/pipeline/closing)
+- [Pocket Packets](/docs/reference/pocket-packets)

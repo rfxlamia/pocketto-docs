@@ -11,6 +11,7 @@ const links = [
   { text: 'Docs', url: '/docs' },
   { text: 'Pipeline', url: '/docs/pipeline' },
   { text: 'Skills', url: '/docs/skills' },
+  { text: 'Case studies', url: '/case-studies' },
   { text: 'Why Pocketto', url: '/#why' },
   { text: 'Install', url: '/#install' },
 ];

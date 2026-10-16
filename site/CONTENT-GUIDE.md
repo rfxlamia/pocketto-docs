@@ -42,7 +42,13 @@ description: One sentence (max ~160 chars) that makes sense in search results an
 One optional key is allowed: `seoTitle`, the search-result title. Use it when `title` (which is
 also the H1 and the sidebar label) is too terse to rank on its own, such as a bare skill name.
 Keep it at 49 characters or fewer so the rendered `<title>` (`seoTitle | Pocketto`) stays within
-60. No other frontmatter keys.
+60.
+
+A second optional key, `faq: true`, emits FAQPage structured data. Each `##` heading (or `###`
+under a FAQ section) that ends in "?" becomes a question, and the paragraphs under it become the
+answer. Use it only on pages whose questions are real headings with direct answers.
+
+No other frontmatter keys.
 
 ## MDX components available
 
@@ -60,7 +66,7 @@ host-specific (Pi vs Claude Code) content, Steps only for genuinely sequential p
 
 ## Links
 
-- Internal links: absolute paths starting with `/docs/...` (e.g. `[Pocket Packets](/docs/reference/pocket-packets)`).
+- Internal links: absolute paths starting with `/docs/...` or `/case-studies/...` (e.g. `[Pocket Packets](/docs/reference/pocket-packets)`).
 - Only link pages from the sitemap in this guide. External links to the GitHub repo are fine.
 
 ## Code blocks
@@ -101,6 +107,19 @@ Same elements as the skill template, plus:
 - `/docs/core-enterprise` (+ `core-architecture`, `local-first`, `enterprise-setup`, `integration-boundaries`, `github-sync`, `compatibility`, `lifecycle-events`, `recovery-rollback`, `human-authorization`)
 - `/docs/reference` (+ `cli`, `configuration`, `files`, `pocket-packets`, `plan-structure`, `review-reports`, `lifecycle-state`, `release-surfaces`, `troubleshooting`, `faq`, `glossary`)
 - `/docs/contributing` (+ `development-testing`, `guidance`)
+- `/case-studies` (+ `iot-tractor-tracking`)
+
+## Case studies
+
+Case studies live in `content/case-studies/` and render under `/case-studies`, outside the docs
+sidebar and search. They describe real projects, so rule 1 extends to the project's own files:
+
+- Every number comes from the project's Pocket artifacts (`log.json`, review reports,
+  `closeout.md`, specs). Say which file a figure comes from when it is not obvious.
+- Open plans are described as open. Do not present a rehearsal or a `WAITING` task as shipped.
+- Remove client names, internal feature names, commit SHAs, and infrastructure identifiers
+  unless the project owner has approved them.
+- Include the overhead the record shows (review loops, open plans), not only the wins.
 
 ## meta.json for each section folder
 

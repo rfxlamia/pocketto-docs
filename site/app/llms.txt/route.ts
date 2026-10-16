@@ -1,18 +1,19 @@
 import { SITE } from '@/lib/site';
 import { POCKETTO } from '@/lib/site';
-import { source } from '@/lib/source';
+import { caseStudySource, source } from '@/lib/source';
 
 export const dynamic = 'force-static';
 
 /**
  * llms.txt: a documentation index for AI-assisted discovery.
- * Lists every docs page with its title and one-line description.
+ * Lists every docs and case-study page with its title and one-line description.
  */
 export function GET() {
-  const pages = source
-    .getPages()
-    .sort((a, b) => a.url.localeCompare(b.url))
-    .map((page) => `- [${page.data.title}](${SITE.url}${page.url}): ${page.data.description ?? ''}`);
+  const list = (pages: ReturnType<typeof source.getPages>) =>
+    pages
+      .sort((a, b) => a.url.localeCompare(b.url))
+      .map((page) => `- [${page.data.title}](${SITE.url}${page.url}): ${page.data.description ?? ''}`)
+      .join('\n');
 
   const body = `# ${SITE.name}
 
@@ -26,7 +27,11 @@ Core commits state and events locally. Core does not call gh, does not create or
 
 ## Documentation
 
-${pages.join('\n')}
+${list(source.getPages())}
+
+## Case studies
+
+${list(caseStudySource.getPages())}
 `;
 
   return new Response(body, {
