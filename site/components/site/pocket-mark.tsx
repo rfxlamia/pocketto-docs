@@ -1,14 +1,23 @@
 export function PocketMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
-      <rect x="1.5" y="1.5" width="29" height="29" rx="7" stroke="currentColor" strokeWidth="2.5" />
+      <rect x="9.5" y="4.5" width="12" height="11" rx="1.5" fill="var(--bg)" stroke="currentColor" strokeWidth="1.8" />
       <path
-        d="M10.5 24V8.5h7.25a4.75 4.75 0 0 1 0 9.5H10.5"
-        stroke="var(--accent)"
-        strokeWidth="2.5"
-        strokeLinecap="square"
+        d="M5 12.5h22v9.5L16 29.5 5 22Z"
+        fill="var(--accent)"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
       />
-      <path d="M17.5 18 21.5 24" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="square" />
+      <path
+        d="M8.5 15.5V21l7.5 5 7.5-5v-5.5"
+        stroke="var(--on-accent)"
+        strokeWidth="1.3"
+        strokeDasharray="2 2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M25 4.5 30 7.5 25 10.5Z" fill="var(--info)" />
     </svg>
   );
 }
