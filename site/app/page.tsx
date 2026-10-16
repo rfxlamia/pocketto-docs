@@ -183,20 +183,30 @@ function WhySection() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
-          {FAILURE_MODES.map((f, i) => (
-            <article key={f.problem} className="flex flex-col bg-bg p-5">
-              <span className="font-mono text-[10px] tracking-[0.14em] text-block">FAILURE 0{i + 1}</span>
-              <h3 className="mt-2 text-[15px] font-semibold leading-snug">{f.problem}</h3>
-              <p className="mt-2.5 text-[13.5px] leading-relaxed text-fg-soft">{f.answer}</p>
-              <Link
-                href={f.ref}
-                className="mt-auto inline-flex items-center gap-1 pt-4 text-[13px] font-semibold text-accent transition-colors hover:text-accent-strong"
+        <div className="mt-12 flex flex-col gap-px overflow-hidden rounded-xl border border-line bg-line">
+          <p className="bg-bg-sunk px-5 py-2.5 text-[13px] font-semibold text-fg-soft">How Pocketto handles this</p>
+          <div className="grid gap-px sm:grid-cols-2 lg:grid-cols-5">
+            {FAILURE_MODES.map((f, i) => (
+              <article
+                key={f.problem}
+                className="group relative flex flex-col bg-bg p-5 transition-colors hover:bg-bg-sunk has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-inset has-[:focus-visible]:ring-accent"
               >
-                How Pocketto handles this <ArrowRight className="size-3.5" aria-hidden />
-              </Link>
-            </article>
-          ))}
+                <span className="font-mono text-[10px] tracking-[0.14em] text-block">FAILURE 0{i + 1}</span>
+                <h3 className="mt-2 text-[15px] font-semibold leading-snug">
+                  <Link href={f.ref} className="outline-none after:absolute after:inset-0">
+                    {f.problem}
+                  </Link>
+                </h3>
+                <p className="mt-2.5 text-[13.5px] leading-relaxed text-fg-soft">{f.answer}</p>
+                <div className="mt-auto flex justify-end pt-4">
+                  <ArrowRight
+                    className="size-4 text-accent motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5"
+                    aria-hidden
+                  />
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
