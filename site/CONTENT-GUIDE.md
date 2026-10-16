@@ -95,7 +95,7 @@ Same elements as the skill template, plus:
 ## Sitemap (all valid internal link targets)
 
 - `/docs` (Introduction)
-- `/docs/getting-started` (+ `core-concepts`, `installation`, `quickstart`, `claude-code-setup`, `pi-setup`, `choosing-workflow`, `first-project`)
+- `/docs/getting-started` (+ `core-concepts`, `installation`, `quickstart`, `claude-code-setup`, `pi-setup`, `choosing-workflow`, `comparison`, `first-project`)
 - `/docs/pipeline` (+ `pitching`, `grinding`, `planning`, `structuring`, `development`, `closing`, `approval-gates`, `artifacts`)
 - `/docs/skills` (+ `pocket-help`, `pocket-init`, `pocket-education`, `bug-hunting`, `hotfix`, `brand-design`, `structured-research`, `validate-plan`, `create-pr`)
 - `/docs/core-enterprise` (+ `core-architecture`, `local-first`, `enterprise-setup`, `integration-boundaries`, `github-sync`, `compatibility`, `lifecycle-events`, `recovery-rollback`, `human-authorization`)

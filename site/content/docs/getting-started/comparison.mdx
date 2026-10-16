@@ -1,0 +1,85 @@
+---
+title: How Pocketto compares
+seoTitle: "Pocketto vs Spec Kit, Superpowers, GSD, and BMad"
+description: "How Pocketto differs from Spec Kit, Superpowers, GSD Core, and the BMad Method, and which one fits the work in front of you."
+---
+
+Pocketto is one of several projects that give AI coding agents a process. This page compares it with four of the most widely used: [Spec Kit](https://github.com/github/spec-kit), [Superpowers](https://github.com/obra/superpowers), [GSD Core](https://github.com/open-gsd/gsd-core), and the [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD).
+
+Pocketto's focus is **accountable execution**: every stage leaves a file, every delegation has a contract, every pipeline task gets an independent review, and nothing closes until you say so. You scale the process to the task, from the full six-stage pipeline down to a single [hotfix](/docs/skills/hotfix).
+
+Everything said here about the other projects comes from their official READMEs, checked on October 16, 2026. They change quickly, so check each repository before you decide.
+
+## At a glance
+
+| | Spec Kit | Superpowers | GSD Core | BMad Method | Pocketto |
+|---|---|---|---|---|---|
+| Maintainer | GitHub | Jesse Vincent and Prime Radiant | Open GSD | BMad Code, LLC | rfxlamia |
+| Core loop | Constitution, then specify, plan, tasks, implement, converge per feature | Brainstorming, worktree, plan, subagent or inline execution, TDD, review, finish branch | Discuss, plan, execute, verify, ship per phase | Clarify, plan, build and verify, learn and adjust, sized to the change | Pitching, grinding, planning, structuring, development, closing |
+| Optimizes for | A specification carried through to implementation | Momentum: one agent working from request to result | Fresh context for every heavy step | Explicit decisions from product, architecture, UX, and testing roles | Auditable execution with gates you authorize |
+| Execution state | Markdown artifacts | Design and plan documents | `STATE.md` and `CONTEXT.md` | Briefs, specifications, architecture | `log.json` and `lifecycle.json`, written only by the CLI |
+| Hosts | Many agents through integrations | Claude Code, Codex, Cursor, Gemini CLI, Pi, and more | Claude Code, Codex, Cursor, OpenCode, Copilot, and more | Tools that support skills; Claude Code and Codex plugins | Claude Code and Pi |
+| Requires | Python 3.11+ and uv | The host's plugin system | Node.js 18+ for the installer | uv; v6.12 also needs Node.js 20.12+ and Python 3.10+ | Node.js 18+ |
+| License | MIT | MIT | MIT | MIT | MIT |
+
+## What Pocketto adds
+
+- **A contract for every delegation.** Each subagent gets a seven-field [Pocket Packet](/docs/reference/pocket-packets) with an objective, verification, and stop conditions. No packet, no spawn.
+- **Review the author cannot skip.** After each task, a mechanical gate runs and a read-only auditor checks spec compliance and code quality. A [phase-level pass](/docs/reference/review-reports) then reviews the whole phase.
+- **State the agent cannot rewrite.** Task and phase status lives in files that change only through CLI commands, so progress survives sessions and every transition is checked. See [Lifecycle state](/docs/reference/lifecycle-state).
+- **Closeout on your word.** [Closing](/docs/pipeline/closing) refuses stale or missing verdicts, and a passing verdict alone does not close a phase.
+- **Local-first by default.** Core never calls GitHub. The optional [Enterprise adapter](/docs/core-enterprise) syncs issues and phase pull requests, and a human still merges.
+- **A mentor mode.** [Pocket Education](/docs/skills/pocket-education) flips the roles: you write the code, and the agent explains, reviews your diff, and coaches with hints.
+
+## Pocketto vs Spec Kit
+
+Spec Kit is GitHub's toolkit for spec-driven development. Each feature goes from a specification to a technical plan, tasks, and implementation, then repeats implement and converge until convergence reports "Converged". Extensions add bug fixing and idea assessment, and presets, workflows, and bundles let organizations shape the process.
+
+Both start from a specification. Pocketto carries that discipline through execution: implementation is delegated under [Pocket Packets](/docs/reference/pocket-packets), each task is audited by a separate reviewer, and a phase closes only with current verdicts and your request.
+
+**Pick Spec Kit if** you need an agent Pocketto does not support, or your organization wants to build its own process from reusable components.
+
+## Pocketto vs Superpowers
+
+Superpowers starts with brainstorming, writes a plan of 2 to 5 minute tasks, then executes with a fresh subagent and a review per task, or inline with one review at the end. It enforces red-green-refactor TDD, and its skills trigger automatically.
+
+Superpowers optimizes for momentum: one capable agent moving from request to result. Pocketto optimizes for structure under ambiguity and scale. [Pitching](/docs/pipeline/pitching) and [grinding](/docs/pipeline/grinding) pin down the problem and its Given/When/Then acceptance criteria before a plan exists, the CLI structures the plan into task and phase files, and every phase passes an independent review before it can close, with the evidence kept on disk.
+
+**Pick Superpowers if** your work is bounded and well understood and you want one methodology across many agents.
+
+## Pocketto vs GSD Core
+
+GSD Core targets context rot, the drop in output quality as a context window fills. Each phase runs discuss, plan, execute, verify, and ship, with executors running in parallel waves on a clean 200k-token context each. The ship step creates the pull request.
+
+Pocketto also keeps the working set small, through per-task files and per-stage handoffs. The difference is who acts on GitHub: Pocketto's Core never does, and the optional Enterprise adapter opens pull requests without ever merging them. Review verdicts are files with freshness rules, so a stale or missing verdict blocks closeout instead of passing quietly. See [Human authorization](/docs/core-enterprise/human-authorization).
+
+**Pick GSD Core if** context size is your main problem and you want every phase to end in a pull request automatically.
+
+## Pocketto vs the BMad Method
+
+The BMad Method brings product, architecture, UX, development, and testing perspectives into one delivery path and sizes the process to the change. Version 6.12 is the stable line; version 7 is in preview. Official modules extend it to test architecture, game development, and unattended epic runs.
+
+Pocketto has no simulated team roles. Its six stages are skills with fixed inputs, outputs, and gates, described in the [pipeline overview](/docs/pipeline), and the rest of the work goes to focused skills such as [bug-hunting](/docs/skills/bug-hunting) and [hotfix](/docs/skills/hotfix).
+
+**Pick BMad if** you want role-based planning documents, such as product and architecture specifications, or one of its specialized modules.
+
+## Scale the process to the task
+
+You do not need the full pipeline for everything. Pocketto routes by risk:
+
+| Work | Start with |
+|------|-----------|
+| A rough idea, problem not yet clear | [pocket-pitching](/docs/pipeline/pitching) |
+| A real feature across files or phases | [pocket-grinding](/docs/pipeline/grinding), then the pipeline |
+| A small, clear change | [hotfix](/docs/skills/hotfix): a brief plan and one independent review |
+| A bug | [bug-hunting](/docs/skills/bug-hunting): confirmed root cause before any fix |
+| You want to write the code yourself | [Pocket Education](/docs/skills/pocket-education) |
+
+The full router is in [Choosing the right workflow](/docs/getting-started/choosing-workflow). To try it, start with the [quickstart](/docs/getting-started/quickstart).
+
+## Related documentation
+
+- [Choosing the right workflow](/docs/getting-started/choosing-workflow)
+- [Core concepts](/docs/getting-started/core-concepts)
+- [Approval gates](/docs/pipeline/approval-gates)
+- [FAQ](/docs/reference/faq)
