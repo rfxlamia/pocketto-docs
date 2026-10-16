@@ -103,7 +103,7 @@ export function PipelineViz() {
               >
                 <span
                   className="block text-[10px] tracking-[0.14em]"
-                  style={{ color: selected ? 'var(--accent)' : 'var(--fg-faint)' }}
+                  style={{ color: selected ? 'var(--accent-strong)' : 'var(--fg-faint)' }}
                 >
                   {s.index}
                 </span>
@@ -145,16 +145,18 @@ export function PipelineViz() {
           </Link>
         </div>
 
-        <dl className="grid gap-0 self-start rounded-lg border border-line">
-          {FACT_KEYS.map((fact, i) => (
-            <div
-              key={fact.key}
-              className={`grid gap-1 p-4 sm:grid-cols-[130px_1fr] sm:gap-4 ${i > 0 ? 'border-t border-line' : ''}`}
-            >
-              <dt className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">{fact.label}</dt>
-              <dd className="text-sm leading-relaxed text-fg">{stage[fact.key]}</dd>
-            </div>
-          ))}
+        <div className="self-start overflow-hidden rounded-lg border border-line">
+          <dl className="grid gap-0">
+            {FACT_KEYS.map((fact, i) => (
+              <div
+                key={fact.key}
+                className={`grid gap-1 p-4 sm:grid-cols-[130px_1fr] sm:gap-4 ${i > 0 ? 'border-t border-line' : ''}`}
+              >
+                <dt className="text-[11px] uppercase tracking-[0.1em] text-fg-faint">{fact.label}</dt>
+                <dd className="text-sm leading-relaxed text-fg">{stage[fact.key]}</dd>
+              </div>
+            ))}
+          </dl>
           <div className="border-t border-line bg-bg-sunk p-4">
             <span className="inline-flex items-center gap-2 text-[13px] text-fg-soft">
               <ArrowDown className="size-3.5 text-fg-faint" aria-hidden />
@@ -170,7 +172,7 @@ export function PipelineViz() {
               )}
             </span>
           </div>
-        </dl>
+        </div>
       </div>
     </div>
   );
