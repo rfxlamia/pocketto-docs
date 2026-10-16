@@ -65,7 +65,7 @@ host-specific (Pi vs Claude Code) content, Steps only for genuinely sequential p
 
 ## Links
 
-- Internal links: absolute paths starting with `/docs/...` or `/case-studies/...` (e.g. `[Pocket Packets](/docs/reference/pocket-packets)`).
+- Internal links: absolute paths starting with `/docs/...` (e.g. `[Pocket Packets](/docs/reference/pocket-packets)`).
 - Only link pages from the sitemap in this guide. External links to the GitHub repo are fine.
 
 ## Code blocks
@@ -106,12 +106,12 @@ Same elements as the skill template, plus:
 - `/docs/core-enterprise` (+ `core-architecture`, `local-first`, `enterprise-setup`, `integration-boundaries`, `github-sync`, `compatibility`, `lifecycle-events`, `recovery-rollback`, `human-authorization`)
 - `/docs/reference` (+ `cli`, `configuration`, `files`, `pocket-packets`, `plan-structure`, `review-reports`, `lifecycle-state`, `release-surfaces`, `troubleshooting`, `faq`, `glossary`)
 - `/docs/contributing` (+ `development-testing`, `guidance`)
-- `/case-studies` (+ `iot-tractor-tracking`, `agentpair-protocol`)
+- `/docs/built-with-pocketto` (+ `iot-tractor-tracking`, `agentpair-protocol`)
 
-## Case studies
+## Built with Pocketto
 
-Case studies live in `content/case-studies/` and render under `/case-studies`, outside the docs
-sidebar and search. They describe real projects, so rule 1 extends to the project's own files:
+Project write-ups live in `content/docs/built-with-pocketto/` as the last docs section. They
+describe real projects, so rule 1 extends to the project's own files:
 
 - Every number comes from the project's Pocket artifacts (`log.json`, review reports,
   `closeout.md`, specs). Say which file a figure comes from when it is not obvious.

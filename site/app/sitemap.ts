@@ -2,12 +2,12 @@ import path from 'node:path';
 import type { MetadataRoute } from 'next';
 import { lastCommitDate, pageLastCommitDate } from '@/lib/git-date';
 import { SITE } from '@/lib/site';
-import { caseStudySource, source } from '@/lib/source';
+import { source } from '@/lib/source';
 
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = [...source.getPages(), ...caseStudySource.getPages()].map((page) => ({
+  const pages = source.getPages().map((page) => ({
     url: `${SITE.url}${page.url}`,
     lastModified: pageLastCommitDate(page),
     changeFrequency: 'monthly' as const,

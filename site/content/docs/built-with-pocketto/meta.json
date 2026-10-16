@@ -1,7 +1,8 @@
 {
-  "title": "Case studies",
+  "title": "Built with Pocketto",
   "description": "Real projects built with Pocketto, told from their execution records.",
   "pages": [
+    "index",
     "iot-tractor-tracking",
     "agentpair-protocol"
   ]
