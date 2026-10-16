@@ -12,7 +12,7 @@ export default function NotFound() {
           <h1 className="display mt-6 text-4xl sm:text-5xl">This page never made it past review.</h1>
           <p className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-fg-soft">
             The page you asked for does not exist. In Pocketto terms: the request was rejected before implementation.
-            no artifacts were written.
+            No artifacts were written.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/" className="btn btn-primary">

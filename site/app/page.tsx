@@ -62,7 +62,7 @@ function Hero() {
           </h1>
           <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-fg-soft">
             Pocketto adds engineering discipline to Claude Code and Pi: plan before code, delegate with contracts,
-            review independently, and close on your word, taking you from a rough idea to reviewed, shipped code without the
+            review independently, and close on your word. You go from a rough idea to reviewed, shipped code without the
             agent improvising.
           </p>
 

@@ -9,6 +9,7 @@ export function SkipLink({ targetId }: { targetId: string }) {
     e.preventDefault();
     if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
     target.focus();
+    target.style.outline = 'none';
   };
 
   return (
