@@ -367,3 +367,11 @@ body {
     animation-duration: 0.01ms;
   }
 }
+
+/* Callouts: drop the fumadocs left accent bar; restore the start padding it reserved. */
+div:has(> div[role='none'].w-0\.5) {
+  padding-inline-start: 0.75rem;
+}
+div[role='none'].w-0\.5 {
+  display: none;
+}
