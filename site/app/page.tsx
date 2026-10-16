@@ -510,6 +510,7 @@ function JsonLd() {
     operatingSystem: 'Node.js',
     description:
       'Structured AI coding workflows for Claude Code and Pi: BDD specs, TDD plans, contract-based delegation, independent review, and a hard close. Local-first, open source.',
+    softwareVersion: POCKETTO.version,
     datePublished: POCKETTO.releaseDate,
     license: `https://spdx.org/licenses/${SITE.license}`,
     author: { '@type': 'Person', name: SITE.repoOwner, url: SITE.repo },

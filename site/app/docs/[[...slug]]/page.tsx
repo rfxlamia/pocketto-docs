@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { alt as ogAlt, size as ogSize } from '@/app/opengraph-image';
 import { getMDXComponents } from '@/components/mdx';
-import { SITE } from '@/lib/site';
+import { pageLastCommitDate } from '@/lib/git-date';
+import { POCKETTO, SITE } from '@/lib/site';
 import { source } from '@/lib/source';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
@@ -16,6 +17,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
+      <JsonLd page={page} />
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
@@ -27,6 +29,40 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
       </DocsBody>
     </DocsPage>
   );
+}
+
+type DocPage = NonNullable<ReturnType<typeof source.getPage>>;
+
+/** TechArticle plus a BreadcrumbList built from the parent section index pages. */
+function JsonLd({ page }: { page: DocPage }) {
+  const author = { '@type': 'Person', name: SITE.repoOwner, url: SITE.repo };
+  const crumbs = page.slugs.map((_, i) => source.getPage(page.slugs.slice(0, i + 1))).filter((p) => p !== undefined);
+  const data: object[] = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: page.data.seoTitle ?? page.data.title,
+      description: page.data.description,
+      url: `${SITE.url}${page.url}`,
+      dateModified: pageLastCommitDate(page)?.toISOString(),
+      inLanguage: 'en',
+      author,
+      publisher: author,
+      isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
+      about: { '@type': 'SoftwareApplication', name: SITE.name, softwareVersion: POCKETTO.version },
+    },
+  ];
+  // The docs root alone is a one-item trail, which is not a breadcrumb.
+  if (crumbs.length > 0) {
+    data.push({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ name: 'Docs', url: '/docs' }, ...crumbs.map((p) => ({ name: p.data.title, url: p.url }))].map(
+        (item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: `${SITE.url}${item.url}` }),
+      ),
+    });
+  }
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
 
 export async function generateStaticParams() {
