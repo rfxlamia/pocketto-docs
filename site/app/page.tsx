@@ -93,9 +93,6 @@ function Hero() {
 
         <div className="lg:pt-2">
           <ExecutionLedger />
-          <p className="mt-3 text-center font-mono text-xs text-fg-faint">
-            execution state is durable, local, and readable: log.json, verdicts, closeout.md
-          </p>
         </div>
       </div>
     </section>
@@ -174,8 +171,7 @@ function WhySection() {
   return (
     <section id="why" className="border-t border-line">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <p className="section-label">01. Why Pocketto exists</p>
-        <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
+        <div className="grid gap-4 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
           <h2 className="display text-3xl sm:text-4xl">
             Coding agents are great at writing code and bad at not skipping steps.
           </h2>
@@ -215,8 +211,7 @@ function PipelineSection() {
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="section-label">02. The pipeline</p>
-            <h2 className="display mt-5 max-w-2xl text-3xl sm:text-4xl">
+            <h2 className="display max-w-2xl text-3xl sm:text-4xl">
               Six stages. Every stage hands an artifact to the next.
             </h2>
             <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-soft">
@@ -238,9 +233,6 @@ function PipelineSection() {
           <PipelineViz />
         </div>
 
-        <p className="mt-6 font-mono text-xs text-fg-faint">
-          pipeline = 6 chained skills · standalone skills cover the everyday work without the ceremony
-        </p>
       </div>
     </section>
   );
@@ -303,8 +295,7 @@ function CapabilitiesSection() {
   return (
     <section id="capabilities" className="border-t border-line">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <p className="section-label">03. Capabilities</p>
-        <h2 className="display mt-5 max-w-2xl text-3xl sm:text-4xl">
+        <h2 className="display max-w-2xl text-3xl sm:text-4xl">
           {POCKETTO.skills.total} skills. One discipline.
         </h2>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-soft">
@@ -378,8 +369,7 @@ function ChooserSection() {
   return (
     <section id="start" className="border-t border-line bg-bg-sunk/60">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <p className="section-label">04. Choose your workflow</p>
-        <h2 className="display mt-5 max-w-2xl text-3xl sm:text-4xl">Start where you actually are.</h2>
+        <h2 className="display max-w-2xl text-3xl sm:text-4xl">Start where you actually are.</h2>
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {ROUTES.map((r) => (
@@ -409,8 +399,7 @@ function InstallSection() {
     <section id="install" className="border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:py-24 lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div>
-          <p className="section-label">05. Installation</p>
-          <h2 className="display mt-5 text-3xl sm:text-4xl">Two hosts. One install each.</h2>
+          <h2 className="display text-3xl sm:text-4xl">Two hosts. One install each.</h2>
           <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-fg-soft">
             Pocketto ships as a Pi package and a Claude Code plugin, built from the same local-first Core. Pick your
             host. Everything else (pipeline, standalone skills, Education) behaves the same.
@@ -464,8 +453,7 @@ function FinalCta() {
   return (
     <section className="border-t border-line bg-bg-sunk/60">
       <div className="mx-auto max-w-6xl px-5 py-24 text-center sm:py-28">
-        <p className="section-label justify-center">Your first run</p>
-        <h2 className="display mx-auto mt-6 max-w-3xl text-3xl sm:text-5xl">
+        <h2 className="display mx-auto max-w-3xl text-3xl sm:text-5xl">
           Your next feature deserves a paper trail.
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-fg-soft">
