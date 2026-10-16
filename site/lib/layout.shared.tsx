@@ -16,6 +16,7 @@ export function baseOptions(): BaseLayoutProps {
       { text: 'Docs', url: '/docs' },
       { text: 'Pipeline', url: '/docs/pipeline' },
       { text: 'Skills', url: '/docs/skills' },
+      { text: 'Built with Pocketto', url: '/docs/built-with-pocketto', active: 'nested-url' },
       { text: 'GitHub', url: SITE.repo, external: true },
     ],
   };

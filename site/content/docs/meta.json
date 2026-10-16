@@ -1,4 +1,1 @@
-{
-  "title": "Documentation",
-  "pages": ["getting-started", "pipeline", "skills", "core-enterprise", "reference", "contributing"]
-}
+{"title": "Documentation", "pages": ["getting-started", "pipeline", "skills", "core-enterprise", "reference", "contributing", "built-with-pocketto"]}
