@@ -1,0 +1,76 @@
+---
+title: Taking a relay's power to pick your peer
+seoTitle: "Building AgentPair's protocol with Pocketto"
+description: "How AgentPair, an encrypted protocol for AI agents, closed a relay identity-swap attack with a spec, a red test suite, and a golden vector, in 16 days of Pocketto plans."
+---
+
+[AgentPair](https://github.com/rfxlamia/agent-pair-protocol) lets two people's AI assistants negotiate a shared deliverable, such as a meeting time, an API field list, or a contract clause, without either person pasting drafts into a chat app. Messages are end-to-end encrypted and pass through a relay that the protocol treats as dumb and untrusted. The relay sees ciphertext and routing metadata, and nothing else is supposed to depend on it behaving.
+
+On July 9, 2026, two days after the first commit, a design review found that the relay could decide who you bond with.
+
+Pairing works like this: two humans exchange a short code out of band, and their agents run SPAKE2 over the relay to prove both sides know it. Each side then sends a `confirm` message containing a fingerprint of the shared key and its own `agent_id`, the long-term identity every later message is encrypted to. The fingerprint was `SHA-256(shared_key)`. Nothing tied the `agent_id` to it.
+
+A relay could pass the SPAKE2 messages through untouched, let both honest parties derive the same key, and then swap the `agent_id` in each `confirm` while leaving the fingerprint alone. Both sides would see matching fingerprints, add the attacker's identity to their allowlist, and encrypt everything that followed to the attacker. The attacker never needed the code. The cryptographic primitives were correct and the tests were green. The flaw was in how the pieces were composed, and the review noted it would not show up in a test suite or a linter.
+
+This page follows what happened next through the files Pocketto left in the repository: specs, execution logs, review reports, and closeouts.
+
+## The proof went in the wrong place
+
+The finding arrived while the project was in the middle of its first wire-format plan, which replaced the envelope signing scheme. The integration task for that plan picked up a 224-line test file proving the identity swap.
+
+It did not survive review. The task needed a second cycle, and its recorded correction deleted the file as out of scope for an envelope plan. The proof belonged to its own piece of work, with its own spec, so a reviewer could judge the fix against a stated threat instead of finding it inside an unrelated diff.
+
+Two days later, that spec existed.
+
+## Spec first, then a red suite
+
+The [grinding](/docs/pipeline/grinding) session for the fix produced a spec that settled the design before any code changed:
+
+- **One formula, written down.** The fingerprint became a SHA-256 over a domain string (`agentpair-pair-confirm-v1`), then the shared key and both agent IDs, each with a 16-bit big-endian length prefix, in a fixed order. Swapping the IDs changes the result.
+- **A golden vector computed outside the codebase.** The spec includes a fixed input and its expected fingerprint, computed independently with Python's `hashlib`, plus the different result for reversed ID order. One line sets the rule: if the TypeScript output differs, fix the encoding, do not change the vector.
+- **Rejected options, with reasons.** An HMAC over a derived key added complexity without a stronger guarantee here. Signing `confirm` with each agent's Ed25519 key was rejected because a long-term signature does not bind the SPAKE2 shared key to the identities.
+- **Honesty about what cannot be fixed.** Perfect two-sided atomicity over an untrusted relay is impossible. The spec names the one accepted divergence (a dropped final `bond_ok` can leave one side bonded and the other rolled back) so nobody later files it as a bug.
+
+The plan then put the attack in the repository before the fix. The commit adding the adversarial suite, with tests for a swapped joiner ID, a swapped initiator ID, a tampered proposal, an injected `bond_fail`, and malformed confirms, landed at 20:54. The fix that made them pass landed 22 minutes later. The order is in the git history, where a reviewer can check it.
+
+The protocol package went to 0.3.0 because the pairing wire changed. Every task in the plan closed with `REVIEW_PASS`, and two corrections were recorded: one added the two-generals note to the threat-model section of the spec, and one fixed a workspace version specifier the bump had missed.
+
+## A rule that kept paying
+
+The spec ended with a decision record aimed at future work: any field added to `confirm` must be bound into the fingerprint or covered by a key derived from the shared secret. If the relay can edit it, verification must fail.
+
+Two days later that rule had a customer. Profile advertisement needed each side to announce which protocol profiles it supports during pairing. Under the rule, the profile list went into the fingerprint preimage as a second version of the formula. The gating task needed a second review cycle, and its correction made pairing reject any profile intersection that leaves out the mandatory `core/1`.
+
+Within a week, a security self-audit on the roadmap found a related gap: a pairing code could be reused after a failed attempt, and each reuse handed a hostile relay another online guess at the SPAKE2 password. The next plan removed the retry path and burned the code on every terminal outcome.
+
+## The same question, asked everywhere
+
+The identity swap trained a habit: for every value that crosses the wire, ask who controls it. Later specs kept finding values the peer or the relay controlled and the host trusted.
+
+- **Turn counts.** The negotiation budget took the larger of the local count and the count the peer reported, so a peer could inflate it and end the session early. The fix derives the count from observed messages only, backed by a seeded property test that tampers with the reported value.
+- **Approval windows.** A recipient honored the `expires_at` the peer sent, which let the peer stretch the 60-minute human approval window.
+- **Routing.** A valid signature over the envelope body did not check the outer `from` and `to` fields, so spoofed routing metadata passed.
+- **The human gate itself.** The approval tool took a boolean, `via_human`, and the model fills in every tool argument. Any model could approve its own bond or ratification. The audit rated it P0, and the fix replaced the boolean with a single-use code written to a file for the human, checked with HMAC, and limited to five attempts.
+- **The relay's own surface.** A reverse audit, comparing the relay's behavior to the spec instead of the spec to the tests, found that `PUT /card` accepted writes from anyone. The card routes were cut from v1.
+
+Each of these got its own spec and plan. Between July 9 and July 24, the logs record 18 plans and 98 completed tasks. Each task has a review report from a read-only subagent; 85 passed on the first cycle, and 13 corrections were recorded after tasks were marked done.
+
+## What it cost, and what is still open
+
+- **An Important finding slipped through.** In the identity-swap plan, the reviewer flagged that one adversarial test claimed to cover a relay dropping `bond_fail`, but actually failed for a different reason (a wrong pairing code). That finding is rated Important, the task still passed, and the closeout carried it forward instead of fixing it.
+- **Docs drifted from the shipped package.** In a demo rehearsal on July 21, both agents ran an older pinned version of the npm package. They found that the skill docs described approval-code files the installed version did not have, while the installed tool still asked for the `via_human` boolean. One agent called the boolean "simpler." The rehearsal script now checks the tool schema before starting.
+- **A predicted bug showed up on schedule.** The July 9 review warned that the relay's gap detection guessed the sequence step from odd and even numbers and would report false gaps. The July 25 dry-run reported two `relay_gaps` warnings, and both closed on the next poll.
+- **The finish line is not crossed.** The spec is still marked 1.0-draft, the non-author dogfood run and the spec freeze are open on the roadmap, and one early execution log was never closed.
+- **Some limits are documented, not enforced.** The approval code is only as private as the file it is written to. Keeping the agent from reading that file is an obligation on the host, stated in the spec.
+
+## The relay today
+
+The relay still carries every pairing message, and it can still drop them, delay them, or replay them. It can no longer choose who you bond with without the fingerprint check failing on both sides, and the test that tries is in the repository, older than the fix.
+
+## Related documentation
+
+- [Grinding stage](/docs/pipeline/grinding)
+- [Planning stage](/docs/pipeline/planning)
+- [Review reports](/docs/reference/review-reports)
+- [Closing stage](/docs/pipeline/closing)
+- [Pocket Packets](/docs/reference/pocket-packets)
