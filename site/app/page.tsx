@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -48,8 +49,7 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pb-28">
         <div>
-          <p className="section-label">Pocketto, open source, MIT</p>
-          <h1 className="display mt-5 text-[2.6rem] leading-[1.04] sm:text-6xl lg:text-[4.2rem]">
+          <h1 className="display text-[2.6rem] leading-[1.04] sm:text-6xl lg:text-[4.2rem]">
             AI writes the code.
             <br />
             Pocketto makes the{' '}
@@ -91,7 +91,7 @@ function Hero() {
           </div>
         </div>
 
-        <div className="lg:pt-10">
+        <div className="lg:pt-2">
           <ExecutionLedger />
           <p className="mt-3 text-center font-mono text-xs text-fg-faint">
             execution state is durable, local, and readable: log.json, verdicts, closeout.md
@@ -102,59 +102,34 @@ function Hero() {
   );
 }
 
-/** A realistic view of Pocket's durable artifacts, real vocabulary, no fake terminal. */
+/**
+ * Generated illustration of Pocket's durable artifacts (gpt-image-bridge), one per theme.
+ * Both <img> render; the `.dark` class toggles which is displayed. Neither is `priority`,
+ * so the hidden one is never fetched. Regenerate if the ledger vocabulary changes.
+ */
 function ExecutionLedger() {
-  const phases = [
-    { id: 1, status: 'DONE', chip: 'chip-pass', tasks: 'T1–T4', verdict: 'REVIEW_PASS' },
-    { id: 2, status: 'REVIEW', chip: 'chip-warn', tasks: 'T5–T7', verdict: 'REVIEW_PASS' },
-    { id: 3, status: 'WAITING', chip: '', tasks: 'T8–T9', verdict: 'none' },
-  ];
+  const img = 'h-auto w-full';
   return (
-    <figure className="ledger-card overflow-hidden" aria-label="Illustration of a Pocket execution log">
-      <div className="install-window-bar">
-        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-fg-faint">
-          docs/pocket/plans/2026-05-28-auth/
-        </span>
-        <span className="font-mono text-[11px] text-fg-faint">log.json</span>
-      </div>
-      <div className="px-5 py-4">
-        <div className="flex items-center justify-between border-b border-line pb-3">
-          <span className="font-mono text-[13px] font-semibold">plan: auth refactor</span>
-          <span className="chip chip-accent">IN_PROGRESS</span>
-        </div>
-        <table className="mt-2 w-full text-[13px]">
-          <caption className="sr-only">Illustrative plan phases and their lifecycle states</caption>
-          <thead>
-            <tr className="text-left font-mono text-[10px] uppercase tracking-[0.1em] text-fg-faint">
-              <th scope="col" className="py-2 font-normal">phase</th>
-              <th scope="col" className="py-2 font-normal">tasks</th>
-              <th scope="col" className="py-2 font-normal">verdict</th>
-              <th scope="col" className="py-2 text-right font-normal">state</th>
-            </tr>
-          </thead>
-          <tbody className="font-mono">
-            {phases.map((p) => (
-              <tr key={p.id} className="border-t border-line">
-                <td className="py-2.5">phase-{p.id}</td>
-                <td className="py-2.5 text-fg-soft">{p.tasks}</td>
-                <td className="py-2.5 text-fg-soft">{p.verdict}</td>
-                <td className="py-2.5 text-right">
-                  <span className={`chip ${p.chip}`}>{p.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="mt-3 rounded-md border border-line bg-bg-sunk px-3.5 py-3 font-mono text-[11px] leading-relaxed text-fg-soft">
-          <span className="text-fg-faint">$</span> pocketto-pi log close docs/pocket/plans/2026-05-28-auth/
-          <br />
-          <span style={{ color: 'var(--pass)' }}>ok</span> · phase-2 → DONE · closeout.md appended
-          <br />
-          <span style={{ color: 'var(--warn)' }}>held</span> · phase-3 WAITING, run pocket-development next
-        </div>
-      </div>
+    <figure aria-label="Illustration of a Pocket execution log">
+      <Image
+        src="/execution-ledger-light.png"
+        alt="Pocket execution log for plan auth refactor, status IN_PROGRESS. phase-1, tasks T1 to T4, REVIEW_PASS, DONE. phase-2, tasks T5 to T7, REVIEW_PASS, REVIEW. phase-3, tasks T8 to T9, no verdict, WAITING. Closing output: phase-2 DONE and closeout.md appended; phase-3 held until pocket-development runs next."
+        width={1357}
+        height={910}
+        sizes="(min-width: 1024px) 520px, 100vw"
+        className={`${img} dark:hidden`}
+      />
+      <Image
+        src="/execution-ledger-dark.png"
+        alt=""
+        aria-hidden
+        width={1513}
+        height={1139}
+        sizes="(min-width: 1024px) 520px, 100vw"
+        className={`${img} hidden dark:block`}
+      />
       <figcaption className="sr-only">
-        Illustrative output showing phases advancing only after review, labelled as an illustration, not a real run.
+        Illustration of phases advancing only after review, not a real run.
       </figcaption>
     </figure>
   );

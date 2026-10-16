@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useSyncExternalStore, useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import { PocketMark } from './pocket-mark';
+import { GithubIcon, PocketMark } from './pocket-mark';
 import { ThemeToggle } from './theme-toggle';
 import { SITE } from '@/lib/site';
 
@@ -84,9 +84,10 @@ export function SiteHeader() {
             href={SITE.repo}
             target="_blank"
             rel="noreferrer noopener"
-            className="btn btn-outline ml-2 min-h-11 !px-3.5 !py-2 text-[13px]"
+            aria-label="View Pocketto on GitHub (opens in a new tab)"
+            className="inline-flex size-11 items-center justify-center rounded-md text-fg-soft transition-colors duration-150 hover:bg-bg-sunk hover:text-fg"
           >
-            GitHub
+            <GithubIcon className="size-[18px]" />
           </a>
         </nav>
 
