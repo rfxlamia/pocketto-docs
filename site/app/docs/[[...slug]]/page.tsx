@@ -39,9 +39,11 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
   if (!page) notFound();
 
   const image = { url: '/opengraph-image', width: ogSize.width, height: ogSize.height, alt: ogAlt };
+  const title = page.data.seoTitle ?? page.data.title;
 
   return {
-    title: page.data.title,
+    // Skip the "| Pocketto" template suffix when the title already names the brand.
+    title: title.includes(SITE.name) ? { absolute: title } : title,
     description: page.data.description,
     alternates: {
       canonical: page.url,
@@ -49,14 +51,14 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
     openGraph: {
       url: `${SITE.url}${page.url}`,
       siteName: SITE.name,
-      title: page.data.title,
+      title,
       description: page.data.description,
       type: 'article',
       images: [image],
     },
     twitter: {
       card: 'summary_large_image',
-      title: page.data.title,
+      title,
       description: page.data.description,
       images: [image],
     },

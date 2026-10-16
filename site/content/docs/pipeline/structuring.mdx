@@ -1,6 +1,7 @@
 ---
 title: Structuring
-description: "pocket-structuring: the CLI decomposes an approved execution plan into an index, per-task files, and phase manifests."
+seoTitle: "Structuring: split a plan into task files"
+description: "pocket-structuring hands decomposition to the Pocket CLI, which turns an approved execution plan into an index, per-task files, and phase manifests."
 ---
 
 `pocket-structuring` is deliberately thin: the **Pocket CLI** does the work. It turns a completed execution plan into `execution-plan/index.md`, one file per task under `execution-plan/tasks/`, and phase manifests when the plan needs multiple phases. Parsing, decomposition, file generation, and log reconciliation are all CLI-owned; the JSON result is the source of truth.

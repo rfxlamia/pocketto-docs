@@ -39,7 +39,10 @@ description: One sentence (max ~160 chars) that makes sense in search results an
 ---
 ```
 
-No other frontmatter keys.
+One optional key is allowed: `seoTitle`, the search-result title. Use it when `title` (which is
+also the H1 and the sidebar label) is too terse to rank on its own, such as a bare skill name.
+Keep it at 49 characters or fewer so the rendered `<title>` (`seoTitle | Pocketto`) stays within
+60. No other frontmatter keys.
 
 ## MDX components available
 
