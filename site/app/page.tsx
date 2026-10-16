@@ -23,6 +23,12 @@ import { PipelineViz } from '@/components/site/pipeline-viz';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
 import { INSTALL, PIPELINE_STAGES, POCKETTO, SITE } from '@/lib/site';
+import pitchIllustration from '@/public/pitch-land.png';
+import pipelineIllustration from '@/public/pipeline-land.png';
+import bugHuntIllustration from '@/public/bug-hunt-land.png';
+import hotfixIllustration from '@/public/hotfix-land.png';
+import educationIllustration from '@/public/edu-land.png';
+import enterpriseIllustration from '@/public/enterprise-land.png';
 
 export const metadata: Metadata = {
   alternates: {
@@ -324,36 +330,42 @@ const ROUTES = [
     body: 'Explore it into a problem statement with approach directions before committing to a spec.',
     href: '/docs/pipeline/pitching',
     cta: 'pocket-pitching',
+    illustration: pitchIllustration,
   },
   {
     saying: '\u201cI need to build a feature.\u201d',
     body: 'Run the full pipeline: spec → plan → structured tasks → delegated, reviewed execution → close.',
     href: '/docs/getting-started/first-project',
     cta: 'The full pipeline',
+    illustration: pipelineIllustration,
   },
   {
     saying: '\u201cI need to fix a bug.\u201d',
     body: 'Reactive and proactive debugging with confirmed root cause before any fix touches the code.',
     href: '/docs/skills/bug-hunting',
     cta: 'bug-hunting',
+    illustration: bugHuntIllustration,
   },
   {
     saying: '\u201cIt\u2019s a small, clear change.\u201d',
     body: 'A brief plan, an independent subagent review, then implement: accuracy without the ceremony.',
     href: '/docs/skills/hotfix',
     cta: 'hotfix',
+    illustration: hotfixIllustration,
   },
   {
     saying: '\u201cI want to write the code myself.\u201d',
     body: 'Opt into Education: the agent explains, reviews your diff, and coaches one hint at a time.',
     href: '/docs/skills/pocket-education',
     cta: 'Pocket Education',
+    illustration: educationIllustration,
   },
   {
     saying: '\u201cMy team works through GitHub.\u201d',
     body: 'Add the optional Enterprise adapter: issue reconciliation, stacked phase PRs, final tasklists, with human gates preserved.',
     href: '/docs/core-enterprise',
     cta: 'Pocket Enterprise',
+    illustration: enterpriseIllustration,
   },
 ];
 
@@ -368,13 +380,19 @@ function ChooserSection() {
             <Link
               key={r.saying}
               href={r.href}
-              className="ledger-card group flex flex-col p-6 transition-colors duration-150 border-line-control hover:border-fg-soft"
+              className="ledger-card flex min-w-0 flex-col border-line-control p-6 transition-[border-color,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-fg-soft focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent active:scale-[0.98] motion-reduce:active:scale-100"
             >
+              <Image
+                src={r.illustration}
+                alt=""
+                className="mx-auto mb-6 h-52 w-full max-w-64 object-contain"
+                sizes="(min-width: 360px) 256px, calc(100vw - 90px)"
+              />
               <p className="display text-xl">{r.saying}</p>
               <p className="mt-3 text-sm leading-relaxed text-fg-soft">{r.body}</p>
-              <span className="mt-5 inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.08em] text-accent">
+              <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-xs uppercase tracking-[0.08em] text-accent">
                 {r.cta}
-                <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
+                <ArrowRight className="size-3.5" aria-hidden />
               </span>
             </Link>
           ))}

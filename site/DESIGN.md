@@ -41,6 +41,14 @@ The right hero column uses `public/hero-agent-map.webp`, converted from the user
 
 The WebP retains the source's 1024 x 1536 dimensions and exact alpha channel. A single `next/image` serves both themes, with intrinsic dimensions, responsive sizes, and a preload for the hero. The image fills the desktop column and is centered at up to 320px wide below the desktop breakpoint. Its natural portrait ratio preserves the whole map without cropping. The image is static and adds no animation.
 
+### Landing entry-point illustrations
+
+The six chooser cards use the user-supplied transparent `public/*-land.png` paintings: Pitching (idea notebook), the full pipeline (building blocks), bug-hunting (magnifying glass), hotfix (small code change), Education (teaching board), and Enterprise (GitHub collaboration). These literal scenes distinguish the available routes and extend the hero's painted orange-agent motif.
+
+Each illustration sits above its card's text in a shared 208px-high area, capped at 256px wide with `object-fit: contain`, preserving the complete artwork and its alpha channel in both themes. Existing paper surfaces, Fraunces headings, Inter body text, and the accent link color keep the section consistent with the field-manual identity. Equal card widths keep the six entry points at the same priority; a shared image area and bottom-aligned documentation links make the choices easy to compare. The existing one-, two-, and three-column breakpoints remain in use.
+
+Static `next/image` imports provide intrinsic dimensions and responsive optimization; images below the fold load lazily. Empty alt text keeps the painted scenes decorative because each route is already fully described by its adjacent text. Images stay still; cards provide a 150ms press response, a visible keyboard focus outline, and no press movement with reduced motion. Arrows identify documentation links.
+
 ### Landing workflow explorer
 
 One bordered, raised surface pairs a project-condition index with a stage recommendation. The index asks what the visitor already has, so choosing an entry point starts with their available artifact. The recommendation shows the stage's purpose, prerequisite, and documentation link above an illustrative input -> selected stage -> output comparison. A compact six-stage map preserves the workflow order; its highlight identifies the stage being viewed, not project progress.
