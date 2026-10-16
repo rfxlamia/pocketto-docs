@@ -2,6 +2,7 @@ import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layo
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { alt as ogAlt, size as ogSize } from '@/app/opengraph-image';
 import { getMDXComponents } from '@/components/mdx';
 import { SITE } from '@/lib/site';
 import { source } from '@/lib/source';
@@ -37,6 +38,8 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
+  const image = { url: '/opengraph-image', width: ogSize.width, height: ogSize.height, alt: ogAlt };
+
   return {
     title: page.data.title,
     description: page.data.description,
@@ -45,9 +48,17 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
     },
     openGraph: {
       url: `${SITE.url}${page.url}`,
+      siteName: SITE.name,
       title: page.data.title,
       description: page.data.description,
       type: 'article',
+      images: [image],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      images: [image],
     },
   };
 }
