@@ -10,10 +10,10 @@ Two ways to use Pocketto: the full pipeline for features, or standalone skills f
 Run a feature through the full pipeline. Each stage hands off to the next:
 
 ```bash
-/pocketto:pocket-grinding   "add dark mode toggle"   # → spec + acceptance criteria
-/pocketto:pocket-planning                            # → TDD execution plan
-/pocketto:pocket-development                          # → subagents build it, task by task, with an in-loop audit and phase-level pass
-/pocketto:pocket-closing    <plan_dir>               # → reconcile, close, summarize
+/pocketto:pocket-grinding "add dark mode toggle"
+/pocketto:pocket-planning
+/pocketto:pocket-development
+/pocketto:pocket-closing <plan_dir>
 ```
 
 What you will experience at each step:
