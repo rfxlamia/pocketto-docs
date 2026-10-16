@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import {
   ArrowRight,
   BookOpen,
@@ -22,6 +23,12 @@ import { PipelineViz } from '@/components/site/pipeline-viz';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
 import { INSTALL, PIPELINE_STAGES, POCKETTO, SITE } from '@/lib/site';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+};
 
 export default function HomePage() {
   return (

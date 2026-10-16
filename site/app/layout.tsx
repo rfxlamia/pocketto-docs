@@ -57,9 +57,6 @@ export const metadata: Metadata = {
     description:
       'Structured AI coding workflows for Claude Code and Pi. Plan before code, delegate with contracts, gate before done.',
   },
-  alternates: {
-    canonical: '/',
-  },
 };
 
 export const viewport: Viewport = {
