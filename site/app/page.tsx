@@ -505,7 +505,11 @@ function JsonLd() {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: SITE.name,
+    alternateName: `${SITE.name} for Claude Code`,
     url: SITE.url,
+    sameAs: [SITE.repo, `https://www.npmjs.com/package/${SITE.npmPackage}`],
+    codeRepository: SITE.repo,
+    keywords: 'Claude Code plugin, Pi skills, AI coding workflow, spec-driven development, TDD, subagent delegation',
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Node.js',
     description:

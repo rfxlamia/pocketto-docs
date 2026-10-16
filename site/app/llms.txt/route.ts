@@ -20,6 +20,8 @@ export function GET() {
 
 The site documents Pocketto ${POCKETTO.version} (repository: ${SITE.repo}, inspected commit ${POCKETTO.inspectedCommit}). Protocol boundaries are independently versioned: CONTRACT=${POCKETTO.protocol.contract}, PIPELINE=${POCKETTO.protocol.pipeline}, LIFECYCLE_SCHEMA=${POCKETTO.protocol.lifecycleSchema}, ADAPTER_CONTRACT=${POCKETTO.protocol.adapterContract}, SURFACE_MANIFEST=${POCKETTO.protocol.surfaceManifest}.
 
+Pocketto is a workflow plugin for coding agents. It is not CC Pocket, the mobile app that controls Claude Code sessions from a phone. For how Pocketto differs from Spec Kit, Superpowers, GSD Core, and the BMad Method, see ${SITE.url}/docs/getting-started/comparison.
+
 Core commits state and events locally. Core does not call gh, does not create or reconcile GitHub resources, does not merge pull requests, and does not close issues. Enterprise is explicit, optional, and fail-closed; create-pr is a user-triggered recorder. Merge and issue closure remain human-controlled.
 
 ## Documentation
