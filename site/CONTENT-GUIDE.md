@@ -44,9 +44,8 @@ also the H1 and the sidebar label) is too terse to rank on its own, such as a ba
 Keep it at 49 characters or fewer so the rendered `<title>` (`seoTitle | Pocketto`) stays within
 60.
 
-A second optional key, `faq: true`, emits FAQPage structured data. Each `##` heading (or `###`
-under a FAQ section) that ends in "?" becomes a question, and the paragraphs under it become the
-answer. Use it only on pages whose questions are real headings with direct answers.
+A second optional key, `faq: true`, emits FAQPage structured data. Every heading that ends in
+"?" becomes a question, and the paragraphs under it become the answer. Use it only on pages whose questions are real headings with direct answers.
 
 No other frontmatter keys.
 
@@ -107,7 +106,7 @@ Same elements as the skill template, plus:
 - `/docs/core-enterprise` (+ `core-architecture`, `local-first`, `enterprise-setup`, `integration-boundaries`, `github-sync`, `compatibility`, `lifecycle-events`, `recovery-rollback`, `human-authorization`)
 - `/docs/reference` (+ `cli`, `configuration`, `files`, `pocket-packets`, `plan-structure`, `review-reports`, `lifecycle-state`, `release-surfaces`, `troubleshooting`, `faq`, `glossary`)
 - `/docs/contributing` (+ `development-testing`, `guidance`)
-- `/case-studies` (+ `iot-tractor-tracking`)
+- `/case-studies` (+ `iot-tractor-tracking`, `agentpair-protocol`)
 
 ## Case studies
 

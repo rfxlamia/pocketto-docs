@@ -5,7 +5,7 @@ import { pageSchema } from 'fumadocs-core/source/schema';
 const schema = pageSchema.extend({
   // Search-result title when `title` (also the H1 and sidebar label) is too terse to rank.
   seoTitle: pageSchema.shape.title.optional(),
-  // Emit FAQPage JSON-LD from every `##` heading that ends in "?".
+  // Emit FAQPage JSON-LD from every heading that ends in "?".
   faq: pageSchema.shape.full,
 });
 

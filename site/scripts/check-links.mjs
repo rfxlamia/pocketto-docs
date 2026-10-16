@@ -6,7 +6,7 @@
  * - Also checks that section meta.json page lists point at real files.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+import { join, dirname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -61,7 +61,7 @@ const errors = [];
 let checked = 0;
 
 const sources = walk(root).filter(
-  (f) => (f.endsWith('.mdx') && collections.some(({ dir }) => f.startsWith(dir))) || f.endsWith('.tsx'),
+  (f) => (f.endsWith('.mdx') && collections.some(({ dir }) => f.startsWith(dir + sep))) || f.endsWith('.tsx'),
 );
 const seen = new Set();
 for (const file of sources) {
