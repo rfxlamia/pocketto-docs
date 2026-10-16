@@ -1,0 +1,64 @@
+---
+title: Pi setup
+description: Install the Pocketto Pi package, set up required and recommended extensions, and verify with doctor.
+---
+
+Pi installs Pocketto as a package and loads skills from its `skills/` directory.
+
+## Install
+
+```bash
+pi install git:github.com/rfxlamia/pocketto
+# or
+pi install npm:pocketto-pi
+```
+
+## Required extensions
+
+Pocket's skills call Pi extensions for their core features. After installing Pocketto, pull them in with one command:
+
+```bash
+npx pocketto-pi setup-extensions        # required extensions
+npx pocketto-pi setup-extensions --recommended # + recommended extensions (`--all` is an alias)
+npx pocketto-pi doctor                  # check what's installed / missing
+```
+
+| Required | Unlocks |
+|----------|---------|
+| `pi-mcp-adapter` | context7 MCP — library-aware code generation |
+| `@gotgenes/pi-subagents` | subagent delegation + parallel reviews |
+| `@juicesharp/rpiv-advisor` | advisor — LLM-to-LLM review/escalation gates |
+
+Recommended (install with `--all`): `@juicesharp/rpiv-ask-user-question`, `@tintinweb/pi-tasks`, `@aliou/pi-processes`.
+
+<Callout type="warn" title="Without the required extensions">
+Pipeline gates that depend on independent review (the advisor, the edge-case hunter, spec reviewers) and subagent delegation degrade or cannot run. Pocketto's bounded-recovery behavior will stop at a <code>RECOVERY_CHECKPOINT</code> and tell you exactly which capability is missing instead of faking a review. Install the extensions.
+</Callout>
+
+## Verification
+
+```bash
+npx pocketto-pi doctor [--strict]
+```
+
+`doctor` reports required and recommended extensions and what is missing. With `--strict` it exits non-zero when a required extension is absent.
+
+## The memory file: AGENTS.md
+
+Pi reads `AGENTS.md` as project memory. [pocket-init](/docs/skills/pocket-init) writes its managed project-guide section there, and the Pocket Education learner profile lives in a `## Pocket Education` block in the same file — deliberately outside the managed section, so regenerating the guide never resets calibration.
+
+## Pi vs Claude Code
+
+| | Pi | Claude Code |
+|---|---|---|
+| Install | `pi install` from Git or npm | Marketplace plugin |
+| Invocation | Trigger phrases and skill names | `/pocketto:*` commands |
+| Extensions | Required: advisor, context7, subagents | Host capabilities |
+| Memory file | `AGENTS.md` | `CLAUDE.md` |
+| Enterprise role | `pi/enterprise` | `claude/enterprise` |
+
+## Related documentation
+
+- [Installation](/docs/getting-started/installation)
+- [Quickstart](/docs/getting-started/quickstart)
+- [Enterprise setup](/docs/core-enterprise/enterprise-setup) — optional GitHub synchronization

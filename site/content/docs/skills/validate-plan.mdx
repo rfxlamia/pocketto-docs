@@ -1,0 +1,60 @@
+---
+title: validate-plan
+description: Validate implementation plans against DRY, YAGNI, TDD, and codebase context before execution.
+---
+
+`validate-plan` is a comprehensive validation workflow for development implementation plans: it analyzes a plan against DRY, YAGNI, and TDD principles and performs a codebase-aware gap analysis to prevent implementation disasters.
+
+## When to use it
+
+- Reviewing implementation plans created by the [pocket-planning](/docs/pipeline/planning) workflow or any other source.
+- Validating development plans before execution.
+- Checking plans for DRY/YAGNI/TDD compliance, over-engineering, and scope creep.
+- Ensuring a test-first approach before work begins.
+
+**When not to use it:**
+
+- The plan is already mid-execution — re-planning goes through planning, not review.
+- You want idea-level exploration, not plan critique — that is pitching/grinding territory.
+
+## Prerequisites
+
+A plan — as a file path or as text supplied directly in the request (the inline form is what [hotfix](/docs/skills/hotfix)'s reviewer dispatch uses).
+
+## How to invoke it
+
+```text
+/validate-plan <plan-file>
+```
+
+Or ask: "Validate this implementation plan."
+
+## How it works
+
+1. **Plan discovery** — load the plan (or use the inline text) and extract metadata: feature name, tech stack, hypothesis, tasks and their structure.
+2. **Codebase analysis** — what functionality already exists and could be reused, established patterns, where new files should go, which testing approach is already used.
+3. **DRY validation** — does the plan reimplement what exists (CRITICAL), duplicate patterns without abstraction (WARNING), or mismatch the project's libraries (INFO)?
+4. **YAGNI validation** — over-abstraction without concrete use cases, future-proofing for hypothetical needs, complexity beyond the problem, scope creep.
+5. **TDD validation** — tests written *before* implementation, red-green-refactor per task, exact test commands with expected outcomes, coverage strategy, commits tied to test milestones. Anti-patterns: "write tests" as a separate end task, implementation without test steps, vague test instructions.
+6. **Gap analysis** — technical specification gaps (missing exact paths, unclear acceptance criteria, no rollback plan), architecture gaps (wrong file locations, missing integration patterns, missing API contracts), and disaster prevention (unidentified breaking changes).
+
+Findings are labeled **CRITICAL**, **WARNING**, or **INFO** with task-level references so fixes are actionable.
+
+## Outputs and artifacts
+
+A structured review report in conversation (findings by level with references). The hotfix flow consumes it as its plan-review gate; [pocket-planning](/docs/pipeline/planning) dispatches its own dedicated spec-reviewer for pipeline plans.
+
+## Approval gates and constraints
+
+- The review is independent — the skill does not rewrite the plan, it reports findings; you (or the workflow using it) decide the fixes.
+- When invoked as a non-interactive reviewer, it uses the supplied plan and does not ask questions.
+
+## Example
+
+*Illustrative:* a plan proposes a new `httpClient.ts` — validation flags an existing shared client (CRITICAL, DRY), a config option nothing consumes (WARNING, YAGNI), and "write tests" as a final task (CRITICAL, TDD) — each with the task number to fix.
+
+## Related documentation
+
+- [hotfix](/docs/skills/hotfix) — uses this skill as its reviewer gate
+- [Planning](/docs/pipeline/planning)
+- [Plan structure](/docs/reference/plan-structure)

@@ -1,0 +1,30 @@
+---
+title: Standalone skills
+description: Nine focused workflows — debugging, hotfixes, onboarding, education, design systems, research, plan review, and PR recording.
+---
+
+Standalone skills are lighter, single-purpose, and have no pipeline. Reach for them for everyday work; use the [pipeline](/docs/pipeline) when a feature genuinely needs the ceremony.
+
+| Skill | When to reach for it |
+|-------|----------------------|
+| [pocket-help](/docs/skills/pocket-help) | "What is Pocket?", which skill to use, how the flow works |
+| [pocket-init](/docs/skills/pocket-init) | Onboard an existing project: generate a project guide, optionally calibrate Education |
+| [pocket-education](/docs/skills/pocket-education) | Learn by doing: you implement, the agent teaches, reviews, and guides |
+| [bug-hunting](/docs/skills/bug-hunting) | Fix a bug, debug a failure, audit code for hidden bugs |
+| [hotfix](/docs/skills/hotfix) | Small-to-medium change where the full pipeline is overkill |
+| [brand-design](/docs/skills/brand-design) | Design system, creative brief, brand identity, UI tokens |
+| [structured-research](/docs/skills/structured-research) | Validate an explicit assumption before it enters planning |
+| [validate-plan](/docs/skills/validate-plan) | Review plans against DRY, YAGNI, TDD, and codebase context |
+| [create-pr](/docs/skills/create-pr) | Open the phase PR linked to the Pocket issue (Enterprise mode) |
+
+## How they relate to the pipeline
+
+- **`hotfix` ↔ `pocket-grinding` is bidirectional.** Grinding's triviality off-ramp recommends hotfix for small clear tasks; hotfix escalates to grinding when work turns out architectural or contested.
+- **`validate-plan` is hotfix's review engine.** The subagent reviewer that approves hotfix brief-plans validates them with this skill.
+- **`structured-research` feeds planning.** A Confirmed verdict can be carried into grinding/planning as a validated input.
+- **`create-pr` is Enterprise-only.** It requires Enterprise mode, a successful preflight, and a linked issue.
+- **Education changes who implements.** In an Education repo, `hotfix`, `bug-hunting`, and `pocket-development` ask before implementing — an explicit handover is always required to switch.
+
+## Invocation
+
+On Claude Code: `/pocketto:<skill-name>` (for example `/pocketto:hotfix "bump the rate-limit window to 60s"`). On Pi: trigger phrases and skill names, as listed on each page.

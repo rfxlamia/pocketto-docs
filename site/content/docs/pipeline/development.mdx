@@ -1,0 +1,99 @@
+---
+title: Development
+description: pocket-development — bounded packets, delegated implementation, independent review, and the phase-level pass.
+---
+
+`pocket-development` executes an approved Pocket plan one task at a time or in explicitly parallel groups. The main agent coordinates work, runs mechanical checks, and dispatches independent read-only review; implementers own code changes.
+
+**Core principle:** Every delegation is a contract. The packet is the contract. **No packet, no spawn.**
+
+## When to use it
+
+- The user asks to execute an implementation plan. A completed plan is required — if none exists, the skill routes to [planning](/docs/pipeline/planning) rather than inventing one.
+- Task count does not gate eligibility: a one-task plan is the degenerate `SOLO` case and runs the normal gate, packet, audit, and phase-pass path. It is not bounced to `hotfix` — hotfix is an entry-routing choice for small clear work, not an escape hatch once a plan exists.
+
+## Prerequisites
+
+- A structured (or explicitly flat) plan with task files.
+- On Pi, the required extensions (subagents for delegation, advisor as a review fallback).
+
+## How to invoke it
+
+```text
+/pocketto:pocket-development
+```
+
+## How it works
+
+### Startup — initialize the execution log
+
+Run before the first task, every session:
+
+```bash
+npx -y pocketto-pi log init "<plan_dir>" --json --contract 3
+```
+
+Idempotent: no `log.json` → creates it; tasks missing → migrates them into existing phases; already complete → writes nothing. On a stacked plan, `log init` may create and switch to the phase-1 branch automatically.
+
+**Education guard:** if the memory file has a `## Pocket Education` block, development confirms with `npx -y pocketto-pi edu --json --contract 3` and asks whether you want to implement with guidance or use subagents.
+
+### The roles
+
+The main agent is the **Delegator + Gate Runner**. It must not implement, and it must not judge code quality or spec compliance — the independent auditor owns those judgments.
+
+| Main agent MUST | Main agent MUST NOT |
+|-----------------|---------------------|
+| Initialize and update the pocket log | Write, edit, or create implementation code |
+| Construct Pocket Packets and dispatch subagents | Invoke a separate per-task review workflow |
+| Run mechanical checks, then dispatch the auditor | Judge code quality or spec compliance itself |
+| Read task files on demand, one at a time | Read the full plan upfront (context blowout) |
+| Emit `PHASE_COMPLETE` handoffs | Claim a skipped or unrun review passed |
+
+### The 6 Iron Laws
+
+```text
+1. PACKET BEFORE STANDARD DISPATCH   — no packet, no spawn
+2. NO SILENT GATE SKIP               — run the Entry Gate; report anything you explicitly bypass
+3. NO TRUST WITHOUT EVIDENCE         — verify via read-only review, never self-report
+4. NO AMBIGUOUS PROMPT               — sandwich structure + attention rules
+5. NO SILENT ESCALATION              — every BLOCKED names what, why, and what unblocks
+6. NO SILENT REFERENCE               — cite which references informed the packet
+```
+
+### Per-task cycle
+
+1. **Entry Gate** — task bounded? packet constructible? task type clear? prompt sandwiched? parallel classification (Foundation / Solo / Parallel Group)? verification defined? Any "no" holds the dispatch locally for repair, not escalation.
+2. **Dispatch** — the implementer gets a full Pocket Packet (see [Pocket Packets](/docs/reference/pocket-packets)). Parallel groups get git worktrees and a `WORKTREE` packet field.
+3. **Status handling** — `DONE` proceeds; `DONE_WITH_CONCERNS` attaches concerns to the auditor; `NEEDS_CONTEXT` triggers evidence-gathering before any user question; `BLOCKED` is reserved for genuine human dependencies.
+4. **In-loop audit** — the mechanical gate first (a commit exists; **every** exact test command the task specifies is green), then a read-only auditor subagent that applies the packet's quality bar, spec-compliance, and code-quality criteria, labeling findings `Critical` / `Important` / `Minor`. Critical/Important force a fix round; two materially different rounds cap automatic correction at `RECOVERY_CHECKPOINT`.
+5. **Log the verdict** — task marked `DONE` only with `--sha <audited_head>`:
+
+```bash
+npx -y pocketto-pi log update <plan_dir> <phase_file> DONE --task T1 --sha <audited_head> --json --contract 3
+```
+
+### Phase completion
+
+When all tasks in the phase are `DONE` with passing audits, the **phase-level pass** reviews the whole phase for what per-task audits cannot see: cross-task duplication, integration mismatch, cross-file regression, spec-level gaps, and wrong architecture assumptions. Its result is recorded at `reviews/phase-pass-<phase_key>.json` (`PHASE_PASS_CLEAN` or `PHASE_PASS_RESOLVED`), phase notes are written, and only then does the phase move to `REVIEW` — committing the `phase-complete` event.
+
+The terminal report is one of `PHASE_COMPLETE`, `RECOVERY_CHECKPOINT` (findings remain after two rounds — not blocked, awaiting your authorization), or `PHASE_BLOCKED` (a specific human dependency).
+
+## Outputs and artifacts
+
+- Reviewed commits, per-task verdicts at `reviews/<task_id>-review.json`
+- Phase pass + notes: `reviews/phase-pass-<phase_key>.json`, `reviews/phase-notes-<phase_key>.json`
+- Updated `log.json` (CLI-written only)
+- Lifecycle event `phase-complete` at `REVIEW`
+
+## Approval gates and constraints
+
+- **Education repos**: implementation is yours unless you explicitly hand the task over.
+- **Explicit workflow choices are honored** (skip a gate, simpler handoff) — but the skipped check is reported, never silently dropped, and independent review is kept when you still expect Pocket verification.
+- **Never** mark `DONE` without a passing audit and `--sha`; never set a task to `REVIEW` (phases only); never merge a parallel group before all members audit-pass; merge and log one task at a time (the CLI hard-errors on a collapsed `DUPLICATE_DONE_SHA`).
+
+## Related documentation
+
+- [Pocket Packets](/docs/reference/pocket-packets)
+- [Review reports](/docs/reference/review-reports)
+- [Closing](/docs/pipeline/closing) — the next stage
+- [Lifecycle state](/docs/reference/lifecycle-state)

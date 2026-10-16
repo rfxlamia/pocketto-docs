@@ -1,0 +1,82 @@
+---
+title: Enterprise setup
+description: Consent-first Enterprise onboarding — mode init, adapter registration, push-consent choices, and read-only preflight.
+---
+
+Enterprise adds remote lifecycle synchronization to a compatible Core installation. Onboarding is **consent-first**: a direct request to enable Enterprise is treated as consent; an ambiguous request gets an explanation first, and nothing changes until you decide.
+
+## Prerequisites
+
+1. The matching **Core v4 role** is installed. Enterprise is an additive delta, not a standalone workflow.
+2. Local prerequisites verified before any external operation:
+
+```bash
+gh auth status
+git remote get-url origin
+```
+
+Missing authentication or no `origin` remote stops onboarding — nothing is partially initialized.
+
+## What enabling Enterprise does
+
+Explained up front, before any change:
+
+- `spec-approved` may create or reconcile **one** issue for the approved spec.
+- `phase-complete` updates the phase summary and reconciles review findings on an existing PR (stacked plans defer this to `phase-closed`).
+- `phase-closed` publishes a stacked phase PR and, only with consent, pushes that phase branch fast-forward.
+- `plan-closed` upserts the final tasklist proof on the linked issue.
+- The adapter **never merges a PR or closes an issue**.
+- Enabling does not itself drain pending events — remote reconciliation happens when a lifecycle drain is run.
+
+## Configure the mode
+
+```bash
+npx -y pocketto-pi mode --json --contract 3          # read current mode
+npx -y pocketto-pi mode init <project-root> --enterprise true --branch-strategy branch --create-pr true --file AGENTS.md --json --contract 3
+```
+
+- `--branch-strategy`: `branch` or `main-local`; `--create-pr`: `true` or `false` (enables the separate [create-pr](/docs/skills/create-pr) recorder — no PR is created automatically); `--require-approval` is available if you want the gate.
+- `mode init` validates the remote and writes the mode block to the selected memory file (`AGENTS.md` or `CLAUDE.md`) **plus `.gitattributes`**. Both files may change.
+- Existing mode values are preserved — never overwritten with defaults.
+
+Optional project templates:
+
+```bash
+npx -y pocketto-pi scaffold github --json --contract 3
+```
+
+Existing user files are not overwritten. The `pocket-plan` label is created only when you request that setup step.
+
+## Register the adapter
+
+Choose the phase-branch model before registration:
+
+| Option | Values | Effect |
+|--------|--------|--------|
+| `--phase-branches` | `stacked` (default), `none` | `stacked` publishes each phase as a PR against its explicit base. Under `main-local`, a requested `stacked` is overridden to `none` with a warning. |
+| `--push-consent` | `phase-branches` | Durable consent for **non-force** pushes of Pocket phase branches only (`pocket/<plan>/phase-<N>`). Omit it to approve each pushed commit separately. |
+
+```bash
+node <package-root>/enterprise/cli.js install <project-root> --phase-branches stacked --push-consent phase-branches --json
+node <package-root>/enterprise/cli.js preflight <project-root> --json   # read-only verification
+```
+
+`enterprise/cli.js` lives in the pocketto-pi package root — for a project depending on the npm package, use `node node_modules/pocketto-pi/enterprise/cli.js …`. The install writes `.pocket/lifecycle-adapter.json` with the default **portable runtime-token registration** (`@pocketto-runtime-argv-v1` + `@pocketto-node` + `@pocketto-install-root/enterprise/dispatch.js`) — no machine-specific absolute paths. A legacy absolute-path registration still works but reports `ADAPTER_REGISTRATION_NOT_PORTABLE`; reinstall after upgrading Core to migrate it.
+
+<Callout type="warn" title="Reinstall rules">
+Reinstall after upgrading Core (to runtime-token support) or after upgrading to an Enterprise release that declares adapter contract 2 — a contract 1 registration fails preflight with <code>ENTERPRISE_ADAPTER_CONTRACT_MISMATCH</code>. Inspect the existing registration first: a <strong>default</strong> registration is replaced by reinstalling; a <strong>custom</strong> registration (<code>--argv</code>) is replaced only with your explicit authorization, reinstalling with the same <code>--argv</code> entries. Never run bare <code>install</code> over a custom registration.
+</Callout>
+
+## Verify — then stop
+
+`preflight` is **read-only**: it confirms compatible Core, lifecycle schema 2, adapter contract 2, registration, and executable, and reports non-blocking warnings verbatim. On any failure, stop before any remote operation and follow the install/upgrade guidance in the error. Do not run a drain as an automatic final step — pending events remain local until **you** run:
+
+```bash
+npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
+```
+
+## Related documentation
+
+- [Integration boundaries](/docs/core-enterprise/integration-boundaries)
+- [GitHub synchronization](/docs/core-enterprise/github-sync)
+- [Human authorization](/docs/core-enterprise/human-authorization)

@@ -1,0 +1,71 @@
+---
+title: create-pr
+description: The Enterprise PR recorder — open or reuse the GitHub PR for a completed phase, without ever merging or closing.
+---
+
+`create-pr` is the Pocket **Enterprise** recorder that opens (or reuses) the GitHub pull request for a completed development phase. It is **explicitly user-triggered**; the lifecycle adapter never auto-creates a PR, and this skill never merges one or closes an issue.
+
+## When to use it
+
+- You request a phase PR directly.
+- You explicitly confirm the offer that [pocket-development](/docs/pipeline/development) makes after a phase completes in enterprise mode.
+
+**When not to use it:**
+
+- Enterprise is disabled, or a compatible Core/adapter preflight fails.
+- There is no linked issue — reconcile the approved-spec issue through the lifecycle adapter first.
+- You expect it to manage branches: **it never does** — non-stacked uses the *current* branch; stacked reads the recorded phase branch by ref without checking it out.
+
+## Prerequisites
+
+- A matching [Enterprise installation](/docs/core-enterprise/enterprise-setup) (`npx -y pocketto-pi mode --json --contract 3` reports `enterprise: true`).
+- Successful read-only preflight: `node <package-root>/enterprise/cli.js preflight <project-root> --json`.
+- `gh` authenticated (`gh auth status`).
+- A linked issue in Enterprise metadata (`meta get <spec_dir> github_issue.number`).
+- Phase eligibility: `REVIEW` for non-stacked plans; `DONE` with an existing `phase-closed` event for stacked plans.
+
+## How to invoke it
+
+```text
+/pocketto:create-pr <plan_dir> [<phase_file>]
+```
+
+## How it works
+
+Two paths, selected from `log.json`'s `header.phase_branches.mode`:
+
+**Stacked path.** The phase branch was already committed and closed by `log handoff`; this path runs `publish-phase` — the same publisher the `phase-closed` handler uses — against the recorded branch. It pushes fast-forward only and only with consent, creates or reuses the PR against its explicit base (phase 1: the recorded root base; phase N: the phase N-1 branch), and records PR identity. Errors are handled per a fixed table: `PUSH_CONSENT_REQUIRED` stops for your approval of the exact SHA; `PHASE_CLOSED_EVENT_REQUIRED` sends you back to closing's stacked handoff; `PR_BLOCKED` reasons are terminal or retryable as documented in [GitHub synchronization](/docs/core-enterprise/github-sync).
+
+**Non-stacked path.** The current branch is read (never changed); the PR is discovered from Enterprise metadata or `gh pr list --head <branch>` and reused, or created:
+
+1. **Commit traveling state** — `log.json`, plan docs, and spec docs are committed so review has the full paper trail.
+2. **Format the body** — a structured input file (issue, final phase, file count, what/why/how-to-test) is rendered by `npx -y pocketto-pi format pr --input <json> --json --contract 3`.
+3. **Create with `--body-file`** — never an inline multiline body. `closes #N` for the final phase, `refs #N` for earlier ones. The reference does not close the issue on creation; **a human-controlled merge** is what would trigger closure.
+4. **Record identity** — PR number and URL under `phases.<phase_key>.github_pr` in `.pocket-meta.json`.
+
+## Outputs and artifacts
+
+A `PR_READY` (or `PR_REUSED`) report with the path taken, branch (non-stacked), PR number and URL, issue link, and preflight warnings reported **verbatim**. PR identity recorded in Enterprise metadata; the Core journal stores only opaque proof references.
+
+## Approval gates and constraints
+
+Hard constraints:
+
+1. **No branch management** — no checkout, create, switch, or remove.
+2. **Preflight before GitHub** — every time.
+3. **Traveling state first** (non-stacked) — review needs the plan log and artifacts on the PR.
+4. **Always `--body-file`**.
+5. **Recorder only** — never merges the PR, never closes the linked issue, never posts verdict summaries or tasklist comments.
+6. **Never rebase, never force-push, never retarget** — divergence and base conflicts stop for manual resolution.
+
+Push consent is never assumed: the `consent-push … --sha <40-hex>` command is shown, run only after you approve that exact commit, and only if it matches the documented form.
+
+## Example
+
+*Illustrative:* `/pocketto:create-pr docs/pocket/plans/2026-09-19-feature/` → preflight passes, PR #42 found for the current branch is reused, traveling state committed, `refs #7` body formatted and posted, identity recorded under `phases.phase-1.github_pr`.
+
+## Related documentation
+
+- [Enterprise setup](/docs/core-enterprise/enterprise-setup)
+- [GitHub synchronization](/docs/core-enterprise/github-sync)
+- [Closing](/docs/pipeline/closing) — the stacked handoff this depends on

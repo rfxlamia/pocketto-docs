@@ -1,0 +1,59 @@
+---
+title: Generated files and directory conventions
+description: The docs/pocket tree, project-level files, and which command writes each one.
+---
+
+All durable Pocket artifacts live under `docs/pocket/`. Names are conventions the skills and CLI rely on — keep them.
+
+## The tree
+
+```
+docs/pocket/
+├── spec/<date>-<slug>/
+│   ├── pitch-exploration.md            ← pocket-pitching
+│   └── <topic>.md                      ← pocket-grinding (the spec)
+├── plans/<date>-<slug>/                ← same slug as the spec, easy cross-reference
+│   ├── execution-plan.md               ← pocket-planning
+│   ├── execution-plan/
+│   │   ├── index.md                    ← structure CLI (task index, execution order)
+│   │   ├── tasks/T1-*.md               ← structure CLI (one file per task)
+│   │   └── phase-N.md                  ← structure CLI (multi-phase plans only)
+│   ├── log.json                        ← log CLI (the only writer)
+│   ├── reviews/
+│   │   ├── <task_id>-review.json       ← in-loop auditor (per-task verdict)
+│   │   ├── phase-pass-<phase_key>.json ← phase-level pass record
+│   │   └── phase-notes-<phase_key>.json← durable phase handoff notes
+│   └── closeout.md                     ← pocket-closing (append-only journal)
+├── research/<date>-<slug>/research-report.md   ← structured-research
+├── rule/creative-brief.md              ← brand-design (+ .claude/rules/brand-design.md)
+└── learning/<date>-<slug>.md           ← pocket-education (journal, when enabled)
+```
+
+Project-root files:
+
+```
+CLAUDE.md | AGENTS.md                   ← project guide + Education block (see Configuration)
+.pocket-meta.json                       ← meta CLI; Enterprise remote identity
+.pocket/lifecycle-adapter.json          ← enterprise install (the adapter registration)
+lifecycle.json                          ← committed with the spec directory (lifecycle CLI)
+.github/                                ← scaffold github (issue + PR templates, local)
+```
+
+## Conventions that matter
+
+- **Slug pairing.** Spec and plan share the same `<date>-<slug>` directory name — `create-pr`, reconciliation, and lifecycle identity resolve through it.
+- **Execution order, not task ID.** `index.md`'s Task Index renders in phase-group (execution) order — the same order `log init` seeds dispatch state, so plans authored out of numeric sequence dispatch as written.
+- **Canonical phase identity.** `phase_key = phase-${order}` comes from `log.json`, never from a filename; closeout markers (`<!-- pocket-closeout:phase-${order} -->`) use the same key.
+- **Reviews live beside the plan.** Per-task verdicts, phase-pass records, and phase notes are all under `<plan_dir>/reviews/` — artifact-only state, no hidden side channels.
+
+## Ownership and recovery
+
+The **CLI is the only writer** of `log.json` and lifecycle state. Skills run commands; nobody edits state files by hand. If `structure` was interrupted mid-write, re-run `structure --reset` on that plan (explicit, discards execution state) rather than repairing files manually. `--force` only rebuilds when there is no execution progress; `--dry-run` previews without writing. See [Troubleshooting](/docs/reference/troubleshooting).
+
+Git-ignored artifacts produce a warning — events reference artifacts by SHA-256, and a missing or changed artifact is terminal `STALE_ARTIFACT` at delivery.
+
+## Related documentation
+
+- [Execution artifacts](/docs/pipeline/artifacts) — who writes what, when
+- [Lifecycle state](/docs/reference/lifecycle-state)
+- [Configuration](/docs/reference/configuration)

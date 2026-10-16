@@ -1,0 +1,59 @@
+---
+title: Core & Enterprise
+description: How the local-first Core and the optional Enterprise adapter split ownership of state and GitHub.
+---
+
+Pocketto splits into two independently installed pieces with a hard ownership boundary:
+
+- **Core** is local-first. It commits lifecycle state and neutral events locally and **never calls `gh`** — it does not create or reconcile GitHub resources, does not merge pull requests, and does not close issues.
+- **Enterprise** is a separately installed, opt-in **adapter**. It consumes Core's durable events and owns *all* remote reconciliation: the approved-spec issue, phase PR summaries and findings, stacked phase PR publication, and the final tasklist. It is fail-closed before any remote operation and never merges a PR or closes an issue — humans keep those gates.
+
+Missing or incompatible Enterprise never blocks Core work: events remain durable locally for later replay.
+
+## The compatibility matrix
+
+| Core | Enterprise | Result |
+|------|------------|--------|
+| v3 Core + v3 Enterprise | v3 | Legacy pair remains operational with a v4 upgrade warning. |
+| v4 Core + v4 Enterprise | v4 | Supported split and lifecycle contract. |
+| v4 Core + absent Enterprise | — | Supported local-first Core; events remain pending and no GitHub call occurs. |
+| v3 Core + v4 Enterprise | v4 | Enterprise fails closed with Core upgrade guidance; Core remains usable. |
+| v4 Core + v3 Enterprise | v3 | Adapter fails closed with Enterprise upgrade guidance; pending events are preserved. |
+
+## Explore this section
+
+<Cards>
+  <Card title="Core architecture" href="/docs/core-enterprise/core-architecture">
+    The 15 skills, the CLI envelope, the artifact tree, and the lazy Enterprise boundary.
+  </Card>
+  <Card title="Local-first behavior" href="/docs/core-enterprise/local-first">
+    What works with zero remote — and what Core will never do.
+  </Card>
+  <Card title="Enterprise setup" href="/docs/core-enterprise/enterprise-setup">
+    Consent-first onboarding, mode init, adapter registration, preflight.
+  </Card>
+  <Card title="Integration boundaries" href="/docs/core-enterprise/integration-boundaries">
+    Who owns what: the event → action routing table.
+  </Card>
+  <Card title="GitHub synchronization" href="/docs/core-enterprise/github-sync">
+    Issues, phase PRs, stacked branches, tasklists — in practice.
+  </Card>
+  <Card title="Compatibility and versioning" href="/docs/core-enterprise/compatibility">
+    The five independent protocol versions and pinning rules.
+  </Card>
+  <Card title="Lifecycle events" href="/docs/core-enterprise/lifecycle-events">
+    The neutral event model and the lifecycle CLI.
+  </Card>
+  <Card title="Recovery and rollback" href="/docs/core-enterprise/recovery-rollback">
+    Repair, drain, disable — without destroying state.
+  </Card>
+  <Card title="Human authorization" href="/docs/core-enterprise/human-authorization">
+    Every gate that stays with a person.
+  </Card>
+</Cards>
+
+## Related documentation
+
+- [Lifecycle events](/docs/core-enterprise/lifecycle-events) — the contract between Core and Enterprise
+- [create-pr](/docs/skills/create-pr) — the user-triggered PR recorder
+- [Release surfaces](/docs/reference/release-surfaces) — the manifest that enforces the split

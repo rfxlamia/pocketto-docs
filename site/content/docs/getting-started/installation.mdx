@@ -1,0 +1,56 @@
+---
+title: Installation
+description: Install Pocketto for Pi or Claude Code, set up the required extensions, and verify the installation.
+---
+
+Pocketto ships for two hosts from one local-first Core. Pick the tab for yours.
+
+<Tabs items={["Pi", "Claude Code"]}>
+  <Tab value="Pi">
+    Install the package from Git or npm:
+
+    ```bash
+    pi install git:github.com/rfxlamia/pocketto
+    # or
+    pi install npm:pocketto-pi
+    ```
+
+    Then pull in the [required extensions](/docs/getting-started/pi-setup):
+
+    ```bash
+    npx pocketto-pi setup-extensions        # required extensions
+    npx pocketto-pi setup-extensions --recommended # + recommended extensions (`--all` is an alias)
+    npx pocketto-pi doctor                  # check what's installed / missing
+    ```
+  </Tab>
+  <Tab value="Claude Code">
+    Add the Pocketto marketplace and install the plugin inside Claude Code:
+
+    ```text
+    /plugin marketplace add rfxlamia/pocketto
+    /plugin install pocketto@pocketto
+    /reload-plugins
+    ```
+
+    `/reload-plugins` registers the `/pocketto:*` commands. No extension setup is needed — extensions are a Pi concept.
+  </Tab>
+</Tabs>
+
+## What gets installed
+
+- **The 15 skills** — six [pipeline](/docs/pipeline) stages and nine [standalone skills](/docs/skills), installed per host.
+- **The `pocketto-pi` CLI** — used by the skills through `npx -y pocketto-pi …`. It requires Node.js ≥ 18. You can also run it yourself; see the [CLI reference](/docs/reference/cli).
+- **On Pi:** the extension packages that provide advisor (review gates), context7 (library docs), and subagents (delegation). On Claude Code these capabilities come from the host.
+
+Enterprise is **not** installed by either path above. It is a separate, explicit opt-in — see [Enterprise setup](/docs/core-enterprise/enterprise-setup).
+
+## Verify
+
+1. Start your agent and ask "what is pocket" — the `pocket-help` router should answer and point you at the right skill.
+2. On Pi, run `npx pocketto-pi doctor [--strict]`. `--strict` exits non-zero when a required extension is missing.
+3. Check the CLI: `npx -y pocketto-pi --version` prints the version and contract.
+
+## Next steps
+
+- [Quickstart](/docs/getting-started/quickstart) — run your first skill.
+- [Choosing the right workflow](/docs/getting-started/choosing-workflow) — where to start for your task.

@@ -1,0 +1,63 @@
+---
+title: Pitching
+description: pocket-pitching — pre-grinding problem exploration that converges on a problem statement and 2-3 approach directions.
+---
+
+`pocket-pitching` is pre-grinding problem exploration. It scans project context, picks 3–5 brainstorming methods for the problem type, runs them with independent advisor curation, investigates technical unknowns that could change the approach, and produces a pitch exploration doc with a problem statement and 2–3 approach directions.
+
+**Core principle:** Diverge first, converge second. Never propose solutions until the problem is fully explored.
+
+## When to use it
+
+- The problem is vague, unformed, or needs exploration before spec-writing.
+- You say "pitch this", "explore this idea", "I have a rough idea".
+
+**When not to use it:**
+
+- The problem is already clearly defined — go to [pocket-grinding](/docs/pipeline/grinding).
+- A spec already exists — go to grinding or [pocket-planning](/docs/pipeline/planning).
+- You said "brainstorm" — that trigger belongs to grinding.
+
+## Prerequisites
+
+None beyond a running host. For technical unknowns, the spike phase uses project scans and web search when available.
+
+## How to invoke it
+
+```text
+/pocketto:pocket-pitching "what we're trying to explore"
+```
+
+On Pi, trigger with "pitch this", "explore this idea", or "I have a rough idea".
+
+## How it works
+
+1. **Phase 0 — Preflight.** A read-only scan: stack detection, top-level architecture, recent commits, existing docs under `docs/pocket/spec/`.
+2. **Phase 1 — Problem intake.** One or two sentences of shared problem framing, confirmed with you if the interpretation adds a consequential assumption.
+3. **Phase 2 — Diverge.** 3–5 brainstorming methods are selected from the method catalog (default trio: Question Storming, First Principles Thinking, Six Thinking Hats), run sequentially with visible output, then curated by an **independent advisor** — not the same model pass presenting its own synthesis. If no advisor route is available, pitching states what is missing rather than claiming curation.
+4. **Phase 3 — Spike (when needed).** A technical unknown that could change the approach ("can X do Y?", "does Z already exist?") gets a bounded investigation via code scan, web search, or both.
+5. **Phase 4 — Converge.** A problem synthesis: statement, root tension, key constraints, directional success signal.
+6. **Phase 5 — Approach directions.** 2–3 directions (sync vs async, new module vs extension, library vs custom) with advantages, risks, and a recommendation tied to the constraints.
+7. **Phase 6 — Brief + handoff.** The pitch doc is written and you choose what happens next.
+
+## Outputs and artifacts
+
+```
+docs/pocket/spec/YYYY-MM-DD-kebab-slug/pitch-exploration.md
+```
+
+## Approval gates and constraints
+
+- **No auto-chain.** Pitching never starts grinding by itself — you choose: invoke it now, iterate on a phase, or stop here.
+- The advisor curation must be independent; self-synthesis is not presented as review.
+- Unresolved questions from spikes are carried into the brief so grinding inherits them.
+
+## Example
+
+*Illustrative:* "Our sync queue loses events under flaky network" → pitching explores the problem with three methods, spikes whether the current broker supports durable delivery, and converges on two directions (client-side outbox vs server-side idempotent ingest) with a recommendation and open questions for grinding.
+
+## Related documentation
+
+- [Grinding](/docs/pipeline/grinding) — the next stage
+- [Pipeline overview](/docs/pipeline)
+- [Structured research](/docs/skills/structured-research) — when you hold one specific assumption instead of a fuzzy idea

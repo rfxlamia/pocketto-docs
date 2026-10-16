@@ -1,0 +1,50 @@
+---
+title: Release surfaces
+description: The four-role manifest that enforces the Core/Enterprise split at build time.
+---
+
+Every Pocketto release is built from an explicit manifest — `surfaces.json`, schema `SURFACE_MANIFEST=1` — which defines **exactly four roles**:
+
+| Role | Host | Contents |
+|------|------|----------|
+| `pi/core` | Pi | Local-first Core workflows and neutral lifecycle CLI (including Education) |
+| `pi/enterprise` | Pi | Additive Enterprise adapter and references; requires `pi/core` |
+| `claude/core` | Claude Code | Local-first Core workflows and neutral lifecycle CLI (including Education) |
+| `claude/enterprise` | Claude Code | Additive Enterprise adapter and references; requires `claude/core` |
+
+Release builds stage an explicit role with:
+
+```bash
+node scripts/build-surfaces.js --role <role> --output <artifact-dir>
+```
+
+The staged directory contains only the selected role.
+
+## The additive-delta principle
+
+An Enterprise stage is an **overlay** on the matching Core stage:
+
+- It includes only adapter-owned files: the `enterprise/` modules, the `pocket-enterprise` and `create-pr` skills, the Enterprise reporting reference for development, and the lazy `mode`/`format` CLI commands.
+- It does **not** bundle or copy Core skills and does not include Core entry points such as `cli/index.js`.
+- It requires its matching Core role at runtime.
+
+## Enforcement
+
+Each role declares `includes`, `requires`, `forbidden_paths`, and `forbidden_content`:
+
+- Core roles forbid the Enterprise paths (`enterprise/`, `skills/create-pr/`, `skills/pocket-enterprise/`, the Enterprise reporting reference, `mode`/`format` commands) — and forbid the content strings that would leak Enterprise behavior into a Core artifact.
+- Enterprise roles forbid Core entry points (`cli/index.js`, `log`/`logjson` internals, `pocket-help`, `pocket-planning`) — the delta cannot become a standalone product.
+
+An ownership map (`ownership`) declares each path as `core`, `enterprise`, or `shared` (the `reconcile` command and identity helpers), and the `cli_boundary` section documents that Core starts without the Enterprise-only modules — `mode`/`format` load lazily through the boundary.
+
+## What this means for you
+
+- **Install Core alone and nothing Enterprise-flavored can reach you** — not by convention, by construction.
+- **Add Enterprise and you get only its delta** — your Core install stays canonical; never copy a Core skill to add remote behavior.
+- The npm package (`pocketto-pi`) contains both Core and Enterprise sources so either role can be staged from it; it is not itself a Core-only tree.
+
+## Related documentation
+
+- [Core & Enterprise](/docs/core-enterprise)
+- [Core architecture](/docs/core-enterprise/core-architecture)
+- [Enterprise setup](/docs/core-enterprise/enterprise-setup)

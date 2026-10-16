@@ -1,0 +1,41 @@
+---
+title: Human authorization
+description: Every decision Pocketto refuses to make for you — consent, pushes, merges, closures, and label creation.
+---
+
+Pocketto's automation has a fixed boundary: certain actions always require a specific, explicit human decision. This page lists them. They are design guarantees, not defaults you can configure away.
+
+## Consent to Enterprise
+
+- Enabling Enterprise is **explicit** — never inferred from credentials, an existing remote, or an old registration.
+- The effects are explained before any change (see [Enterprise setup](/docs/core-enterprise/enterprise-setup)).
+- Custom adapter registrations are replaced **only with your explicit authorization**, reinstalling with the same `--argv` entries.
+
+## Push consent
+
+Phase branches are pushed only under one of:
+
+- **Durable consent** — `--push-consent phase-branches` at install, covering fast-forward pushes of `pocket/<plan>/phase-<N>` branches only.
+- **Per-commit consent** — `consent-push <project-root> <spec_dir> <phase_key> --sha <40-hex>`, approving that exact commit. The agent shows you the command and waits; it never records approval on your behalf, and it runs a consent command only after confirming it matches the documented form.
+
+Neither covers force pushes — those do not exist in Pocketto. Divergence is blocked for manual resolution.
+
+## Merge and closure
+
+- **PR merge is human.** The adapter never merges a pull request.
+- **Issue closure is human.** The adapter never closes an issue. Multi-phase plans even end their PR bodies with `refs #N` instead of `closes #N`, so nothing closes by automation — you close the linked issue after the last phase.
+- Base retargets, duplicate-PR cleanup, and parent-branch publication are manual GitHub actions; Pocket reports them precisely and waits.
+
+## Label creation
+
+Creating the `pocket-plan` label happens only with your explicit permission after a confirmed absence (exact read-only lookup, verified origin). The recovery procedure re-verifies the target immediately before any write — stale consent to a changed target is refused. See [Recovery](/docs/core-enterprise/recovery-rollback).
+
+## Inside the pipeline
+
+The same principle drives the [approval gates](/docs/pipeline/approval-gates): spec approval, plan approval, execution authorization, Education choice, and closeout authorization are all yours. A passing verdict alone is never closeout authorization — and every bounded-recovery checkpoint (`RECOVERY_CHECKPOINT`) waits for you before another correction window opens.
+
+## Related documentation
+
+- [Approval gates](/docs/pipeline/approval-gates)
+- [GitHub synchronization](/docs/core-enterprise/github-sync)
+- [Enterprise setup](/docs/core-enterprise/enterprise-setup)

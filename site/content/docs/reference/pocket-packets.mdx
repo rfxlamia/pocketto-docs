@@ -1,0 +1,75 @@
+---
+title: Pocket Packets
+description: The seven-field delegation contract — objective, verification, and stop conditions for every subagent.
+---
+
+A **Pocket Packet** is the contract between the coordinating agent and an implementer subagent. The pipeline's rule is absolute: **no packet, no spawn**.
+
+## Packet vs regular prompt
+
+| Aspect | Regular prompt | Pocket Packet |
+|--------|---------------|----------------|
+| Structure | Ad-hoc | 7 mandatory fields |
+| Verification | Vague | 3–5 checklist items |
+| Constraints | Optional | Explicit must-have / must-not |
+| Stop conditions | None | Explicit done / uncertain / escalate |
+
+## The seven fields
+
+```markdown
+## OBJECTIVE
+Single bounded task — what MUST be done (imperative, specific; steps live here for behavioral tasks)
+
+## REFERENCES LOADED
+[Reference file name] — [what was learned from it]
+(Without this section, the packet is incomplete — Iron Law #6)
+
+## WHY THIS APPROACH
+complexity: [lightweight | standard | deep]
+justification: [why this level fits]
+
+## SANDWICH CONTEXT
+[CRITICAL constraint — FIRST LINE, highest attention]
+[Role + task + constraint] [Scene-setting] [Dependencies] [Technical context]
+[Key constraint REPEATED near END]
+
+## DELIVERABLE
+[Exact output format] [Few-shot example if format matters]
+[Verification checklist — 3-5 items that must pass]
+
+## QUALITY BAR
+Must-have / Must-not-have / Red flags to catch in self-review
+
+## STOP CONDITIONS
+Done when X / Uncertain when Y / Escalate when Z
+```
+
+The eighth field, `WORKTREE`, exists only for [parallel groups](/docs/pipeline/development): the worktree path the task runs in.
+
+## Behavioral tasks: test intent and the RED gate
+
+For any behavioral task, the OBJECTIVE carries the planner's **test intent — never test source code** (planning owns intent; development owns implementation). Per RED cycle, seven things travel:
+
+1. test file + level (unit / integration / E2E)
+2. GWT test intent (Given / When / Then)
+3. exercise-through boundary (public API, never internals)
+4. test doubles — and what must **not** be mocked
+5. expected RED (the failure to see before writing production code)
+6. the exact test command (also the mechanical gate's command)
+7. ordering stated explicitly: write the test → run it → confirm it FAILS for the expected reason → implement the minimum → green → refactor while green → commit
+
+A task covering multiple GWT scenarios carries one RED cycle per scenario, in order, never collapsed — a dropped cycle is a scenario that silently loses coverage.
+
+## No placeholders
+
+These are plan failures, not styles: "TBD", "implement later", "handle edge cases", "write tests for the above" (without what to test), "similar to Task N" (repeat the content — agents may execute out of order), code steps without code.
+
+## Escalation is for humans
+
+`Escalate when` means a genuine human dependency: a decision, access, information, or authorization the agent cannot obtain. A security finding, for example, gets read-only investigation and independent review — remediation that changes auth behavior waits for your explicit authorization. "I'm stuck" without reason is a violation of Iron Law #5.
+
+## Related documentation
+
+- [Development](/docs/pipeline/development) — where packets are constructed and enforced
+- [Planning](/docs/pipeline/planning) — where packets are generated
+- [Review reports](/docs/reference/review-reports) — how completion is verified

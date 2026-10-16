@@ -1,0 +1,5 @@
+{
+  "title": "Pipeline",
+  "description": "The six-stage Pocketto pipeline, its approval gates, and its artifacts.",
+  "pages": ["index", "pitching", "grinding", "planning", "structuring", "development", "closing", "approval-gates", "artifacts"]
+}

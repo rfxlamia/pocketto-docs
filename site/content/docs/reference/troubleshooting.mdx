@@ -1,0 +1,81 @@
+---
+title: Troubleshooting
+description: Error codes by area with their recovery routes — from contract mismatches to PR blockers.
+---
+
+Every failure mode below names its code and its recovery route. General principles first:
+
+- **Never hand-edit `log.json` or `lifecycle.json`.** The CLI is the only writer.
+- **Failures write nothing before refusing.** A refusal is safe to investigate.
+- Recovery order for lifecycle projection issues: `lifecycle repair` → `lifecycle drain`.
+
+## CLI envelope and handshake
+
+| Code | Meaning | Recovery |
+|------|---------|----------|
+| `BAD_CONTRACT` | `--contract` was not an integer | Pass an integer |
+| `CONTRACT_MISMATCH` | Skill and CLI disagree on contract | Update skills/plugin, or pin the CLI (`npx -y pocketto-pi@<version>` older / `@latest` newer) — the error states which |
+| `UNKNOWN_COMMAND` / `UNKNOWN_FLAG` / `MISSING_VALUE` | Bad invocation | Check the [CLI reference](/docs/reference/cli) |
+| `ENTERPRISE_COMMAND_UNAVAILABLE` | `mode`/`format` on a Core install | These are Enterprise-owned commands — install the matching Enterprise role |
+
+## structure / plans
+
+| Code | Meaning | Recovery |
+|------|---------|----------|
+| `NO_TASKS` | Plan did not parse into tasks | Fix the plan against the [plan template](/docs/reference/plan-structure); dry-run again |
+| `UNKNOWN_TASK_REF` | A dependency references a nonexistent task | Fix the annotation |
+| `CYCLE_DETECTED` | Dependency cycle | Remove the artificial dependency or extract a `[prereq]` task |
+| `PIPELINE_TOO_OLD` | Plan from an older pipeline generation | Finish it under the pinned release (`npx -y pocketto-pi@3.1.3` for v3), then update |
+| `LOG_JSON_UNPARSEABLE` | `log.json` exists but does not parse | `structure --reset` is the explicit rebuild (discards execution state — authorization required) |
+| Interrupted `structure` | Partial write of `execution-plan/` or `log.json` | Re-run `structure --reset` on that plan; never hand-repair |
+
+## log / execution
+
+| Code | Meaning | Recovery |
+|------|---------|----------|
+| `DUPLICATE_DONE_SHA` | A task's `done_sha` matches a sibling (collapsed parallel merge) | Re-log with that task's own merge commit: `log update … --sha <own merge commit>` |
+| Task stuck mid-audit | `loop_info` shows an exhausted window | `RECOVERY_CHECKPOINT` — authorize another bounded window explicitly; do not restart |
+
+## lifecycle
+
+| Code | Meaning | Recovery |
+|------|---------|----------|
+| `LIFECYCLE_BAD_STATE` | Illegal transition (e.g. `log handoff` after `log close`) | Order is fixed: last stacked phase → `log handoff` → `log close` |
+| `LIFECYCLE_BAD_ARTIFACT` family | Bad artifact ref (root, path, sha256, stale digest) | Fix the referenced artifact or re-stage it; specific `LIFECYCLE_*` codes name the exact problem |
+| `PROJECTION_REPAIR_REQUIRED` | Projection write failed after the event committed | `lifecycle repair` → `lifecycle drain` |
+| `LIFECYCLE_REPAIR_STATE_UNRECOVERABLE` | No trusted task-state source | Manual resolution; nothing was changed |
+| `LIFECYCLE_SCHEMA_UNSUPPORTED` | schema above 2 | Update the CLI |
+| `PIN_V3_REQUIRED` | Migration attempted on a progressed v3 plan | Finish it on v3 (`npx -y pocketto-pi@3.1.3`); migration is pristine-only |
+| `adapter-unavailable` | Drain with no registration | Events stay pending; reinstall/pin the adapter, then drain again |
+
+## Enterprise
+
+| Code | Meaning | Recovery |
+|------|---------|----------|
+| `ENTERPRISE_ADAPTER_CONTRACT_MISMATCH` | Registration written under adapter contract 1 | Reinstall the adapter (see [Enterprise setup](/docs/core-enterprise/enterprise-setup)) |
+| `ADAPTER_REGISTRATION_NOT_PORTABLE` | Legacy absolute-path registration | Non-blocking warning; reinstall after upgrading Core to migrate |
+| `ADAPTER_CONTRACT_MISMATCH` | Drain hit an incompatible registration | Events stay pending, no remote call; fix the registration, then drain |
+| `PUSH_CONSENT_REQUIRED` | Push needs approval of the exact commit | `consent-push … --sha <40-hex>` after you approve that SHA |
+| `PR_BLOCKED` (retryable) | `parent PR merged` (no reusable child PR), `parent PR not recorded`, `parent branch not published`, `root base not published` | Publish/record the parent (or open/retarget the child PR on GitHub for a merged parent), then rerun — each drain rerun spends one of 6 delivery attempts, so prefer `publish-phase` |
+| `PR_BLOCKED` (terminal) | `base retargeted`, `duplicate open PR`, `parent PR closed`, `remote branch diverged`, foreign PR, ambiguous identity, … | Fix on GitHub; Pocket never retargets, closes duplicates, rebases, or force-pushes |
+| `GH_UNKNOWN` on `spec-approved` | Delivery failed for an unidentified reason | Follow the missing-label consent recovery for [issue #70](https://github.com/rfxlamia/pocketto/issues/70) — a documented workaround, not a runtime fix |
+| Attempts exhausted | 6 total delivery attempts | Terminal — manual resolution |
+
+## Education
+
+| Code | Meaning | Recovery |
+|------|---------|----------|
+| `EDU_CONFIG_INVALID` | The `## Pocket Education` block is malformed | **Stop and show the error.** Fix by hand or recalibrate (`edu init --reset`) only if the learner agrees — never silently |
+| `EDU_SCHEMA_UNSUPPORTED` | Profile written by a newer CLI | `npx -y pocketto-pi@latest`; never reset or rewrite the profile automatically |
+
+## Still stuck?
+
+- Run `npx -y pocketto-pi doctor [--strict]` to check the installation.
+- Read the exact error — Pocketto errors are written to name the unblocking action.
+- Search or open an issue at the [GitHub repository](https://github.com/rfxlamia/pocketto/issues).
+
+## Related documentation
+
+- [Recovery and rollback](/docs/core-enterprise/recovery-rollback)
+- [Compatibility](/docs/core-enterprise/compatibility)
+- [CLI commands](/docs/reference/cli)

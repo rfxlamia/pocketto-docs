@@ -1,0 +1,76 @@
+---
+title: Plan structure
+description: The execution plan document format, the structuring output, and what the CLI validates.
+---
+
+An execution plan is the handoff artifact between [planning](/docs/pipeline/planning) and [structuring](/docs/pipeline/structuring). `pocketto-pi structure` parses only one shape — everything else fails the mandatory dry-run.
+
+## The plan document
+
+```markdown
+# EXECUTION PLAN — <feature name>
+
+**Date:** YYYY-MM-DD
+**Spec:** docs/pocket/spec/{date}-{slug}/topic.md
+**Status:** draft | approved
+**Total tasks:** N
+
+## Execution Overview
+
+### Recommended Order
+T1 → T2, T3 (parallel) → T4 → T5, T6 (parallel) → T7
+
+### Parallelizable Groups
+| Group | Tasks | Unblocked After |
+|-------|-------|-----------------|
+
+### File Structure Map
+Rule: <rule name>
+  Create: exact/path/new-file.ext        (created by: T<N>)
+  Modify: exact/path/existing.ext
+  Test:   tests/exact/path/test.ext
+
+## Pocket Packets
+
+### Task 1: <name> [prereq]
+## OBJECTIVE … (full packet per task — see Pocket Packets)
+
+## Plan Summary
+| Task | Name | Depends | Complexity | Key Verification |
+```
+
+The parser anchors on: the `# EXECUTION PLAN — <name>` title, a `## Pocket Packets` section, and `### Task N: <name> [annotation]` headings. Task count selects no other schema — a plan too small for packets belongs in [hotfix](/docs/skills/hotfix), not in a reduced format.
+
+## Dependency annotations
+
+| Annotation | Meaning |
+|------------|---------|
+| `[prereq]` | No dependencies, runs first |
+| `[depends: T1]` | Must wait for T1 |
+| `[depends: T1, T2]` | Must wait for both |
+| `[parallel: T3]` | Can run concurrently with T3 |
+| `[test-risk]` | Marker: test strategy is non-obvious (audit trigger) — append **after** dependency annotations |
+
+Dependency order is **recommended** — development enforces actual sequencing.
+
+## What structuring produces
+
+```text
+execution-plan/
+├── index.md        # Task Index table in execution (phase-group) order
+├── tasks/T1-*.md   # one file per task, opened on demand by development
+└── phase-N.md      # multi-phase plans only: "Phase N of M", prerequisite,
+                    # contained tasks, unlocks-next, ## Phase Completion Gate
+```
+
+Single-phase plans still get the index + task files; there is no passthrough below a task-count threshold.
+
+## What the CLI validates
+
+`--dry-run` (mandatory in planning, non-authorizing) checks that the plan parses, conforms to the template, and has a valid dependency order — reporting `NO_TASKS`, `UNKNOWN_TASK_REF`, `CYCLE_DETECTED` (plus duplicate task IDs and dependency-order inversions, enforced since the structure hardening) — and captures `data.action` (`single` | `split`) and `data.executionFlow` (for example `T1→T2,T3(PARALLEL)→T4`). A failed dry-run stops any approval gate.
+
+## Related documentation
+
+- [Pocket Packets](/docs/reference/pocket-packets)
+- [Structuring](/docs/pipeline/structuring)
+- [CLI commands](/docs/reference/cli)

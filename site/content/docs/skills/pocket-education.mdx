@@ -1,0 +1,81 @@
+---
+title: Pocket Education
+description: The opt-in mentor mode — the human writes the code, the agent explains, reviews, and coaches with progressive hints.
+---
+
+Pocket Education turns the agent into a repository-aware mentor: **the human writes the code**, and the agent explains the task, points to the right files and patterns, reviews the learner's diff, and coaches with a progressive hint ladder.
+
+```text
+Pocket Core        AI works with you.
+Pocket Education   AI teaches you how to work.
+```
+
+**Core principle:** Success means the behavior is correct and verified, *and* the learner understands why the correct code is correct.
+
+## When to use it
+
+- The repo has a `## Pocket Education` block with `education: true`.
+- You want to learn by doing a real task in this repository.
+- You say "teach me", "guide me through this", "I want to do it myself", "review my change", "explain more slowly".
+
+**When not to use it:** you explicitly want the agent to implement → [hotfix](/docs/skills/hotfix), [bug-hunting](/docs/skills/bug-hunting), or [pocket-development](/docs/pipeline/development). Education never silently turns into implementation, and implementation never silently turns into Education.
+
+## Prerequisites
+
+Education is opt-in and local. Enable it via [pocket-init](/docs/skills/pocket-init)'s Education Gate (a short calibration with self-assessment plus two or three tiny code-reading probes), or directly with the CLI:
+
+```bash
+npx pocketto-pi edu init --file CLAUDE.md --level testing=foundation --level typescript=independent
+```
+
+The profile is stored in a `## Pocket Education` block in `CLAUDE.md`/`AGENTS.md`, outside the regenerable project guide — later sessions reuse it instead of starting over.
+
+## How to invoke it
+
+```text
+/pocketto:pocket-education "<task>"
+```
+
+The task can be anything a learner would do here: a bug, a small feature, a failing test, a review of your own branch, or one task from a Pocket execution plan.
+
+## How it works
+
+The education loop:
+
+```text
+Understand → Investigate → Learner plans → Learner implements
+    → Review → Guided correction → Re-review (repeat) → Learning summary
+```
+
+- **Skill-specific depth.** The profile stores a level per skill — `foundation` (fundamentals, small explicit steps), `guided` (repo patterns, debugging strategy, hints), `independent` (constraints, edge cases, trade-offs) — so a TypeScript-fluent learner who is new to testing gets test fundamentals without a TypeScript lecture. Teaching modes: `guided` (hint ladder, then full explanation) or `socratic` (explanations on request).
+- **Review findings are traces, not verdicts.** Instead of "missing null check", the mentor asks what `findProject()` returns for an unknown id — phrased so you discover the failure mode.
+- **The hint ladder climbs one rung at a time.** No complete solution up front, no matter how small the fix.
+- **Level changes are learner-owned.** The agent may *recommend* "testing: foundation → guided" when the learning journal shows it; the level changes only when you say yes — or ask for it directly ("stop explaining git basics").
+- **Handover is explicit only.** Frustration is not a handover request: "this is annoying" gets a hint, not an implementation.
+
+## Outputs and artifacts
+
+- Your own reviewed change.
+- A learning summary at the end of every task: concepts practiced, mistakes corrected and the reasoning that found them, repository patterns worth remembering, and at most two evidence-backed level recommendations.
+- Optional journal entries in `docs/pocket/learning/` when `journal: true`.
+
+## Approval gates and constraints
+
+Hard constraints, always on:
+
+1. **The human implements.** The mentor never creates, edits, or deletes application code, tests, configs, or lockfiles; never stages, commits, or pushes for you. Its only writes are the learner profile and the learning journal.
+2. **No silent fixes.** Every review finding goes back to you, however small.
+3. **The learner owns the profile.** Stored levels change only on your explicit request or accepted recommendation — never on the agent's judgment.
+4. **Reuse the profile.** A valid profile is never recalibrated; `EDU_SCHEMA_UNSUPPORTED` means update the CLI, not reset the profile.
+
+In an Education repo, `hotfix`, `bug-hunting`, and `pocket-development` ask before implementing. Education is independent of Enterprise and makes zero remote calls; without the block, no other Pocket skill changes behavior and no `edu` call is made.
+
+## Example
+
+*Illustrative:* a failing Jest test in a TypeScript service → the mentor maps the task to `testing: foundation`, `typescript: independent`, and announces the depth in one line ("say so if that feels off"), points you to the pricing module and its test patterns, reviews your diff with trace-phrased findings, and climbs the ladder one rung when you are stuck — ending with a summary and a recommendation you accept or decline.
+
+## Related documentation
+
+- [pocket-init](/docs/skills/pocket-init) — the Education Gate
+- [Choosing the right workflow](/docs/getting-started/choosing-workflow)
+- [Configuration](/docs/reference/configuration)

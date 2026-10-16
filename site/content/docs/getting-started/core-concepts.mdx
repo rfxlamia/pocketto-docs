@@ -1,0 +1,70 @@
+---
+title: Core concepts
+description: The vocabulary of Pocketto — pipeline, Pocket Packets, execution logs, lifecycle states, and the three layers.
+---
+
+Pocketto is a small system with a precise vocabulary. These are the terms used throughout the documentation.
+
+## The pipeline
+
+Six chained skills cover the life of a feature. Each stage produces a file the next stage consumes:
+
+```text
+rough idea
+   │  pocket-pitching     explore → pitch doc             [user chooses next]
+   ▼
+clear problem
+   │  pocket-grinding     BDD discovery → approved spec   [hands off to planning]
+   ▼
+approved spec
+   │  pocket-planning     TDD plan → full task packets    [routes to structuring]
+   ▼
+execution plan
+   │  pocket-structuring  index + task files              [development handoff]
+   ▼
+plan / phase file
+   │  pocket-development  task execution + in-loop audits [phase-level pass]
+   ▼
+reviewed phase
+   │  pocket-closing      verdict reconciliation + close  [when closeout is authorized]
+```
+
+Two properties matter more than the individual stages:
+
+- **Handoffs are real.** A stage does not "move on" mentally — it saves an artifact to disk and hands its path to the next stage.
+- **Gates are explicit.** Several transitions require your approval, and closing additionally requires you to ask for closeout. See [Approval gates](/docs/pipeline/approval-gates).
+
+## Standalone skills
+
+Nine single-purpose skills sit outside the chain for everyday work: `pocket-help`, `pocket-init`, `pocket-education`, `bug-hunting`, `hotfix`, `brand-design`, `structured-research`, and `validate-plan`. The [workflow chooser](/docs/getting-started/choosing-workflow) tells you which one fits.
+
+## Pocket Packets
+
+A **Pocket Packet** is the contract handed to a subagent before it implements anything. It has seven mandatory fields — objective, references loaded, approach justification, sandwich context, deliverable, quality bar, and stop conditions — plus an eighth `WORKTREE` field for parallel groups. The rule is absolute: **no packet, no spawn**. See [Pocket Packets](/docs/reference/pocket-packets).
+
+## The execution log
+
+Every plan has an execution log — `log.json` in the plan directory — that records each task and phase with a lifecycle state. The CLI is its only writer; skills run commands, they never edit the file by hand.
+
+| State | Applies to | Meaning |
+|---|---|---|
+| `WAITING` | tasks, phases | Not started or waiting on a dependency |
+| `DONE` | tasks, phases | Completed; for tasks, only after a passing audit with `--sha` |
+| `REVIEW` | phases only | All tasks done and the phase-level pass recorded; awaiting close |
+| `BLOCKED` | tasks, phases | Requires a specific human decision, access, information, or authorization |
+
+Tasks go `WAITING → DONE | BLOCKED`. Phases go `WAITING → REVIEW → DONE | BLOCKED`. A passing verdict alone never moves a phase — [closing](/docs/pipeline/closing) does, on your word.
+
+## Lifecycle events
+
+Alongside `log.json`, Core commits **neutral lifecycle events** to `lifecycle.json`: `spec-approved`, `phase-complete`, `phase-closed` (stacked plans only), and `plan-closed`. Events store artifact references and opaque proof references — never GitHub IDs or credentials. Without Enterprise they simply stay pending locally; with it, they drive [GitHub synchronization](/docs/core-enterprise/github-sync).
+
+## The three layers
+
+- **Core** is local-first. It commits state and events locally and never calls `gh`.
+- **[Enterprise](/docs/core-enterprise)** is an optional, additive adapter that consumes those events and owns all remote reconciliation. Missing or incompatible Enterprise never blocks Core work.
+- **[Education](/docs/skills/pocket-education)** is an opt-in mode where the human implements and the agent teaches. It is independent of Enterprise.
+
+## Where files live
+
+All durable artifacts live under `docs/pocket/`: specs in `spec/`, plans in `plans/`, research in `research/`, the brand brief in `rule/`, learning journals in `learning/`. The full tree — including `log.json`, `reviews/`, and `closeout.md` — is documented under [Generated files](/docs/reference/files).

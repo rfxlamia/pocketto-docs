@@ -1,0 +1,74 @@
+---
+title: CLI commands
+description: The complete pocketto-pi command surface — synopses, flags, the JSON envelope, and the contract handshake.
+---
+
+The `pocketto-pi` CLI (Node.js ≥ 18) is the cross-platform command surface for the Pocketto skills — and safe to run directly. The synopses below come verbatim from the CLI's help text.
+
+## Core commands
+
+```bash
+npx -y pocketto-pi structure <execution-plan.md> [--dry-run] [--force] [--reset] [--json]
+npx -y pocketto-pi log init <plan_dir> [--phase-branches stacked|none] [--json]
+npx -y pocketto-pi log update <plan_dir> <phase_file> <status> [--task TN] [--sha <commit>] [--allow-duplicate-sha] [--json]
+npx -y pocketto-pi log update <plan_dir> <phase_file> --correction <sha> [--for-task TN] [--json]
+npx -y pocketto-pi log close <plan_dir> [--json]
+npx -y pocketto-pi log handoff <plan_dir> <phase_file> [--json]
+npx -y pocketto-pi lifecycle transition <spec_dir> <event-type> --artifact <root>:<kind>:<path>:<sha256> [--json]
+npx -y pocketto-pi lifecycle drain <spec_dir> [--json]
+npx -y pocketto-pi lifecycle repair <spec_dir> [--json]
+npx -y pocketto-pi lifecycle migrate <spec_dir> --from v3 [--json] [--contract 3]
+npx -y pocketto-pi meta get <dir> <field> [--json]
+npx -y pocketto-pi meta set <dir> <field> <value> [--json]
+npx -y pocketto-pi doctor [<plan_dir>] [--strict] [--json]
+npx -y pocketto-pi edu [<dir>] [--json]
+npx -y pocketto-pi edu init [<dir>] --level <skill>=<level> [--level …] [--teaching-mode <mode>] [--journal <bool>] [--file <AGENTS.md|CLAUDE.md>] [--reset] [--json]
+npx -y pocketto-pi edu set [<dir>] [--level <skill>=<level> …] [--teaching-mode <mode>] [--journal <bool>] [--education <bool>] [--json]
+npx -y pocketto-pi scaffold github [<dir>] [--dry-run] [--json]
+npx -y pocketto-pi reconcile [--prior <json>] [--new <json>] [--json]
+npx -y pocketto-pi setup-extensions [--all | --recommended] [--json]
+```
+
+Lifecycle commands always run with `--json --contract 3` in the skills' hands. `reconcile` is a shared utility (set-diff of findings); `meta` is a local file operation.
+
+## Enterprise commands
+
+Available only when the Enterprise role is installed — Core loads them lazily and reports `ENTERPRISE_COMMAND_UNAVAILABLE` otherwise:
+
+```bash
+npx -y pocketto-pi mode [<dir>] [--json]
+npx -y pocketto-pi mode init [<dir>] [--enterprise <bool>] [--branch-strategy <strategy>] [--create-pr <bool>] [--require-approval <bool>] [--file <AGENTS.md|CLAUDE.md>] [--json]
+npx -y pocketto-pi format <issue|pr|comment|closeout> [--input <json-file>] [--json]
+npx -y pocketto-pi format tasklist <plan_dir> [--json]
+```
+
+## The JSON envelope
+
+`--json` emits a stable envelope:
+
+```json
+{ "ok": true, "command": "structure", "data": { "…": "…" } }
+{ "ok": false, "error": { "code": "NO_TASKS", "message": "…" } }
+```
+
+Without `--json`, humans get readable text. Exit codes follow the envelope: `ok: false` exits non-zero.
+
+## The contract handshake
+
+`--contract <N>` asserts the expected output contract. `BAD_CONTRACT` for a non-integer; `CONTRACT_MISMATCH` with exact remediation (update the skills/plugin, or pin `npx -y pocketto-pi@<version>`) on a mismatch. See [Compatibility](/docs/core-enterprise/compatibility).
+
+## Key flags
+
+<Callout type="info" title="Values that need care">
+  <code>--reset</code> (<code>structure</code>) discards execution state — explicit restart only, never without authorization. <code>--sha</code> (<code>log update</code>) records a task's done commit and requires <code>--task</code> + status <code>DONE</code>. <code>--allow-duplicate-sha</code> is only for tasks that legitimately produced no new commit. <code>--level</code> values: <code>foundation | guided | independent</code>; teaching modes: <code>guided | socratic</code>.
+</Callout>
+
+Status values: `WAITING | REVIEW | DONE | BLOCKED` (task: `WAITING → DONE | BLOCKED`; phase: `WAITING → REVIEW → DONE | BLOCKED`).
+
+Also useful: `npx -y pocketto-pi --version` prints the version and contract; `--help` prints the full help.
+
+## Related documentation
+
+- [Configuration](/docs/reference/configuration)
+- [Lifecycle events](/docs/core-enterprise/lifecycle-events)
+- [Troubleshooting](/docs/reference/troubleshooting)

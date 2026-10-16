@@ -1,0 +1,94 @@
+---
+title: Your first end-to-end project
+description: A guided walkthrough of one small feature through all six pipeline stages, with every approval gate.
+---
+
+This walkthrough follows one feature — "add JWT refresh-token support" — through the full pipeline. It shows what you will see, what you decide, and what lands on disk. Shown outputs are **illustrative**, not captured from a real run.
+
+## Before you start
+
+- Pocketto installed ([installation](/docs/getting-started/installation)).
+- A working repository with tests on the area you plan to touch. If the repo is new to the agent, run `/pocketto:pocket-init` first — it writes an evidence-based project guide so every stage knows your real build and test commands.
+
+## Stage 1 — Grinding: turn the ask into a spec
+
+```text
+/pocketto:pocket-grinding "add JWT refresh-token support"
+```
+
+The skill scans your project (stack, affected modules, recent commits), locks scope and boundaries with you, and questions the request from business, developer, and QA lenses. It converts the answers into concrete Given/When/Then scenarios — including failure scenarios — and an independent **edge-case-hunter** subagent reviews them before any design is proposed. Architecture claims are validated against the actual codebase, with `PASS`/`FAIL`/`UNVERIFIED` recorded per claim.
+
+**Your decision:** approve the spec (or request changes).
+
+```text
+Illustrative output:
+Spec written to docs/pocket/spec/2026-06-01-jwt-refresh/session-flow.md.
+Acceptance criteria above — anything to adjust before I hand this to pocket-planning?
+```
+
+Approval emits the neutral `spec-approved` lifecycle event and hands the spec to planning.
+
+## Stage 2 — Planning: turn the spec into packets
+
+Planning maps files to rules, decomposes the criteria into bounded tasks (`[prereq]`, `[depends: T1]`, `[parallel: T3]`, `[test-risk]` annotations), and writes a full **Pocket Packet** per task — objective, test intent, quality bar, stop conditions. A separate **spec-reviewer** subagent checks coverage, and the plan is validated:
+
+```bash
+npx -y pocketto-pi structure "docs/pocket/plans/2026-06-01-jwt-refresh/execution-plan.md" --dry-run --json --contract 3
+```
+
+A failed dry-run (for example `CYCLE_DETECTED`) stops everything until the plan is fixed — the approval gate is not presented for an invalid plan.
+
+**Your decision:** approve the *plan*. This authorizes generation of derived execution artifacts only — never implementation.
+
+## Stage 3 — Structuring: the CLI decomposes
+
+```bash
+npx -y pocketto-pi structure "docs/pocket/plans/2026-06-01-jwt-refresh/execution-plan.md" --json --contract 3
+```
+
+The CLI writes `execution-plan/index.md`, one file per task under `execution-plan/tasks/`, and phase manifests if the plan is multi-phase. **Your decision (only if not already given):** authorize execution — structuring alone never starts development.
+
+## Stage 4 — Development: contracted execution with audits
+
+Development runs `log init`, then for each task: constructs the Pocket Packet, dispatches an implementer subagent, and — when it reports `DONE` — runs the mechanical gate (commits exist, every exact test command is green) and dispatches an independent read-only **auditor**. Findings come back labeled `Critical` / `Important` / `Minor`; Critical and Important force a fix round.
+
+When every task is `DONE`, a **phase-level pass** reviews the whole phase for what per-task audits cannot see (cross-task duplication, integration mismatch, cross-file regression), recording its result at `reviews/phase-pass-<phase_key>.json`. Then the phase notes are written and the phase moves to `REVIEW` — which commits the `phase-complete` event.
+
+**Your involvement:** answer `NEEDS_CONTEXT` questions; resolve genuine `BLOCKED` dependencies; decide at `RECOVERY_CHECKPOINT` whether to authorize another bounded correction window.
+
+## Stage 5 — Closing: reconcile and close, on your word
+
+```text
+/pocketto:pocket-closing docs/pocket/plans/2026-06-01-jwt-refresh/
+```
+
+Closing re-reads `log.json` and the verdict artifacts, refuses missing or stale verdicts, advances the passing phase to `DONE`, and appends its section to `closeout.md`. When the last phase closes, it runs `log close` and appends the final plan summary.
+
+```text
+Illustrative output:
+PLAN CLOSED — docs/pocket/plans/2026-06-01-jwt-refresh/
+Phases : 2 — all DONE
+Tasks  : 7 reviewed — all REVIEW_PASS
+Closeout: docs/pocket/plans/2026-06-01-jwt-refresh/closeout.md
+```
+
+## What you have at the end
+
+```text
+docs/pocket/spec/2026-06-01-jwt-refresh/session-flow.md
+docs/pocket/plans/2026-06-01-jwt-refresh/
+├── execution-plan.md
+├── execution-plan/index.md
+├── execution-plan/tasks/T1-jwt-store.md        (one file per task)
+├── log.json
+├── reviews/T1-review.json …                    (per-task verdicts)
+├── reviews/phase-pass-phase-1.json
+├── reviews/phase-notes-phase-1.json
+└── closeout.md
+```
+
+The full artifact tree is documented in [Execution artifacts](/docs/pipeline/artifacts). The complete stage reference starts at the [Pipeline overview](/docs/pipeline).
+
+## Entry points
+
+You rarely need the whole chain. Enter where you are: a fuzzy idea starts at [pitching](/docs/pipeline/pitching), a clear problem at [grinding](/docs/pipeline/grinding), an approved spec at [planning](/docs/pipeline/planning).

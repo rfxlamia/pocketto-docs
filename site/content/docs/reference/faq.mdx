@@ -1,0 +1,54 @@
+---
+title: FAQ
+description: The questions every new Pocketto user asks — GitHub, autonomy, small changes, updates, and safety.
+---
+
+## Does Pocketto need GitHub?
+
+**No.** Core is local-first: the full pipeline, all standalone skills, Education, and the lifecycle CLI work with zero GitHub credentials and no remote. Core never calls `gh` — Enterprise, the optional adapter, owns all remote reconciliation. See [Local-first behavior](/docs/core-enterprise/local-first).
+
+## Does the agent run unsupervised?
+
+**No — by design.** The pipeline has explicit [approval gates](/docs/pipeline/approval-gates): you approve the spec, the plan, execution, and closeout. Independent reviews check the work between gates, and a passing verdict alone never closes a phase — you ask for that. The agent also never force-pushes, merges PRs, or closes issues (Enterprise or not).
+
+## Can I skip the pipeline for small changes?
+
+**Yes, and you should.** `hotfix` (brief plan + independent review gate) and `bug-hunting` (root-cause-first debugging) are built for exactly that. Grinding even checks task size mid-flow and recommends the switch: 1–4 files, 1–2 requests, no architectural signals → hotfix. See [Choosing the right workflow](/docs/getting-started/choosing-workflow).
+
+## What is a Pocket Packet?
+
+The delegation contract handed to every implementer subagent: seven mandatory fields — objective, references loaded, approach justification, sandwich context, deliverable with verification checklist, quality bar, stop conditions. No packet, no spawn. See [Pocket Packets](/docs/reference/pocket-packets).
+
+## Is Enterprise required for teams?
+
+**No.** Teams can run Core entirely locally. Enterprise adds GitHub lifecycle synchronization (issue reconciliation, phase PRs, tasklists) as an explicit opt-in — and even then, merge and issue closure stay human. See [Core & Enterprise](/docs/core-enterprise).
+
+## Does Education mode limit the agent?
+
+**It changes who implements, not what the agent can do.** In an Education repo the agent explains, points, reviews, and coaches — and asks before implementing anything. Depth is per-skill (`foundation`/`guided`/`independent`) and owned by the learner. Outside Education nothing changes. See [Pocket Education](/docs/skills/pocket-education).
+
+## How do I update safely mid-plan?
+
+Finish or close the in-flight plan first. Plans record their pipeline generation; a state-changing command against an older plan refuses (`PIPELINE_TOO_OLD`) instead of corrupting state. If you are already stuck, pin the release that last spoke the plan's pipeline (`npx -y pocketto-pi@3.1.3` for v3) and finish it there. See [Compatibility](/docs/core-enterprise/compatibility).
+
+## How is this different from just prompting?
+
+Durable artifacts (`docs/pocket/`), an execution log the CLI owns, independent review that no agent can self-certify, verdict freshness pinned to commits, a hard close, and lifecycle events that survive the conversation. The difference is not the model — it is the process around it.
+
+## Where do the artifacts live?
+
+Under `docs/pocket/`: `spec/`, `plans/` (with `execution-plan/`, `log.json`, `reviews/`, `closeout.md`), `research/`, `rule/`, `learning/`. The full map is in [Generated files](/docs/reference/files).
+
+## Can I delete the `.pocket` files to reset Enterprise?
+
+**Not `lifecycle.json`, `log.json`, or `.pocket-meta.json`** — those are your state and pending events. The only file that is safe to remove for a disable is `.pocket/lifecycle-adapter.json` (the registration), after a read-only preflight. See [Recovery and rollback](/docs/core-enterprise/recovery-rollback).
+
+## Do I have to use Pocketto for every task?
+
+No. The system's own router (`pocket-help`) sends small clear work to `hotfix`, bugs to `bug-hunting`, assumptions to `structured-research`, and design work to `brand-design` — the pipeline is for work that benefits from phase gates and auditable handoffs.
+
+## Related documentation
+
+- [Core concepts](/docs/getting-started/core-concepts)
+- [Troubleshooting](/docs/reference/troubleshooting)
+- [Glossary](/docs/reference/glossary)

@@ -1,0 +1,5 @@
+{
+  "title": "Contributing",
+  "description": "Repository organization, development workflow, and contribution guidance for Pocketto.",
+  "pages": ["index", "development-testing", "guidance"]
+}

@@ -1,0 +1,52 @@
+---
+title: Compatibility and versioning
+description: Five independent protocol versions, the compatibility matrix, and how pinning keeps old plans finishable.
+---
+
+Pocketto's boundaries are **independently versioned**. They are not interchangeable, and no release bumps them casually.
+
+| Boundary | Version | Guards |
+|----------|---------|--------|
+| Package distribution | `4.2.2` | The release itself |
+| CLI JSON contract | `CONTRACT=3` | The `--json` envelope and flag surface skills call |
+| Execution pipeline | `PIPELINE=5` | Plan/log structure and the development cycle |
+| Lifecycle document schema | `LIFECYCLE_SCHEMA=2` (Core reads 1 and 2) | `lifecycle.json` — schema 2 only when a stacked plan patch is applied |
+| Registered adapter protocol | `ADAPTER_CONTRACT=2` | The Core ↔ adapter handshake |
+| Release surface manifest | `SURFACE_MANIFEST=1` | The four-role packaging contract |
+
+## What each handshake does
+
+- **`--contract 3`** — every skill CLI call asserts its expected contract. A mismatch fails loudly (`CONTRACT_MISMATCH`) with the exact remedy: update the plugin/skills, or pin the CLI (`npx -y pocketto-pi@<contract>` for older, `npx -y pocketto-pi@latest` for newer).
+- **`PIPELINE` marker** — `log.json` records the pipeline generation it was created under. A state-changing command against an older plan exits non-zero (`PIPELINE_TOO_OLD`) instead of silently continuing on stale assumptions.
+- **`LIFECYCLE_SCHEMA`** — schema above 2 fails closed with `LIFECYCLE_SCHEMA_UNSUPPORTED` and no mutation.
+- **`ADAPTER_CONTRACT`** — a contract 1 registration is rejected by preflight (`ENTERPRISE_ADAPTER_CONTRACT_MISMATCH`); reinstall the adapter after upgrading.
+
+## The compatibility matrix
+
+| Core | Enterprise | Result |
+|------|------------|--------|
+| v3 | v3 | Legacy pair operational with a v4 upgrade warning. |
+| v4 | v4 | Supported split and lifecycle contract. |
+| v4 | absent | Supported local-first Core; pending events retained, no GitHub calls. |
+| v3 | v4 | Enterprise fails closed with Core upgrade guidance; Core remains usable. |
+| v4 | v3 | Adapter fails closed with Enterprise upgrade guidance; pending v4 events preserved. |
+
+The v4 preflight warns about legacy v3 installations; an unchanged v3 binary cannot warn about a future release.
+
+## Finishing old plans
+
+Plans never get silently converted. If a plan is stuck under an older pipeline:
+
+- **`PIPELINE_FLOOR_CLI` pin** — finish the plan with the release that last spoke its pipeline: `npx -y pocketto-pi@3.1.3` for v3 plans, then update once it closes.
+- **Explicit migration** — `npx -y pocketto-pi lifecycle migrate <spec_dir> --from v3 --json --contract 3` is allowed **only** for a pristine v3 plan with no execution progress. A progressed or non-pristine plan returns `PIN_V3_REQUIRED` without changing files or making remote calls — finish it under v3. Migration never rewrites v3 files or sends retrospective events.
+
+<Callout type="warn" title="Upgrading mid-plan">
+Close any in-flight plan before updating. The refusal writes nothing — nothing is lost — but the plan is stuck until you pin or finish it. Claude Code's marketplace entry tracks the repository, so do not update the plugin mid-plan either.
+</Callout>
+
+## Related documentation
+
+- [Recovery and rollback](/docs/core-enterprise/recovery-rollback)
+- [Lifecycle events](/docs/core-enterprise/lifecycle-events)
+- [Release surfaces](/docs/reference/release-surfaces)
+- [Troubleshooting](/docs/reference/troubleshooting)

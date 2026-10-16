@@ -1,0 +1,87 @@
+---
+title: Closing
+description: pocket-closing — reconcile verdicts, advance only a passing phase, and close the plan when you authorize it.
+---
+
+`pocket-closing` is the closing stage of the pipeline. It reconciles task verdicts against the execution log, advances only a passing phase, and appends a readable record to `closeout.md`. It **never re-reviews or overrides** a verdict.
+
+**Core principle:** Current verdicts decide. No current clean verdict, no phase advance.
+
+## When to use it
+
+- You explicitly request phase or plan closeout — by invoking the skill, or via an end-to-end request that includes closing.
+- A phase-level pass has completed and every task is passing.
+
+**When not to use it:**
+
+- A task is failing, blocked, or missing a current verdict — resume [development](/docs/pipeline/development) first.
+- Nobody asked for closeout. **A passing verdict alone is not authorization** — development deliberately stops at `REVIEW`.
+
+## How to invoke it
+
+```text
+/pocketto:pocket-closing <plan_dir>
+/pocketto:pocket-closing docs/pocket/plans/2026-06-01-jwt-refresh/execution-plan/phase-2.md
+```
+
+## How it works
+
+1. **Preflight** — resolve the plan directory and the next `REVIEW` target from `log.json` (canonical phase identity: `phase-${order}`). All checks run before any state change; a failed check leaves state untouched and names the recovery route.
+2. **Reconcile verdicts** — every reviewable task (status `DONE` with a `done_sha`) is matched to `reviews/<task_id>-review.json`. A mandatory **freshness check** requires the review's `reviewed_sha` to equal the task's latest owned SHA — a correction committed after review makes the verdict stale and blocks the close.
+3. **Gate** —
+
+| Verdict | Result |
+|---|---|
+| all `REVIEW_PASS` | Phase passes the gate |
+| `REVIEW_FAIL` | `CLOSE_BLOCKED` — failing tasks' `fix_instructions` printed verbatim |
+| `REVIEW_BLOCKED` (auditor-unavailable) | `CLOSE_BLOCKED` — the exact capability/access needed is reported |
+| `REVIEW_BLOCKED` (escalation) | `CLOSE_BLOCKED` — escalation instructions printed |
+| stale or missing review | `CLOSE_BLOCKED` — re-run the phase-level pass |
+
+4. **Advance** — the phase moves to `DONE` at the **phase level only** (never `--task` — task `done_sha` values must not move):
+
+```bash
+npx -y pocketto-pi log update <plan_dir> <phase_file> DONE --json --contract 3
+```
+
+5. **Record** — one append-only section per phase is added to `closeout.md` under a canonical marker (`<!-- pocket-closeout:phase-${order} -->`), built from `log.json`, current verdicts, and the phase notes.
+6. **Close** — when the target phase was the last one:
+
+```bash
+npx -y pocketto-pi log close <plan_dir> --json --contract 3
+```
+
+This verifies **every** phase is `DONE`, sets the header status, and atomically records the `plan-closed` lifecycle event. A non-zero exit with `PHASES_NOT_DONE` is the normal mid-pipeline state — the phase advanced, the plan continues (`PHASE_ADVANCED`).
+
+## Stacked plans
+
+When `log.json` records `phase_branches.mode == "stacked"`, the last phase's **stacked handoff** runs before `log close`:
+
+```bash
+npx -y pocketto-pi log handoff <plan_dir> <phase_file> --json --contract 3
+```
+
+Handoff commits the plan artifacts and the `phase-closed` event, and returns `next_actions[]` entries (for example a pending `lifecycle drain`) that are executed exactly as given. `log handoff` after `log close` fails with `LIFECYCLE_BAD_STATE` — handoff comes first for the last phase.
+
+## Output states
+
+| State | Meaning |
+|-------|---------|
+| `CLOSED` | All phases `DONE`; final closeout section written |
+| `PHASE_ADVANCED` | The target phase advanced; the plan continues |
+| `NEXT_PHASE_READY` | Nothing advanced; the next phase is `WAITING` and ready for development |
+| `CLOSE_BLOCKED` | Preflight failed, or a verdict is missing, stale, failing, or blocked |
+| `ALREADY_CLOSED` | Header already `DONE`; missing closeout sections were restored |
+
+## Constraints
+
+- Never accepts a missing or stale verdict; never re-reviews code; never marks a task `DONE` or touches a `done_sha`.
+- All state transitions go through `pocketto-pi log` — `log.json` is never hand-edited.
+- Every `CLOSE_BLOCKED` states what failed, why, and the next recovery action.
+
+## Related documentation
+
+- [Development](/docs/pipeline/development)
+- [Approval gates](/docs/pipeline/approval-gates)
+- [Execution artifacts](/docs/pipeline/artifacts)
+- [Recovery and rollback](/docs/core-enterprise/recovery-rollback)

@@ -1,0 +1,5 @@
+{
+  "title": "Standalone skills",
+  "description": "Nine single-purpose workflows for everyday engineering tasks — no pipeline ceremony required.",
+  "pages": ["index", "pocket-help", "pocket-init", "pocket-education", "bug-hunting", "hotfix", "brand-design", "structured-research", "validate-plan", "create-pr"]
+}

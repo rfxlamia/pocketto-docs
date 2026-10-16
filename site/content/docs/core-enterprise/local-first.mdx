@@ -1,0 +1,46 @@
+---
+title: Local-first behavior
+description: What Pocketto Core does with zero remote — and the GitHub operations it will never perform.
+---
+
+Core is useful with no GitHub credentials, no remote, and no Enterprise installation. This page is the exact statement of that guarantee.
+
+## What works fully local
+
+- The entire [pipeline](/docs/pipeline): specs, plans, structured task files, delegated execution with audits, phase passes, and closing.
+- The [execution log](/docs/reference/lifecycle-state) and every [review artifact](/docs/reference/review-reports).
+- [Pocket Education](/docs/skills/pocket-education) — zero remote calls, zero adapter interaction.
+- Lifecycle state and events: `lifecycle transition` commits locally first; a missing or unavailable adapter cannot undo that.
+
+## What Core never does
+
+Core does **not**:
+
+- call `gh`;
+- create GitHub resources;
+- reconcile GitHub resources;
+- merge pull requests;
+- close issues;
+- put GitHub IDs, credentials, or Enterprise policy in lifecycle records.
+
+This is not a configuration choice that can drift — release builds enforce it with the surfaces manifest, and the pipeline's own skills restate it at their boundary points (development, closing, [create-pr](/docs/skills/create-pr)).
+
+## Events without a consumer
+
+Neutral lifecycle events (`spec-approved`, `phase-complete`, `phase-closed`, `plan-closed`) are committed locally as they happen. Without Enterprise they simply **remain pending** — phase completion and plan closure succeed locally, nothing is blocked, and the event IDs stay available for a later replay:
+
+```bash
+npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
+```
+
+A drain with no registered adapter reports `adapter-unavailable`, leaves the events pending, and makes no remote call.
+
+## Consent is never inferred
+
+Enterprise is never enabled because credentials exist, a remote is configured, or an old registration is present. Consent is explicit — see [Human authorization](/docs/core-enterprise/human-authorization).
+
+## Related documentation
+
+- [Core architecture](/docs/core-enterprise/core-architecture)
+- [Lifecycle events](/docs/core-enterprise/lifecycle-events)
+- [Recovery and rollback](/docs/core-enterprise/recovery-rollback)

@@ -1,0 +1,67 @@
+---
+title: Development and testing
+description: Run the Pocketto test suite, rebuild skill archives, and stage release roles locally.
+---
+
+## Requirements
+
+Node.js ≥ 18. No external dependencies are installed for the test suite — Pocketto's tests run on the Node built-in test runner.
+
+## Running the tests
+
+The `test` script in `package.json` runs the full suite:
+
+```bash
+npm test
+```
+
+It executes (verify against `package.json` at your checkout — the list grows with the code):
+
+```bash
+node --test test/cli.test.js test/package.test.js test/lifecycle-contract.test.js \
+  test/lifecycle-store.test.js test/lifecycle-cli.test.js test/lifecycle-dispatch.test.js \
+  test/surfaces.test.js test/skill-surfaces.test.js test/enterprise-protocol.test.js \
+  test/enterprise-issue.test.js test/enterprise-phase.test.js test/enterprise-closeout.test.js \
+  test/enterprise-dispatch.test.js test/enterprise-issue-dispatch.test.js \
+  test/enterprise-meta.test.js test/enterprise-ownership.test.js test/compatibility.test.js \
+  test/integration/lifecycle-enterprise.test.js test/release-regression.test.js \
+  test/documentation.test.js test/bug-hunting-64.test.js test/git-worktree.test.js \
+  test/enterprise-stack-body.test.js test/plan-notices.test.js test/phase-branches.test.js \
+  test/enterprise-phase-closed.test.js test/phase-handoff.test.js \
+  test/enterprise-phase-stack.test.js test/enterprise-lifecycle-proof-phase-closed.test.js
+```
+
+The suites map to the boundaries they guard:
+
+- **CLI behavior** (`cli`, `package`) — the envelope, parsing, packaging.
+- **Lifecycle** (`lifecycle-contract`, `lifecycle-store`, `lifecycle-cli`, `lifecycle-dispatch`) — the event journal, store, commands, and adapter dispatch.
+- **Surfaces** (`surfaces`, `skill-surfaces`) — the manifest contract and per-role skill content.
+- **Enterprise** (`enterprise-*`) — protocol, issue/phase/closure handlers, ownership, stack bodies, phase branches.
+- **Compatibility & regression** (`compatibility`, `release-regression`) — the cross-version rules and release invariants.
+- **Documentation** (`documentation`) — checks that documentation claims match the implementation.
+- **Integration** (`integration/lifecycle-enterprise`) — the Core ↔ adapter path end to end.
+
+## Rebuilding skill archives
+
+Skills ship with bundled `.skill` archives derived from the SKILL.md sources. After editing a skill, rebuild them:
+
+```bash
+./rebuild-skills.sh
+```
+
+## Staging a release role
+
+```bash
+node scripts/build-surfaces.js --role <role> --output <artifact-dir>
+```
+
+`<role>` is one of `pi/core`, `pi/enterprise`, `claude/core`, `claude/enterprise`. The output directory contains only that role — the way to verify what a role ships before publishing. See [Release surfaces](/docs/reference/release-surfaces).
+
+## Dogfooding note
+
+The repository develops itself through its own pipeline: `docs/pocket/` contains real specs, execution plans, `log.json` files, review artifacts, and closeout journals produced by Pocketto's own stages. Reading them is the fastest way to see what healthy artifacts look like.
+
+## Related documentation
+
+- [Repository organization](/docs/contributing)
+- [Contribution guidance](/docs/contributing/guidance)

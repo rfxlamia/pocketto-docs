@@ -1,0 +1,61 @@
+---
+title: Choosing the right workflow
+description: Route your task to the right skill — the full pipeline, a standalone skill, or Education.
+---
+
+Pocketto has one rule for routing: **match the ceremony to the risk**. Features that span files and phases get the full pipeline; small, clear work gets a focused skill.
+
+## The router
+
+| Your situation | Start with |
+|----------------|-----------|
+| Rough idea, no clear problem yet — need to explore | [pocket-pitching](/docs/pipeline/pitching) |
+| Clear problem — need a spec + acceptance criteria | [pocket-grinding](/docs/pipeline/grinding) |
+| Approved spec — need a TDD execution plan | [pocket-planning](/docs/pipeline/planning) |
+| Execution plan ready — sequence/phase it | [pocket-structuring](/docs/pipeline/structuring) |
+| Plan or phase file ready — execute task-by-task | [pocket-development](/docs/pipeline/development) |
+| Phase-level pass complete — reconcile and close | [pocket-closing](/docs/pipeline/closing) |
+| A bug, a failure, or "audit this code" | [bug-hunting](/docs/skills/bug-hunting) |
+| Small-to-medium change, full pipeline is overkill | [hotfix](/docs/skills/hotfix) |
+| Design system / brand identity / UI tokens | [brand-design](/docs/skills/brand-design) |
+| An assumption to validate before planning | [structured-research](/docs/skills/structured-research) |
+| Review a plan before executing it | [validate-plan](/docs/skills/validate-plan) |
+| Existing repo needs a local project guide or learner calibration | [pocket-init](/docs/skills/pocket-init) |
+| You want to write the code yourself, with guidance | [pocket-education](/docs/skills/pocket-education) |
+| Team needs GitHub lifecycle synchronization | [Pocket Enterprise](/docs/core-enterprise) |
+
+Rules of thumb from the built-in router (`pocket-help`):
+
+- Don't know if the problem is well-formed? → `pocket-pitching`
+- Problem is clear but needs a real feature plan? → `pocket-grinding`
+- It's a quick, well-understood change? → `hotfix`
+- Something is broken? → `bug-hunting`
+- Holding an unverified assumption? → `structured-research`
+- Already have an approved spec? → `pocket-planning`
+
+## The triviality off-ramp
+
+`pocket-grinding` checks task size as soon as the context scan makes it estimable. A task is **trivial** when it touches only **1–4 files** and is resolvable in **1–2 requests**, with none of these complexity signals: a new system or architectural decision, unclear or contested requirements, or API contract / system-boundary changes.
+
+When the heuristic fires, the skill recommends `hotfix` — which still enforces a brief-plan + subagent-review gate — before the multi-stage ceremony starts. "New feature" alone does not suppress the check: a small, clearly-specified feature like "add a zoom button" is a hotfix candidate. The discriminator is **requirement clarity + size + architectural impact**, not the label.
+
+The gate is advisory: continue with grinding if you expect hidden complexity.
+
+## Entry points into the pipeline
+
+You do not always start at the top:
+
+| You already have… | Start at |
+|-------------------|----------|
+| Only a fuzzy idea | `pocket-pitching` |
+| A clear problem | `pocket-grinding` |
+| An approved spec | `pocket-planning` |
+| An execution plan | `pocket-structuring` |
+| A plan/phase file ready to build | `pocket-development` |
+| A finished, passing phase | `pocket-closing` |
+
+## Related documentation
+
+- [Pipeline overview](/docs/pipeline)
+- [Standalone skills](/docs/skills)
+- [Core concepts](/docs/getting-started/core-concepts)

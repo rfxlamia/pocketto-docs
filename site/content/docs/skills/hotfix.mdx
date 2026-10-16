@@ -1,0 +1,76 @@
+---
+title: hotfix
+description: Fast iteration with mandatory brief-plan + subagent-review gates — accuracy without full pipeline ceremony.
+---
+
+`hotfix` is fast, accurate iteration for small-to-medium changes. Not cowboy coding, not full pipeline ceremony: a brief plan and an independent subagent review gate stand between the request and the first line of implementation.
+
+## When to use it
+
+- Small-to-medium changes where brainstorm → spec → plan → review is overkill.
+- A small, clearly-specified feature addition — "add a zoom in/out button", "add CSV export" — touches few files, is understood in one request, and needs only a preview plus one or two refine rounds.
+
+**When not to use it:** a new system, an architectural decision, unclear or contested requirements, or work spanning many files/phases → [pocket-grinding](/docs/pipeline/grinding). The routing is bidirectional: grinding's triviality off-ramp recommends hotfix for small tasks, and hotfix escalates back when work grows.
+
+## Prerequisites
+
+Nothing special. In an Education repo it asks before implementing (the Education guard).
+
+## How to invoke it
+
+```text
+/pocketto:hotfix "bump the rate-limit window to 60s"
+```
+
+On Pi: "quick fix", "small change", "just update X".
+
+## How it works
+
+The 5-step flow:
+
+1. **Capture intent** — the goal restated in 1–2 sentences; ambiguity surfaced now, not after coding.
+2. **Write a brief plan** — 3–5 bullets covering what changes, where, how, and the test approach. Takes 30 seconds; not a spec.
+3. **Dispatch a subagent reviewer** — a general-purpose subagent reviews the plan using [validate-plan](/docs/skills/validate-plan). This is the anti-self-confidence gate: *you do not review your own plan.*
+4. **Fix issues from review** — `CRITICAL` before implementing (non-negotiable), `WARNING` unless there is an explicit reason not to, `INFO` if easy. Max 3 review iterations.
+5. **Implement** — execute the reviewed plan. Nothing beyond what it says.
+
+## The hard gate
+
+```text
+Do NOT write a single line of implementation code until:
+1. The brief plan (3-5 bullets) is written in this conversation
+2. The subagent reviewer has returned NO CRITICAL issues
+```
+
+This applies to every task regardless of size, urgency, or who asked. "Simple" changes skip the gate most often and cause the most silent bugs.
+
+## Scale to task size
+
+| Change size | Plan depth | Escalate? |
+|-------------|------------|-----------|
+| Typo / string fix | 2 bullets acceptable | No |
+| Small UI change | 3–4 bullets | No |
+| Logic / behavior change | 4–5 bullets + edge cases | No |
+| New endpoint / component | 5 bullets minimum | Consider grinding |
+| Architectural / multi-system | Brief plan is insufficient | Yes → grinding |
+
+The plan depth scales; **the gates do not** — they are always on.
+
+## Outputs and artifacts
+
+The brief plan and its review findings (in conversation), then the implementation commits. Nothing is written under `docs/pocket/` — this skill exists precisely to skip that ceremony.
+
+## Approval gates and constraints
+
+- The plan + review gate cannot be skipped by pressure: "the user said skip the overhead" means skip the ceremony — 3 bullets *is* the thinking, and the reviewer still runs.
+- Already started coding? Stop, write the plan retrospectively, dispatch the review, then continue.
+
+## Example
+
+*Illustrative:* "bump the rate-limit window to 60s" → 3 bullets (file, constant, test update), the reviewer flags a second call site using the same constant, the plan is amended, then one commit implements exactly the reviewed bullets.
+
+## Related documentation
+
+- [validate-plan](/docs/skills/validate-plan) — the review engine
+- [Grinding](/docs/pipeline/grinding) — when small becomes architectural
+- [Pocket Education](/docs/skills/pocket-education) — you implement, it guides

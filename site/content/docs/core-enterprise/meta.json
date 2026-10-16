@@ -1,0 +1,5 @@
+{
+  "title": "Core & Enterprise",
+  "description": "Local-first Core, the optional Enterprise adapter, lifecycle events, compatibility, and recovery.",
+  "pages": ["index", "core-architecture", "local-first", "enterprise-setup", "integration-boundaries", "github-sync", "compatibility", "lifecycle-events", "recovery-rollback", "human-authorization"]
+}

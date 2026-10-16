@@ -1,0 +1,108 @@
+---
+title: Execution artifacts and lifecycle
+description: What Pocketto writes to disk, when, and which command owns each file.
+---
+
+Every stage produces files on disk. That is the point: the paper trail survives the conversation. This page maps the whole tree and its owners.
+
+## The tree
+
+<Files>
+  <Folder name="docs/pocket" defaultOpen>
+    <Folder name="spec" defaultOpen>
+      <Folder name="2026-06-01-jwt-refresh">
+        <File name="pitch-exploration.md" />
+        <File name="session-flow.md" />
+      </Folder>
+    </Folder>
+    <Folder name="plans" defaultOpen>
+      <Folder name="2026-06-01-jwt-refresh" defaultOpen>
+        <File name="execution-plan.md" />
+        <Folder name="execution-plan" defaultOpen>
+          <File name="index.md" />
+          <Folder name="tasks">
+            <File name="T1-jwt-store.md" />
+          </Folder>
+          <File name="phase-1.md" />
+        </Folder>
+        <File name="log.json" />
+        <Folder name="reviews">
+          <File name="T1-review.json" />
+          <File name="phase-pass-phase-1.json" />
+          <File name="phase-notes-phase-1.json" />
+        </Folder>
+        <File name="closeout.md" />
+      </Folder>
+    </Folder>
+    <Folder name="research">
+      <File name="2026-06-01-rate-limits/research-report.md" />
+    </Folder>
+    <Folder name="rule">
+      <File name="creative-brief.md" />
+    </Folder>
+    <Folder name="learning">
+      <File name="2026-06-01-jwt-store.md" />
+    </Folder>
+  </Folder>
+</Files>
+
+Project-level files live at the repository root: `CLAUDE.md` / `AGENTS.md` (project guide + Education block), `.pocket-meta.json` (Enterprise/PR metadata), `.pocket/lifecycle-adapter.json` (Enterprise registration), and `lifecycle.json` (committed with the spec directory). See [Generated files](/docs/reference/files) for the complete inventory.
+
+## Who writes what, when
+
+| Moment | Written | Writer |
+|--------|---------|--------|
+| Pitching handoff | `spec/<date>-<slug>/pitch-exploration.md` | pocket-pitching |
+| Grinding handoff | `spec/<date>-<slug>/<topic>.md`; `spec-approved` event | pocket-grinding |
+| Planning approval | `plans/<date>-<slug>/execution-plan.md` | pocket-planning |
+| Structuring run | `execution-plan/index.md`, `tasks/T*.md`, `phase-N.md`; may rebuild the log | the `structure` CLI |
+| Development startup | `log.json` from the plan files | the `log init` CLI |
+| Task audit pass | `reviews/<task_id>-review.json`; `log update --task --sha` | auditor subagent + `log` CLI |
+| Phase completion | `reviews/phase-pass-<phase_key>.json`, `reviews/phase-notes-<phase_key>.json`; phase → `REVIEW`; `phase-complete` event | phase-level pass + `log` CLI |
+| Closing | phase sections + final section in `closeout.md`; phase → `DONE`; `plan-closed` event | pocket-closing + `log` CLI |
+
+## The execution log
+
+`log.json` is the machine-readable state: a header (plan directory, type, status, dates, baseline, pipeline marker) and one entry per phase with its tasks, statuses, `done_sha` values, and correction commits. Real shape, from a completed Pocketto plan:
+
+```json
+{
+  "header": {
+    "plan_type": "phased",
+    "status": "DONE",
+    "date_started": "2026-08-15",
+    "date_completed": "2026-08-16",
+    "baseline_sha": "92c52f06…",
+    "pipeline": 3
+  },
+  "phases": [
+    {
+      "order": 1,
+      "file": "execution-plan-phase-1.md",
+      "status": "DONE",
+      "tasks": [
+        { "id": "T1", "name": "CLI — PIPELINE marker constant", "status": "DONE", "done_sha": "2be3cde8…" }
+      ],
+      "corrections": [
+        { "sha": "42427117…", "files": ["skills/pocket-development/SKILL.md"], "for_task": "T4" }
+      ]
+    }
+  ]
+}
+```
+
+*(Illustrative excerpt, abbreviated.)* The full model is in [Lifecycle state](/docs/reference/lifecycle-state).
+
+## Invariants
+
+1. **The CLI is the only writer** for `log.json` and lifecycle state. Skills run commands; nobody edits state files by hand.
+2. **closeout.md is append-only** — one section per phase under its canonical marker, plus the final plan section after `log close`.
+3. **Verdicts are pinned to SHAs** — a review proves a verdict only for the `reviewed_sha` it actually read.
+4. **Events commit before delivery** — `lifecycle.json` records state and events locally first; Enterprise delivery can never undo the local commit.
+
+## Related documentation
+
+- [Lifecycle state](/docs/reference/lifecycle-state)
+- [Lifecycle events](/docs/core-enterprise/lifecycle-events)
+- [Review reports](/docs/reference/review-reports)
+- [Generated files](/docs/reference/files)

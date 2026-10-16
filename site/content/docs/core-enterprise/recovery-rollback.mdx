@@ -1,0 +1,63 @@
+---
+title: Recovery and rollback
+description: Repair, drain, disable, and replay — fixing lifecycle problems without destroying state.
+---
+
+Recovery in Pocketto follows one rule: **fix forward without destroying state**. Local commits and pending events survive almost every failure mode.
+
+## Projection write failure
+
+If a projection write fails after the authoritative lifecycle commit, the error is `PROJECTION_REPAIR_REQUIRED` with the committed event and revision identified. The repair order is:
+
+```bash
+npx -y pocketto-pi lifecycle repair <spec_dir> --json --contract 3
+npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
+```
+
+`repair` reconciles lifecycle-owned `log.json` projection fields while preserving task statuses, `done_sha`, corrections, and delivery state. It fails closed (`LIFECYCLE_REPAIR_STATE_UNRECOVERABLE`) when task state is unrecoverable — it never guesses. `drain` then replays the deferred event; it creates no new events.
+
+## Interrupted structuring
+
+If `structure` was killed while writing `execution-plan/` or `log.json`, re-run `structure --reset` on that plan before continuing — it rebuilds both from scratch and is the only way to guarantee they are back in sync. Do not hand-edit `log.json` to fix a partial write.
+
+## Disabling Enterprise
+
+To disable a faulty or unwanted adapter **without deleting Core or lifecycle state**:
+
+```bash
+# read-only check first
+node <package-root>/enterprise/cli.js preflight <project-root> --json
+# remove ONLY the registration file
+rm <project-root>/.pocket/lifecycle-adapter.json
+```
+
+What to preserve: `.pocket-meta.json`, `log.json`, `lifecycle.json`, pending lifecycle events, and remote markers. Local execution continues; pending events keep their original IDs.
+
+A `lifecycle drain` while the registration is missing does **not** replay: the event stays pending, the drain reports `adapter-unavailable`, and no remote call is made.
+
+## Replaying after a fix
+
+Replay only after the adapter is pinned to the last compatible v4 release or reinstalled:
+
+```bash
+npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
+```
+
+The replay uses the **original event IDs** — no retrospective duplicates.
+
+## What never happens automatically
+
+- No automatic downgrade or destructive conversion of v4 state.
+- Active v3 plans stay on their v3 path (see [Compatibility](/docs/core-enterprise/compatibility)).
+- A terminal or attempts-exhausted event is never revived by editing lifecycle state — that is a manual-resolution boundary.
+- Never delete `lifecycle.json`, `log.json`, or `.pocket-meta.json` to "reset" Enterprise.
+
+## GH_UNKNOWN recovery (missing label)
+
+If a `spec-approved` delivery reports `GH_UNKNOWN`, that alone is not evidence of a missing label. The documented recovery procedure for [issue #70](https://github.com/rfxlamia/pocketto/issues/70) verifies the origin, performs an exact read-only label lookup, and asks for your explicit consent before creating `pocket-plan` — a documented workaround, not a runtime fix. See [Human authorization](/docs/core-enterprise/human-authorization) and the upstream procedure in the repository's `skills/pocket-enterprise/references/issue-reconciliation.md`.
+
+## Related documentation
+
+- [Lifecycle events](/docs/core-enterprise/lifecycle-events)
+- [Compatibility](/docs/core-enterprise/compatibility)
+- [Troubleshooting](/docs/reference/troubleshooting)

@@ -1,0 +1,56 @@
+---
+title: Approval gates
+description: Every point where the Pocketto pipeline stops for you — and the independent review gates that are not user gates.
+---
+
+Pocketto distinguishes two kinds of gates. **User authorization gates** stop and wait for you. **Independent review gates** stop and wait for a reviewer that is not the author — you are not asked to approve its findings, but you are informed and consulted when recovery is exhausted.
+
+## User authorization gates
+
+| # | Gate | Where | What your approval covers |
+|---|------|-------|---------------------------|
+| 1 | Spec approval | [Grinding](/docs/pipeline/grinding) handoff | The spec's problem statement, scenarios, and constraints. Authorizes the handoff to planning — never implementation. |
+| 2 | Plan approval | [Planning](/docs/pipeline/planning) handoff | Generation of derived execution artifacts (`index.md`, task files, phase manifests). **Never implementation.** |
+| 3 | Execution authorization | [Structuring](/docs/pipeline/structuring) handoff | Starting [development](/docs/pipeline/development). Asked once; a clear prior instruction covers it. |
+| 4 | Education choice | [Development](/docs/pipeline/development) startup in an Education repo | Whether you implement with guidance or dispatch subagents. |
+| 5 | Closeout authorization | [Closing](/docs/pipeline/closing) | Advancing a reviewed phase and closing the plan. A passing verdict alone is **not** authorization. |
+| 6 | Push consent | Enterprise phase publication | Durable (`--push-consent phase-branches`) or per-commit (`consent-push --sha <40-hex>`); never assumed from credentials. |
+
+Rules that protect these gates:
+
+- Approvals are not re-asked when an earlier instruction already covered them — you are never prompted twice for the same decision.
+- Silence is not approval. A consequential choice you have not made gets a question.
+- If you explicitly skip a gate or choose a simpler workflow, the agent honors it **and reports which checks were skipped**. Nothing claims a skipped gate passed.
+
+## Independent review gates (not user gates)
+
+These run without you; their purpose is that no agent grades its own work.
+
+| Review | Stage | Reviewer |
+|--------|-------|----------|
+| Advisor curation | [Pitching](/docs/pipeline/pitching) | Independent advisor (LLM-to-LLM) |
+| Edge-case hunter | [Grinding](/docs/pipeline/grinding), after GWT scenarios | Read-only subagent |
+| Spec reviewer | [Planning](/docs/pipeline/planning), on the plan | Read-only subagent |
+| Test-strategy audit | Planning, only when triggers fire | Read-only subagent |
+| In-loop audit | [Development](/docs/pipeline/development), per task after `DONE` | Read-only auditor (mechanical gate first) |
+| Phase-level pass | Development, after all tasks `DONE` | Read-only subagent |
+
+The main agent never judges code; implementers never self-report quality as evidence.
+
+## Bounded recovery
+
+Every review gate has a bounded recovery contract: after the initial attempt, at most **two materially different** correction/review rounds. Reaching the cap is a mandatory user checkpoint — `RECOVERY_CHECKPOINT` — not a silent pass and not a `BLOCKED` verdict. It preserves the unresolved findings, the strategies tried, and one proposed next strategy, and waits for your explicit authorization to open another bounded window.
+
+What does *not* burn a round: a clean pass, and auditor infrastructure failures (those get a bounded reroute: fresh auditor → advisor fallback → report the exact human action needed).
+
+`BLOCKED` is reserved for a genuine human dependency — a decision, access, information, or authorization the agent cannot obtain. Every blocked report names the dependency, the evidence, and the concrete unblocking action, and safe independent work continues.
+
+## Example
+
+*Illustrative:* the spec reviewer twice returns findings on the same task. The plan is corrected with a materially different strategy, re-reviewed, and findings remain. The skill stops at `RECOVERY_CHECKPOINT`, lists both rounds and the unresolved finding, and asks whether to authorize another bounded window — it neither hands off an unapproved plan nor silently drops the finding.
+
+## Related documentation
+
+- [Grinding](/docs/pipeline/grinding) · [Planning](/docs/pipeline/planning) · [Development](/docs/pipeline/development) · [Closing](/docs/pipeline/closing)
+- [Review reports](/docs/reference/review-reports)
+- [Human authorization (Enterprise)](/docs/core-enterprise/human-authorization)

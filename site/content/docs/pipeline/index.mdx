@@ -1,0 +1,51 @@
+---
+title: Pipeline overview
+description: The six-stage Pocketto pipeline — what each stage receives, produces, and where it stops for you.
+---
+
+The Pocket pipeline is six chained skills for real features and non-trivial work. Each stage produces an artifact that the next stage consumes, and each stage has explicit gates.
+
+```text
+pocket-pitching → pocket-grinding → pocket-planning → pocket-structuring → pocket-development ──PASS──→ pocket-closing
+   (explore)        (specify/BDD)      (plan/TDD)         (phase)          (execute + review)        (close)
+```
+
+## The stages
+
+| # | Skill | Input | Output | Gate |
+|---|-------|-------|--------|------|
+| 1 | [pocket-pitching](/docs/pipeline/pitching) | A rough idea | `docs/pocket/spec/<date>-<slug>/pitch-exploration.md` | You choose whether to continue |
+| 2 | [pocket-grinding](/docs/pipeline/grinding) | A clear problem | An approved spec with GWT acceptance criteria | Edge-case-hunter review; your spec approval |
+| 3 | [pocket-planning](/docs/pipeline/planning) | The approved spec | An execution plan of full Pocket Packets | Spec-reviewer subagent; CLI dry-run; your plan approval |
+| 4 | [pocket-structuring](/docs/pipeline/structuring) | The execution plan | `execution-plan/index.md` + per-task files | CLI owns decomposition; execution needs your approval |
+| 5 | [pocket-development](/docs/pipeline/development) | Task files + execution log | Reviewed commits, verdicts, phase-level pass, phase handoff | In-loop audit per task; phase leaves only as `REVIEW` |
+| 6 | [pocket-closing](/docs/pipeline/closing) | `log.json` + verdict artifacts | `closeout.md` entries, advanced phases, a closed plan | You must authorize closeout |
+
+## Handoff rules
+
+The chain is not automatic everywhere, and that is deliberate:
+
+- **`pocket-pitching` does not auto-chain** — after the brief you choose whether to start grinding, iterate, or stop.
+- **`pocket-grinding` hands an approved spec to `pocket-planning`** after your approval, emitting the `spec-approved` lifecycle event.
+- **`pocket-planning` routes every plan to `pocket-structuring`** after plan approval and a mandatory CLI dry-run.
+- **`pocket-structuring` hands off to `pocket-development`** when your instruction already authorizes execution; otherwise it asks once.
+- **`pocket-development` leaves a passing phase in `REVIEW`** and names `pocket-closing` as the next step — it does not close on its own.
+- **`pocket-closing` runs only when you ask for closeout** (directly, or via an explicit end-to-end request).
+
+## The state model
+
+Tasks move `WAITING → DONE | BLOCKED`; phases move `WAITING → REVIEW → DONE | BLOCKED`. A phase only reaches `REVIEW` after its phase-level pass records a result, and only closing moves it to `DONE`. See the [lifecycle reference](/docs/reference/lifecycle-state).
+
+## Lifecycle events
+
+The stages commit neutral lifecycle events locally: `spec-approved` at the grinding handoff, `phase-complete` when a phase reaches `REVIEW`, `phase-closed` on stacked plans at handoff, and `plan-closed` at close. See [Lifecycle events](/docs/core-enterprise/lifecycle-events).
+
+## When not to use the pipeline
+
+For everyday work the pipeline is ceremony. Reach for a [standalone skill](/docs/skills) instead: `hotfix` for small clear changes, `bug-hunting` for bugs, `structured-research` for unverified assumptions, `brand-design` for design systems. Grinding's own triviality off-ramp ([details](/docs/getting-started/choosing-workflow)) recommends this switch when the task turns out small.
+
+## Related documentation
+
+- [Approval gates](/docs/pipeline/approval-gates) — every stop point, enumerated
+- [Execution artifacts](/docs/pipeline/artifacts) — what lands on disk
+- [Pocket Packets](/docs/reference/pocket-packets) — the delegation contract

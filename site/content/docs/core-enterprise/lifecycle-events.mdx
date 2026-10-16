@@ -1,0 +1,54 @@
+---
+title: Lifecycle events
+description: The neutral event model — what is committed, when, and the four lifecycle CLI commands.
+---
+
+Core's lifecycle layer records what happened in a form any consumer can trust, without leaking anything about any specific remote. `<spec_dir>/lifecycle.json` is authoritative for lifecycle state, the event journal, and delivery state.
+
+## The event vocabulary
+
+| Event | Committed when | Notes |
+|-------|----------------|-------|
+| `spec-approved` | The approved-spec handoff, before planning | May reference only `spec` artifacts |
+| `phase-complete` | A phase reaches `REVIEW` after a terminal phase-level pass | Requires a plan directory; references plan evidence |
+| `phase-closed` | `log handoff` for one **stacked** phase after it is `DONE` | Legal once per phase; requires lifecycle schema 2 |
+| `plan-closed` | Atomically with the successful `log close` | The final transition |
+
+Each event has a deterministic ID (`<plan_id>:<type>:r<revision>`), an increasing revision, artifact references, a canonical payload hash, and **opaque proof references** — never GitHub IDs or credentials.
+
+## Artifact references
+
+Events identify artifacts by `{ root, kind, path, sha256, revision }`, where root is `spec` or `plan` and paths are relative to that root. Contents are **not** embedded. The commit boundary rejects absolute or escaping paths, missing roots, invalid event/root combinations, and hash mismatches before creating an event. A valid artifact that later changes is terminal `STALE_ARTIFACT`.
+
+## The four commands
+
+```bash
+npx -y pocketto-pi lifecycle transition <spec_dir> <event-type> --artifact <root>:<kind>:<relative-path>:<sha256> --json --contract 3
+npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
+npx -y pocketto-pi lifecycle repair <spec_dir> --json --contract 3
+npx -y pocketto-pi lifecycle migrate <spec_dir> --from v3 --json --contract 3
+```
+
+- **`transition`** validates state and artifact references, then **atomically commits local state and one event**. Optional adapter delivery can never undo the local commit.
+- **`drain`** replays pending, retryable, and reconciling events in revision order and **creates no events**. A revision gap stays pending with a diagnostic; a stale lower revision never regresses remote state.
+- **`repair`** reconciles lifecycle-owned projection fields **only** when task state is losslessly recoverable; it emits no event and dispatches no adapter. With no trusted task-state source it fails closed (`LIFECYCLE_REPAIR_STATE_UNRECOVERABLE`) and changes nothing.
+- **`migrate`** — the explicit, pristine-v3-only migration; see [Compatibility](/docs/core-enterprise/compatibility).
+
+## Delivery semantics
+
+With an Enterprise adapter registered (and only after a successful preflight), `drain` invokes it event by event:
+
+- Events are claimed one at a time; an idle claim expires after 60 seconds and is extended through the adapter's timeout during invocation, so a second drain cannot reclaim a live call.
+- Retries are bounded: one initial attempt plus at most five retries (delays 1, 5, 30, 120, 600 seconds), then the event is terminal.
+- Adapter responses may carry display-only `notices` (for example `PR_CREATED`, `PR_REUSED`). They are rendered to you verbatim and never executed.
+- Without an adapter, or with a fail-closed mismatch, events stay pending under their original IDs — no remote call, no loss.
+
+## Ordering guarantees
+
+A `phase-closed` event after `plan-closed` is rejected with `LIFECYCLE_BAD_STATE` — that is why [closing](/docs/pipeline/closing) runs the stacked handoff *before* `log close` for the last phase. An identical transition is an idempotent no-op using the original event ID; reusing an ID with a different payload is an integrity conflict.
+
+## Related documentation
+
+- [Lifecycle state](/docs/reference/lifecycle-state) — the `log.json` projection
+- [Integration boundaries](/docs/core-enterprise/integration-boundaries)
+- [Recovery and rollback](/docs/core-enterprise/recovery-rollback)

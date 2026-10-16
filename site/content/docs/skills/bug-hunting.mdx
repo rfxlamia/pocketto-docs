@@ -1,0 +1,70 @@
+---
+title: bug-hunting
+description: Systematic debugging with confirmed root cause before any fix — reactive and proactive modes.
+---
+
+`bug-hunting` fixes bugs without creating future bugs. Reactive mode fixes a known bug; proactive mode hunts hidden bugs in code you point it at. Both enforce the same discipline.
+
+**Core principle:** A claim is not evidence. Evidence is not root cause. Root cause is not a fix.
+
+## When to use it
+
+- "Fix this bug", "test failing", "production error" (reactive).
+- "Review this code", "find bugs in…", "audit this" (proactive).
+
+**When not to use it:**
+
+- The bug has design implications across a system boundary → [pocket-grinding](/docs/pipeline/grinding).
+- You want a small change, not a bug → [hotfix](/docs/skills/hotfix).
+
+## Prerequisites
+
+Reproducibility where possible — if it cannot be reproduced, it cannot be fixed (and the skill says so rather than guessing). An Education repo asks whether you want to hunt the bug yourself with guidance.
+
+## How to invoke it
+
+```text
+/pocketto:bug-hunting "checkout total is off by one cent"
+```
+
+On Pi: "fix bug", "debug", "why is X broken", or a proactive audit request.
+
+## How it works
+
+The three iron laws:
+
+```text
+LAW 1: NO FIX WITHOUT CONFIRMED ROOT CAUSE
+LAW 2: NO CLAIM WITHOUT EVIDENCE
+LAW 3: FIX THE SOURCE, NOT THE SYMPTOM
+```
+
+The five phases — each completes before the next, no skipping:
+
+1. **Reconnaissance** — expected behavior (what it *should* do), bug type (logic, race, data corruption, integration…), components involved, common bugs in the domain. Unclear expected behavior stops the investigation here.
+2. **Evidence hunt** — read every error line, reproduce consistently, check recent changes, add diagnostic instrumentation at component boundaries. Every piece is classified `CONFIRMED`, `SUSPECTED`, or `THEORETICAL`. No fix attempts in this phase.
+3. **Blast radius** — the primary bug plus **at least two additional suspects** sharing the pattern, each with severity (Critical → Low). Fixing one bug while missing three siblings is a delay, not a fix.
+4. **Root cause trace** — trace backward from the crash site to the origin; form one hypothesis ("root cause is X because confirmed evidence Y") and test minimally. Three failed hypotheses means an architectural problem — stop and discuss before fix #4.
+5. **Resolution** — create the failing test first (TDD: it must fail for the right reason), fix one bug at a time at the source, apply defense-in-depth so the bug cannot recur, verify with the full suite.
+
+Evidence language is policed: "almost certainly" → state the actual evidence or mark `SUSPECTED`; "probably X" → reproduce it or mark `THEORETICAL`; "fix is safe regardless of cause" → rejected outright.
+
+## Outputs and artifacts
+
+The fix commits (test first, one bug at a time), plus the evidence trail in conversation. Proactive audits report findings with severity instead of changing code.
+
+## Approval gates and constraints
+
+- No fix ships without a confirmed root cause — "quick fix now, investigate later" is a stop-and-return trigger.
+- An Education repo asks before any implementation; a handover must be explicit.
+- Security-adjacent fixes follow the same evidence rules — verification is never outsourced to authority ("senior already confirmed it" is a red flag).
+
+## Example
+
+*Illustrative:* "checkout total is off by one cent" → evidence: `CONFIRMED` on two cart shapes; blast radius finds the same rounding in refund logic; root cause traced to a float `toFixed` call at the pricing boundary, not the crash site; failing test added for the exact edge case; fix at the source plus a shared money helper; suite green.
+
+## Related documentation
+
+- [hotfix](/docs/skills/hotfix) — small changes without a bug
+- [Pocket Education](/docs/skills/pocket-education) — you hunt, it guides
+- [Pipeline overview](/docs/pipeline)

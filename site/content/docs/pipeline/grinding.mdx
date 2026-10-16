@@ -1,0 +1,73 @@
+---
+title: Grinding
+description: pocket-grinding — BDD-driven requirement discovery that turns a clear problem into an approved spec with GWT acceptance criteria.
+---
+
+`pocket-grinding` is production-grade requirement discovery using BDD principles: gather context, define scope, question from three expert lenses, map concrete examples to scenarios, validate against existing architecture, and produce a spec ready for delegation.
+
+**Core principle:** Scenarios first, design second. Architecture must be validated before handoff. No implementation until the spec is approved.
+
+## When to use it
+
+- Planning a feature whose shape or requirements are not yet clear, or that spans multiple files/phases.
+- Fixing a non-trivial bug with design implications.
+- Refactoring a system boundary or changing an API contract.
+
+**When not to use it:**
+
+- Trivial single-line fixes.
+- Small, well-understood changes touching only **1–4 files** and resolvable in **1–2 requests** → [hotfix](/docs/skills/hotfix) (the skill itself surfaces this off-ramp mid-flow).
+- Work that already has an approved spec → [pocket-planning](/docs/pipeline/planning).
+
+## Prerequisites
+
+A clear problem. A [pitch exploration doc](/docs/pipeline/pitching) is useful input but not required. On Pi, the required extensions (advisor, subagents) power the independent reviews.
+
+## How to invoke it
+
+```text
+/pocketto:pocket-grinding "add dark mode toggle"
+```
+
+On Pi, trigger with "pocket-grinding", "brainstorm", "think through", "plan this", "before we build".
+
+## How it works
+
+1. **Context scan** — layered protocol: project (stack, dependency manifest, architecture, conventions), feature (affected modules, related tests, recent commits), and task-level context when available.
+2. **Triviality off-ramp** — if the scan shows 1–4 files, 1–2 requests, and no architectural signals, grinding recommends `hotfix` and waits for your choice. Advisory, non-blocking.
+3. **Scope + boundaries** — in-scope, out-of-scope, and architecture constraints made explicit before questioning starts.
+4. **Discovery — three amigos** — questions from the business lens (why/value), developer lens (how/feasibility), and QA lens (what breaks/edge cases). A sufficiency gate requires every in-scope behavior to have an actor, trigger, expected outcome, edge case, data boundaries, and an acceptance signal before moving on.
+5. **Formulation — example mapping** — stories → rules → concrete examples → **Given/When/Then scenarios** (one behavior per scenario, concrete values, always including failure paths). An **edge-case-hunter** subagent then independently reviews the scenarios — a required gate with bounded recovery (two materially different rounds, then `RECOVERY_CHECKPOINT`).
+6. **Design proposals** — 2–3 options, each validated against the scenarios explicitly. Build-vs-buy is enforced: for commodity problems at least one library-based option must be proposed, and library behavior is verified against the installed version (Context7 when available).
+7. **Architecture validation** — every material claim is re-checked against the actual codebase (and version-matched docs for externals), recorded as `PASS` / `FAIL` / `UNVERIFIED` / `N/A` with evidence. A design is never described as fully validated while a material claim is `UNVERIFIED`.
+8. **Handoff package** — the spec document plus inline acceptance criteria and a pre-handoff checkpoint.
+
+## Outputs and artifacts
+
+```
+docs/pocket/spec/YYYY-MM-DD-kebab-slug/<topic>.md
+```
+
+The spec carries the design decision, architecture constraints, acceptance criteria (rule → GWT scenarios), open questions with assumptions, and out-of-scope items — the exact fields planning consumes.
+
+## Approval gates and constraints
+
+- **You approve the spec** before the handoff: *"anything to adjust before I hand this to pocket-planning?"* A clear earlier instruction to run the full flow counts as authorization; being asked twice is avoided.
+- Grinding **does not implement** — no product code, scaffolding, or migrations. Its job ends at an approved spec.
+- After approval it emits the neutral `spec-approved` lifecycle event (local only):
+
+```bash
+pocketto-pi lifecycle transition <spec_dir> spec-approved --artifact spec:<kind>:<relative-path>:<sha256> --json --contract 3
+```
+
+- The handoff to planning is then **mandatory** — grinding is incomplete until planning has the spec and has started its preflight.
+
+## Example
+
+*Illustrative:* "checkout total is sometimes a cent off" with design implications → grinding locks scope to the pricing path, surfaces rounding-mode rules as GWT scenarios (including the exact edge case), validates them against the pricing module, and writes the spec with the edge-case-hunter's findings incorporated.
+
+## Related documentation
+
+- [Pitching](/docs/pipeline/pitching) — when the problem is still unformed
+- [Planning](/docs/pipeline/planning) — the next stage
+- [Approval gates](/docs/pipeline/approval-gates)

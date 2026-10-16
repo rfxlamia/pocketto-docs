@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+
+# Reference checkouts (external source-of-truth clones, not part of this repo)
+/reference/
+
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Fumadocs MDX generated files
+.source/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Editors / OS
+.idea/
+.vscode/
+Thumbs.db

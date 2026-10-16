@@ -1,0 +1,54 @@
+---
+title: Glossary
+description: The Pocketto vocabulary, defined and cross-linked.
+---
+
+**Adapter** — the Enterprise component registered in `.pocket/lifecycle-adapter.json` that consumes Core's lifecycle events and performs remote reconciliation. Optional, additive, fail-closed. See [Integration boundaries](/docs/core-enterprise/integration-boundaries).
+
+**Advisor** — an independent LLM-to-LLM reviewer used for curation and escalation review (pitching's brainstorm curation, development's reasoning challenges). On Pi, provided by a required extension.
+
+**Blast radius** — bug-hunting's phase that maps the primary bug plus at least two adjacent suspects sharing the pattern, each with a severity. See [bug-hunting](/docs/skills/bug-hunting).
+
+**closeout.md** — the append-only, human-readable journal in a plan directory: one section per closed phase plus the final plan section after `log close`. See [Execution artifacts](/docs/pipeline/artifacts).
+
+**done_sha** — the commit SHA recorded when a task is marked `DONE` with `--sha` after a passing audit. It never moves; later fixes are append-only corrections.
+
+**Entry Gate** — development's pre-dispatch checklist: task bounded, packet constructible, task type clear, prompt sandwiched, parallel classification, verification defined.
+
+**Execution log** — `log.json`: the machine-readable record of phases, tasks, statuses, `done_sha` values, and corrections. CLI-owned; never hand-edited. See [Lifecycle state](/docs/reference/lifecycle-state).
+
+**GWT** — Given/When/Then: the concrete scenario format grinding produces and planning turns into test intent.
+
+**Hint ladder** — Education's progressive-hint mechanism: one rung at a time, never a complete solution up front. See [Pocket Education](/docs/skills/pocket-education).
+
+**In-loop audit** — the per-task review inside development: a mechanical gate (commit exists, all exact test commands green) followed by an independent read-only auditor. See [Review reports](/docs/reference/review-reports).
+
+**Iron laws** — the non-negotiable defaults: six in development (no packet no spawn, no silent gate skip, no trust without evidence, no ambiguous prompt, no silent escalation, no silent reference), three in bug-hunting and structured-research.
+
+**Learner profile** — the persisted `## Pocket Education` block: per-skill levels (`foundation | guided | independent`), teaching mode, journal flag. Owned by the `edu` CLI and by the learner.
+
+**Lifecycle event** — a neutral, durable record of a process milestone: `spec-approved`, `phase-complete`, `phase-closed`, `plan-closed`. Contains artifact references and opaque proof references — never GitHub IDs or credentials. See [Lifecycle events](/docs/core-enterprise/lifecycle-events).
+
+**Lifecycle states** — `WAITING`, `REVIEW`, `DONE`, `BLOCKED`. Tasks: `WAITING → DONE | BLOCKED`. Phases: `WAITING → REVIEW → DONE | BLOCKED`.
+
+**Phase-level pass** — the read-only review of a whole phase after all tasks are `DONE`: cross-task duplication, integration mismatch, cross-file regression, spec-level gaps. Its result is a precondition for `REVIEW`.
+
+**Pocket Packet** — the seven-field delegation contract (plus `WORKTREE` for parallel groups) required before any subagent spawn. See [Pocket Packets](/docs/reference/pocket-packets).
+
+**Push consent** — authorization for fast-forward pushes of Pocket phase branches: durable (`--push-consent phase-branches`) or per-commit (`consent-push --sha <40-hex>`). Never covers force pushes.
+
+**RECOVERY_CHECKPOINT** — the mandatory user checkpoint when a bounded recovery window (two materially different rounds) ends with findings unresolved. Not a `BLOCKED` verdict; a pause awaiting your authorization.
+
+**Release surface** — one of the four manifest roles (`pi/core`, `pi/enterprise`, `claude/core`, `claude/enterprise`) that release builds stage. See [Release surfaces](/docs/reference/release-surfaces).
+
+**reviewed_sha** — the exact commit a verdict artifact's audit actually read. A verdict is current only while `reviewed_sha` equals the task's latest owned SHA.
+
+**Sandwich prompt** — packet structure that places the critical constraint at the highest-attention positions (first line, restated near the end).
+
+**Stacked phase branches** — the phase-branch model where each phase gets its own branch and PR against the previous phase's branch (phase 1 against the recorded root base). The install default.
+
+**Triviality off-ramp** — grinding's advisory check that recommends `hotfix` for tasks of 1–4 files resolvable in 1–2 requests with no architectural signals.
+
+**Verdict** — a task's review outcome (`REVIEW_PASS | REVIEW_FAIL | REVIEW_BLOCKED`), persisted in `reviews/<task_id>-review.json`, current only while its `reviewed_sha` matches.
+
+**Worktree** — a git worktree used by parallel groups so tasks run in isolation; the group merges and logs one task at a time.
