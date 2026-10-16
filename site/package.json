@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "fumadocs-core": "16.17.3",
     "fumadocs-mdx": "15.4.7",
     "fumadocs-ui": "16.17.3",

@@ -3,6 +3,7 @@ import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SITE } from '@/lib/site';
 import './global.css';
 
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="flex min-h-screen flex-col font-sans">
         <RootProvider>{children}</RootProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
