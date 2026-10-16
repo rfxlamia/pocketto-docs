@@ -8,7 +8,7 @@ export type WorkflowState = {
 };
 export type WorkflowAction =
   | { type: 'select'; index: number; input: WorkflowState['input'] }
-  | { type: 'show-output' | 'replay'; input: WorkflowState['input'] };
+  | { type: 'show-output' | 'next' | 'replay'; input: WorkflowState['input'] };
 
 export type StageGuidance = {
   situation: string;
@@ -133,7 +133,13 @@ export function workflowReducer(state: WorkflowState, action: WorkflowAction): W
       return { active: action.index, phase: 'ready', input: action.input };
     case 'show-output':
       return state.phase === 'ready' ? { ...state, phase: 'output', input: action.input } : state;
+    case 'next':
+      return state.phase === 'output' && state.active < PIPELINE_STAGES.length - 1
+        ? { active: state.active + 1, phase: 'ready', input: action.input }
+        : state;
     case 'replay':
-      return { ...state, phase: 'ready', input: action.input };
+      return state.phase === 'output' && state.active === PIPELINE_STAGES.length - 1
+        ? { ...INITIAL_WORKFLOW_STATE, input: action.input }
+        : state;
   }
 }

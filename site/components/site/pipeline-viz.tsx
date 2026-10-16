@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowDown, ArrowRight, Check, ChevronDown, ChevronRight, FileText, LockKeyhole, MessageSquare, RotateCcw } from 'lucide-react';
-import { useEffect, useReducer, useRef, type CSSProperties, type KeyboardEvent, type MouseEvent } from 'react';
+import { useEffect, useLayoutEffect, useReducer, useRef, type CSSProperties, type KeyboardEvent, type MouseEvent } from 'react';
 import { PIPELINE_STAGES } from '@/lib/site';
 import { INITIAL_WORKFLOW_STATE, WORKFLOW_GUIDANCE, workflowReducer, type StageGuidance } from '@/lib/workflow';
 
@@ -10,22 +10,44 @@ export function PipelineViz() {
   const [state, dispatch] = useReducer(workflowReducer, INITIAL_WORKFLOW_STATE);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLElement>(null);
+  const outputRef = useRef<HTMLElement>(null);
   const previousStage = useRef(state.active);
+  const previousOutput = useRef({ active: state.active, phase: state.phase });
   const stage = PIPELINE_STAGES[state.active]!;
   const guidance: StageGuidance = WORKFLOW_GUIDANCE[stage.id];
   const isClosing = state.active === PIPELINE_STAGES.length - 1;
   const outputShown = state.phase === 'output';
 
   useEffect(() => {
+    const direction = state.active > previousStage.current ? 1 : -1;
     const changed = previousStage.current !== state.active;
     previousStage.current = state.active;
     if (!changed || state.input === 'keyboard' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const animation = panelRef.current?.animate(
-      [{ opacity: 0.4, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }],
-      { duration: 180, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+      [{ opacity: 0.4, transform: `translateX(${direction * 28}px)` }, { opacity: 1, transform: 'translateX(0)' }],
+      { duration: 220, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
     );
     return () => animation?.cancel();
   }, [state.active, state.input]);
+
+  useLayoutEffect(() => {
+    const previous = previousOutput.current;
+    previousOutput.current = { active: state.active, phase: state.phase };
+    if (previous.active !== state.active || previous.phase !== 'ready' || state.phase !== 'output'
+      || state.input === 'keyboard' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const source = inputRef.current?.getBoundingClientRect();
+    const destination = outputRef.current?.getBoundingClientRect();
+    if (!source || !destination) return;
+    const animation = outputRef.current?.animate(
+      [
+        { transform: `translate(${source.x - destination.x}px, ${source.y - destination.y}px)`, opacity: 0.2 },
+        { transform: 'translate(0, 0)', opacity: 1 },
+      ],
+      { duration: 280, easing: 'cubic-bezier(0.77, 0, 0.175, 1)' },
+    );
+    return () => animation?.cancel();
+  }, [state.active, state.phase, state.input]);
 
   function selectStage(index: number, input: 'pointer' | 'keyboard') {
     dispatch({ type: 'select', index, input });
@@ -47,7 +69,7 @@ export function PipelineViz() {
 
   function advanceDemo(event: MouseEvent<HTMLButtonElement>) {
     dispatch({
-      type: outputShown ? 'replay' : 'show-output',
+      type: outputShown ? (isClosing ? 'replay' : 'next') : 'show-output',
       input: event.detail === 0 ? 'keyboard' : 'pointer',
     });
   }
@@ -121,7 +143,7 @@ export function PipelineViz() {
               <span>Input</span><ArrowRight size={14} aria-hidden="true" /><strong>{stage.name}</strong><ArrowRight size={14} aria-hidden="true" /><span>Output</span>
             </p>
             <div className="workflow-scene" data-phase={state.phase}>
-              <article className="workflow-example-input" aria-label={`Example input for ${stage.name}`}>
+              <article ref={inputRef} className="workflow-example-input" aria-label={`Example input for ${stage.name}`}>
                 <div className="workflow-example-label"><MessageSquare size={17} aria-hidden="true" /><h5>Input for {stage.name}</h5></div>
                 <blockquote>{guidance.exampleInput.text}</blockquote>
                 {guidance.exampleInput.artifact && (
@@ -131,24 +153,24 @@ export function PipelineViz() {
               <div className="workflow-connector" aria-hidden="true">
                 <ArrowRight className="workflow-arrow-horizontal" size={18} /><ArrowDown className="workflow-arrow-vertical" size={18} />
               </div>
-              <article className="workflow-document" aria-label={`Example output from ${stage.name}`}>
-                <p className="workflow-example-label">Output from {stage.name}</p>
-                <div className="workflow-document-title"><FileText size={20} aria-hidden="true" /><h5>{guidance.artifact}</h5></div>
-                <code>{guidance.artifactPath}</code>
-                <div className="workflow-output-body">
-                  <p className="workflow-output-hint" aria-hidden={outputShown}>Reveal the example to see what {stage.name} produces from this input.</p>
-                  <ul className="workflow-output-items" aria-hidden={!outputShown}>{guidance.outputItems.map((item) => <li key={item}>{item}</li>)}</ul>
-                </div>
-              </article>
+              <div className="workflow-output-slot">
+                <p className="workflow-output-placeholder" aria-hidden={outputShown}>The {stage.name} output arrives here.</p>
+                <article ref={outputRef} className="workflow-document" aria-label={`Example output from ${stage.name}`} aria-hidden={!outputShown}>
+                  <p className="workflow-example-label">Output from {stage.name}</p>
+                  <div className="workflow-document-title"><FileText size={20} aria-hidden="true" /><h5>{guidance.artifact}</h5></div>
+                  <code>{guidance.artifactPath}</code>
+                  <ul className="workflow-output-items">{guidance.outputItems.map((item) => <li key={item}>{item}</li>)}</ul>
+                </article>
+              </div>
             </div>
             <div className="workflow-demo-footer">
               <div className="workflow-demo-status" role="status" aria-live="polite" aria-atomic="true">
                 <span className="workflow-status-icon" data-phase={state.phase}>{outputShown ? <Check size={18} aria-hidden="true" /> : <ArrowRight size={18} aria-hidden="true" />}</span>
-                <p>{outputShown ? `${stage.name} example output shown. Compare it with the input.` : `See what ${stage.name} produces from this request.`}</p>
+                <p>{outputShown ? (isClosing ? 'Closing example complete. Replay the demo from Pitching.' : `${stage.name} output is ready. Continue the example in ${guidance.receiver}.`) : `See what ${stage.name} produces from this request.`}</p>
               </div>
               <button type="button" className={`btn ${outputShown ? 'btn-outline' : 'btn-primary'} workflow-demo-action`} onClick={advanceDemo}>
-                {outputShown && <RotateCcw size={15} aria-hidden="true" />}
-                {outputShown ? 'Replay example' : 'Show example output'}
+                {outputShown && (isClosing ? <RotateCcw size={15} aria-hidden="true" /> : <ArrowRight size={15} aria-hidden="true" />)}
+                {outputShown ? (isClosing ? 'Replay demo' : `Next: ${guidance.receiver}`) : `Run ${stage.name} example`}
               </button>
             </div>
             <details className="workflow-approval" key={stage.id}>

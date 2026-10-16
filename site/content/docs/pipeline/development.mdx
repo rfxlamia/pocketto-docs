@@ -11,7 +11,7 @@ description: "pocket-development runs an approved plan task by task: subagents i
 ## When to use it
 
 - The user asks to execute an implementation plan. A completed plan is required: if none exists, the skill routes to [planning](/docs/pipeline/planning) rather than inventing one.
-- Task count does not gate eligibility: a one-task plan is the degenerate `SOLO` case and runs the normal gate, packet, audit, and phase-pass path. It is not bounced to `hotfix`: hotfix is an entry-routing choice for small clear work, not an escape hatch once a plan exists.
+- Task count does not gate eligibility: a one-task plan is the degenerate **SOLO** case and runs the normal gate, packet, audit, and phase-pass path. It is not bounced to **hotfix** : hotfix is an entry-routing choice for small clear work, not an escape hatch once a plan exists.
 
 ## Prerequisites
 
@@ -48,7 +48,7 @@ The main agent is the **Delegator + Gate Runner**. It must not implement, and it
 | Construct Pocket Packets and dispatch subagents | Invoke a separate per-task review workflow |
 | Run mechanical checks, then dispatch the auditor | Judge code quality or spec compliance itself |
 | Read task files on demand, one at a time | Read the full plan upfront (context blowout) |
-| Emit `PHASE_COMPLETE` handoffs | Claim a skipped or unrun review passed |
+| Emit **PHASE_COMPLETE** handoffs | Claim a skipped or unrun review passed |
 
 ### The 6 Iron Laws
 
