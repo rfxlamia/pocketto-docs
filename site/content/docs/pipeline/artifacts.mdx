@@ -81,7 +81,7 @@ Project-level files live at the repository root: `CLAUDE.md` / `AGENTS.md` (proj
       "file": "execution-plan-phase-1.md",
       "status": "DONE",
       "tasks": [
-        { "id": "T1", "name": "CLI — PIPELINE marker constant", "status": "DONE", "done_sha": "2be3cde8…" }
+        { "id": "T1", "name": "CLI: PIPELINE marker constant", "status": "DONE", "done_sha": "2be3cde8…" }
       ],
       "corrections": [
         { "sha": "42427117…", "files": ["skills/pocket-development/SKILL.md"], "for_task": "T4" }
@@ -96,9 +96,9 @@ Project-level files live at the repository root: `CLAUDE.md` / `AGENTS.md` (proj
 ## Invariants
 
 1. **The CLI is the only writer** for `log.json` and lifecycle state. Skills run commands; nobody edits state files by hand.
-2. **closeout.md is append-only** — one section per phase under its canonical marker, plus the final plan section after `log close`.
-3. **Verdicts are pinned to SHAs** — a review proves a verdict only for the `reviewed_sha` it actually read.
-4. **Events commit before delivery** — `lifecycle.json` records state and events locally first; Enterprise delivery can never undo the local commit.
+2. **closeout.md is append-only**: one section per phase under its canonical marker, plus the final plan section after `log close`.
+3. **Verdicts are pinned to SHAs**: a review proves a verdict only for the `reviewed_sha` it actually read.
+4. **Events commit before delivery**: `lifecycle.json` records state and events locally first; Enterprise delivery can never undo the local commit.
 
 ## Related documentation
 

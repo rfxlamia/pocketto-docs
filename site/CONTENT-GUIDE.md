@@ -1,4 +1,6 @@
-# Pocketto Site — Content Guide (for documentation authors)
+# Pocketto Site: Content Guide (for documentation authors)
+
+Visual direction (tokens, dials, icon and layout decisions) lives in `DESIGN.md`.
 
 You are writing MDX documentation pages for the Pocketto website (Next.js + Fumadocs).
 Follow every rule below exactly.
@@ -18,6 +20,11 @@ Follow every rule below exactly.
 5. **Do not copy SKILL.md files verbatim.** Write for human developers: explain, then show.
 6. **English only.** Second person ("you"), active voice, precise and direct. No marketing
    fluff, no exclamation marks, no "simply" or "just".
+   No em dash (U+2014) anywhere: use a comma, colon, period, or parentheses. A few verbatim
+   product samples (Iron Laws blocks, plan templates, JSON and CLI output) differ from the real
+   product output by this punctuation only. One exception keeps the em dash on purpose: the
+   `# EXECUTION PLAN — <name>` plan title in `reference/plan-structure.mdx`, because the CLI parser
+   (`pocketto-pi structure`) matches that character literally.
 7. **No placeholders.** No lorem ipsum, no "coming soon", no empty sections.
 8. Do not run `bun install`, `bun run build`, or any dev server. Only write files.
 
@@ -36,7 +43,7 @@ No other frontmatter keys.
 
 ## MDX components available
 
-Use the default MDX components plus these (import-free in MDX — they are provided):
+Use the default MDX components plus these (import-free in MDX, they are provided):
 
 - `<Callout type="info|warn|tip|error" title="Optional title">…</Callout>`
 - `<Cards><Card title="…" href="…">description</Card></Cards>`
@@ -58,22 +65,22 @@ host-specific (Pi vs Claude Code) content, Steps only for genuinely sequential p
 - Always declare the language (`bash`, `text`, `json`, `markdown`, `mdx`).
 - CLI commands are `npx -y pocketto-pi <command> …` exactly as the sources show.
 - For Claude Code slash commands, use the `/pocketto:<skill-name>` form (e.g. `/pocketto:pocket-grinding "topic"`), which is the plugin invocation form from the repository README.
-- For Pi, skills are invoked by asking for them or using their trigger phrases (the SKILL.md `description` frontmatter lists triggers); there is no verified Pi slash-command syntax — do not invent one.
+- For Pi, skills are invoked by asking for them or using their trigger phrases (the SKILL.md `description` frontmatter lists triggers); there is no verified Pi slash-command syntax, so do not invent one.
 
 ## Page template for a **skill** page
 
 Every standalone-skill page must cover, in this order (use H2 `##` headings):
 
 1. Lead paragraph: what it does in 1–2 sentences (no heading).
-2. **When to use it** (and a "When not to use it" subsection or list — always present).
+2. **When to use it** (and a "When not to use it" subsection or list, always present).
 3. **Prerequisites** (e.g. required extensions, plan/spec inputs, host differences).
 4. **How to invoke it** (exact invocation per host).
-5. **How it works** — the actual phases/steps from the source, condensed but complete. Keep
+5. **How it works**: the actual phases/steps from the source, condensed but complete. Keep
    the stage/gate names and artifact paths verbatim.
-6. **Outputs and artifacts** — exact paths and formats.
-7. **Approval gates and constraints** — what stops for the user, what is non-negotiable.
-8. **Example** — one realistic, clearly-labelled example scenario (may be illustrative).
-9. **Related documentation** — bulleted links.
+6. **Outputs and artifacts**: exact paths and formats.
+7. **Approval gates and constraints**: what stops for the user, what is non-negotiable.
+8. **Example**: one realistic, clearly-labelled example scenario (may be illustrative).
+9. **Related documentation**: bulleted links.
 
 ## Page template for a **pipeline stage** page
 

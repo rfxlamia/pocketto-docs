@@ -1,6 +1,6 @@
 ---
 title: pocket-init
-description: Onboard an existing project onto Pocket — an evidence-based, merge-safe project guide and optional Education calibration.
+description: Onboard an existing project onto Pocket with an evidence-based, merge-safe project guide and optional Education calibration.
 ---
 
 `pocket-init` takes an existing project from zero Pocket context to a useful project guide the agent can rely on, and optionally enables Pocket Education with a persisted learner profile.
@@ -16,12 +16,12 @@ description: Onboard an existing project onto Pocket — an evidence-based, merg
 **When not to use it:**
 
 - The project already has a current memory file and learner profile.
-- You want to change learner levels later — that is [pocket-education](/docs/skills/pocket-education)'s job; it never needs a re-init.
-- Spec work — that is [grinding](/docs/pipeline/grinding).
+- You want to change learner levels later. That is [pocket-education](/docs/skills/pocket-education)'s job; it never needs a re-init.
+- Spec work: that is [grinding](/docs/pipeline/grinding).
 
 ## Prerequisites
 
-An existing project directory. No remote access is configured or performed — onboarding is strictly local.
+An existing project directory. No remote access is configured or performed. Onboarding is strictly local.
 
 ## How to invoke it
 
@@ -31,17 +31,17 @@ An existing project directory. No remote access is configured or performed — o
 
 ## How it works
 
-1. **Brownfield scan (read-only)** — stack and manifests, build/test/lint/typecheck commands (each recorded verbatim with its source, or `Not configured` rather than guessed), layout, conventions, existing memory files.
-2. **Pick the memory file** — `CLAUDE.md` on Claude Code, `AGENTS.md` on Pi; never both.
-3. **Write the managed section** — stack, verified commands, layout, conventions — inside `<!-- pocket-init:start -->` … `<!-- pocket-init:end -->` markers, kept under ~60 lines. Merge, never clobber: bytes outside the managed section are preserved exactly; a malformed marker pair aborts the write and asks how to repair it.
-4. **Education Gate (opt-in)** — checks the current profile with `npx -y pocketto-pi edu --json --contract 3`. If none exists, asks one question: *"Enable Pocket Education for this repo?"* A yes runs the lightweight calibration, shows the proposed profile, and writes it with `edu init` only after you confirm every level.
-5. **Completion report** — what was written, whether Education is enabled/reused/disabled, and the suggested next command.
+1. **Brownfield scan (read-only)**: stack and manifests, build/test/lint/typecheck commands (each recorded verbatim with its source, or `Not configured` rather than guessed), layout, conventions, existing memory files.
+2. **Pick the memory file**: `CLAUDE.md` on Claude Code, `AGENTS.md` on Pi; never both.
+3. **Write the managed section**: stack, verified commands, layout, conventions, inside `<!-- pocket-init:start -->` … `<!-- pocket-init:end -->` markers, kept under ~60 lines. Merge, never clobber: bytes outside the managed section are preserved exactly; a malformed marker pair aborts the write and asks how to repair it.
+4. **Education Gate (opt-in)**: checks the current profile with `npx -y pocketto-pi edu --json --contract 3`. If none exists, asks one question: *"Enable Pocket Education for this repo?"* A yes runs the lightweight calibration, shows the proposed profile, and writes it with `edu init` only after you confirm every level.
+5. **Completion report**: what was written, whether Education is enabled/reused/disabled, and the suggested next command.
 
 ## Outputs and artifacts
 
 ```text
 CLAUDE.md or AGENTS.md   managed project-guide section (merge-safe)
-## Pocket Education      learner profile block — outside the managed section, owned by the edu CLI
+## Pocket Education      learner profile block, outside the managed section, owned by the edu CLI
 ```
 
 Regenerating the guide never touches the Education block and never resets calibration.
@@ -49,12 +49,12 @@ Regenerating the guide never touches the Education block and never resets calibr
 ## Approval gates and constraints
 
 - Declining the Education Gate does not cancel the project guide.
-- Education is never enabled for you silently — the gate is explicit, and existing profiles are reused, never recalibrated, without your request.
+- Education is never enabled for you silently: the gate is explicit, and existing profiles are reused, never recalibrated, without your request.
 - Local onboarding only: no integrations, no remote services, no Enterprise setup (that belongs to the [optional adapter](/docs/core-enterprise/enterprise-setup)).
 
 ## Example
 
-*Illustrative:* on a TypeScript service with `bun test`, pocket-init writes Build: `bun run build` (from `package.json`), Test: `bun test` (verified), Lint: `Not configured` — and skips nothing it did not see.
+*Illustrative:* on a TypeScript service with `bun test`, pocket-init writes Build: `bun run build` (from `package.json`), Test: `bun test` (verified), Lint: `Not configured`, and skips nothing it did not see.
 
 ## Related documentation
 

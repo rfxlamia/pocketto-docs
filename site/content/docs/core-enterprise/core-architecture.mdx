@@ -1,15 +1,15 @@
 ---
 title: Core architecture
-description: What Core is made of — skills, CLI, artifacts, the JSON envelope, and the Enterprise command boundary.
+description: What Core is made of, from skills and CLI to artifacts, the JSON envelope, and the Enterprise command boundary.
 ---
 
 Core is the local-first product: the [pipeline](/docs/pipeline), the [standalone skills](/docs/skills), Pocket Education, and the `pocketto-pi` CLI. Everything here works with no GitHub credentials, no remote, and no Enterprise installation.
 
 ## Composition
 
-- **15 skills** — six chained [pipeline](/docs/pipeline) stages and nine [standalone](/docs/skills) skills, plus the optional `pocket-enterprise` adapter skill (Enterprise only).
-- **One CLI** — `pocketto-pi` (Node.js ≥ 18), the only writer of execution state. See the [CLI reference](/docs/reference/cli).
-- **One artifact tree** — specs, plans, task files, execution logs, verdicts, and closeout journals under `docs/pocket/`. See [Execution artifacts](/docs/pipeline/artifacts).
+- **15 skills**: six chained [pipeline](/docs/pipeline) stages and nine [standalone](/docs/skills) skills, plus the optional `pocket-enterprise` adapter skill (Enterprise only).
+- **One CLI**: `pocketto-pi` (Node.js ≥ 18), the only writer of execution state. See the [CLI reference](/docs/reference/cli).
+- **One artifact tree**: specs, plans, task files, execution logs, verdicts, and closeout journals under `docs/pocket/`. See [Execution artifacts](/docs/pipeline/artifacts).
 
 ## The JSON envelope and contract handshake
 
@@ -20,11 +20,11 @@ Skills call the CLI with `--json` and `--contract 3`. The envelope is stable:
 { "ok": false, "error": { "code": "CONTRACT_MISMATCH", "message": "…" } }
 ```
 
-A skill declares the contract it was written against. A mismatch **fails loudly with guidance** instead of silently emitting output the skill cannot parse — pin the CLI (`npx -y pocketto-pi@<version>`) or update, as the error instructs. See [Compatibility](/docs/core-enterprise/compatibility).
+A skill declares the contract it was written against. A mismatch **fails loudly with guidance** instead of silently emitting output the skill cannot parse. Pin the CLI (`npx -y pocketto-pi@<version>`) or update, as the error instructs. See [Compatibility](/docs/core-enterprise/compatibility).
 
 ## The Enterprise command boundary
 
-Two CLI commands are Enterprise-owned: `mode` (read/configure explicit Enterprise opt-in) and `format` (render GitHub bodies). Core installations start **without** their modules — they load lazily on first use, and only when the Enterprise role is installed. A Core install asking for them gets `ENTERPRISE_COMMAND_UNAVAILABLE`, not a crash. The boundary is declared by the `surfaces.json` manifest and enforced by release builds: Core roles ship with forbidden-path and forbidden-content checks (for example, Core artifacts must not contain the string "Pocket Enterprise"). See [Release surfaces](/docs/reference/release-surfaces).
+Two CLI commands are Enterprise-owned: `mode` (read/configure explicit Enterprise opt-in) and `format` (render GitHub bodies). Core installations start **without** their modules. They load lazily on first use, and only when the Enterprise role is installed. A Core install asking for them gets `ENTERPRISE_COMMAND_UNAVAILABLE`, not a crash. The boundary is declared by the `surfaces.json` manifest and enforced by release builds: Core roles ship with forbidden-path and forbidden-content checks (for example, Core artifacts must not contain the string "Pocket Enterprise"). See [Release surfaces](/docs/reference/release-surfaces).
 
 ## The lifecycle layer
 
@@ -39,7 +39,7 @@ Details: [Lifecycle events](/docs/core-enterprise/lifecycle-events).
 
 ## What Core never does
 
-Core does not call `gh`, does not create GitHub resources, does not reconcile GitHub resources, does not merge pull requests, and does not close issues. Those capabilities belong to Enterprise — or to a human. See [Local-first behavior](/docs/core-enterprise/local-first) and [Integration boundaries](/docs/core-enterprise/integration-boundaries).
+Core does not call `gh`, does not create GitHub resources, does not reconcile GitHub resources, does not merge pull requests, and does not close issues. Those capabilities belong to Enterprise, or to a human. See [Local-first behavior](/docs/core-enterprise/local-first) and [Integration boundaries](/docs/core-enterprise/integration-boundaries).
 
 ## Related documentation
 

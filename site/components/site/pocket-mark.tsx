@@ -13,7 +13,7 @@ export function PocketMark({ className }: { className?: string }) {
   );
 }
 
-/** GitHub mark — lucide-react no longer ships brand icons. */
+/** GitHub mark: lucide-react no longer ships brand icons. */
 export function GithubIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 16 16" fill="currentColor" className={className} aria-hidden="true">

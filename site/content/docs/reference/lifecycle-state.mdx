@@ -1,6 +1,6 @@
 ---
 title: Lifecycle state
-description: log.json and lifecycle.json — the shapes, the transitions, and the CLI-only-writer rule.
+description: "log.json and lifecycle.json: the shapes, the transitions, and the CLI-only-writer rule."
 ---
 
 Two files carry execution state, with a strict division of labor: **`log.json`** is the detailed task-execution projection; **`lifecycle.json`** is authoritative for lifecycle state, the event journal, and delivery state.
@@ -35,7 +35,7 @@ Two files carry execution state, with a strict division of labor: **`log.json`**
 }
 ```
 
-*(Illustrative shape — fields abbreviated.)*
+*(Illustrative shape, fields abbreviated.)*
 
 ### Transitions
 
@@ -44,17 +44,17 @@ Two files carry execution state, with a strict division of labor: **`log.json`**
 | Task | `WAITING → DONE` | `log update <plan_dir> <phase_file> DONE --task T1 --sha <audited_head>` |
 | Task | `WAITING → BLOCKED` | `log update <plan_dir> <phase_file> BLOCKED --task T1` |
 | Phase | `WAITING → REVIEW` | `log update <plan_dir> <phase_file> REVIEW` (after the phase pass records its result) |
-| Phase | `REVIEW → DONE` | `log update <plan_dir> <phase_file> DONE` (closing only — **never** `--task`) |
+| Phase | `REVIEW → DONE` | `log update <plan_dir> <phase_file> DONE` (closing only, **never** `--task`) |
 | Plan | → `DONE` | `log close <plan_dir>` (verifies every phase `DONE`) |
-| Phase (stacked) | handoff | `log handoff <plan_dir> <phase_file>` — after `DONE`, before `log close` |
+| Phase (stacked) | handoff | `log handoff <plan_dir> <phase_file>`, after `DONE`, before `log close` |
 
 ### The invariants
 
-- `done_sha` is set only when a task is marked `DONE` **with `--sha` after a passing audit** — and it **never moves** afterwards; phase-level fixes are append-only `--correction` records.
+- `done_sha` is set only when a task is marked `DONE` **with `--sha` after a passing audit**, and it **never moves** afterwards; phase-level fixes are append-only `--correction` records.
 - `DUPLICATE_DONE_SHA` hard-errors when two tasks would share a merge commit (a parallel-group footgun; merge and log one task at a time). `--allow-duplicate-sha` exists only for tasks that legitimately produced no new commit.
-- `REVIEW` is a phase-only status — a task is never `REVIEW`.
+- `REVIEW` is a phase-only status: a task is never `REVIEW`.
 - The pipeline marker refuses state-changing commands against plans from an older pipeline generation (`PIPELINE_TOO_OLD`).
-- The CLI is the **only writer**. A `log.json` that exists but fails to parse is refused (`LOG_JSON_UNPARSEABLE`), not silently treated as absent — `--reset` is the explicit way to discard it.
+- The CLI is the **only writer**. A `log.json` that exists but fails to parse is refused (`LOG_JSON_UNPARSEABLE`), not silently treated as absent: `--reset` is the explicit way to discard it.
 
 ## lifecycle.json
 
@@ -62,7 +62,7 @@ Managed by the `lifecycle` CLI (see [Lifecycle events](/docs/core-enterprise/lif
 
 - root `schema: 2` (Core also reads schema 1; above 2 fails closed)
 - plan state: normalized `plan_id`, required `spec_dir`, optional `plan_dir`, state snapshot, revision
-- the event journal — allowlisted events with deterministic IDs `<plan_id>:<type>:r<revision>`, artifact refs, payload hashes, opaque proof references, delivery state
+- the event journal: allowlisted events with deterministic IDs `<plan_id>:<type>:r<revision>`, artifact refs, payload hashes, opaque proof references, delivery state
 - stacked plans record `phase_branches` including the root base branch
 
 Commits are atomic: state and its event land together, before the projection update and long before any remote delivery.

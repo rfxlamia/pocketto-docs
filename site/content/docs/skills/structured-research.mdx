@@ -1,29 +1,29 @@
 ---
 title: structured-research
-description: Validate an explicit assumption with structured research — a graded, evidence-backed, advisory verdict.
+description: Validate an explicit assumption with structured research, returning a graded, evidence-backed, advisory verdict.
 ---
 
-`structured-research` validates an explicit assumption before it leaks into planning or code. It operationalizes the belief into a falsifiable question, recommends a research methodology from a catalog, gathers cited evidence, and returns a **graded verdict** — Confirmed / Refuted / Inconclusive — with an advisory recommendation.
+`structured-research` validates an explicit assumption before it leaks into planning or code. It operationalizes the belief into a falsifiable question, recommends a research methodology from a catalog, gathers cited evidence, and returns a **graded verdict** (Confirmed / Refuted / Inconclusive) with an advisory recommendation.
 
 **Core principle:** An assumption is not evidence. Evidence is not a verdict. A verdict is advisory, not a decree.
 
 ## When to use it
 
-- A belief is still an assumption — "I think X works this way", "this library probably supports Y", "Z is the fast path".
+- A belief is still an assumption: "I think X works this way", "this library probably supports Y", "Z is the fast path".
 - The assumption is about to enter planning/development unvalidated and the cost of being wrong is real.
 
 **When not to use it:**
 
 - Generating or exploring ideas → [pocket-pitching](/docs/pipeline/pitching) / [pocket-grinding](/docs/pipeline/grinding) (those diverge; this validates).
 - Fixing a known defect → [bug-hunting](/docs/skills/bug-hunting).
-- The claim is settled and just needs implementing → [hotfix](/docs/skills/hotfix).
+- The claim is settled and needs implementing → [hotfix](/docs/skills/hotfix).
 
 ## Boundary with pitching/grinding
 
 | structured-research | pocket-pitching / pocket-grinding |
 |---------------------|-----------------------------------|
 | Tests whether a stated assumption holds | Generates and explores ideas |
-| Convergent — narrows to a verdict | Divergent — widens the option space |
+| Convergent: narrows to a verdict | Divergent: widens the option space |
 | Output: graded verdict + evidence | Output: directions / spec |
 | One explicit assumption in | A vague problem in |
 
@@ -49,11 +49,11 @@ LAW 2: SEEK REFUTATION, NOT JUST CONFIRMATION
 LAW 3: THE VERDICT IS ADVISORY
 ```
 
-1. **Assumption intake** — the belief is restated as a precise, testable claim; you confirm the restatement (silence is not confirmation).
-2. **Method selection** — 1–3 methods from the catalog, always including **at least one adversarial method** (Falsification, Counterexample Hunt, Pre-Mortem…). A research run that only seeks confirmation is invalid. The recommendation is non-binding — you can pick, drop, or combine.
-3. **Evidence gathering** — the right tool per method: Context7 for library claims, web search for published facts, code scans for project-internal behavior. Every finding carries its source; no source, not evidence.
-4. **Curation gate** — after all evidence, an advisor pass pressure-tests it (strong vs weak, contradictions, gaps). If no advisor is available, the curation runs inline with that explicitly stated — the gate is never skipped; only its executor changes.
-5. **Graded verdict** — `Confirmed | Refuted | Inconclusive` with confidence, tied to cited evidence, plus *what would change this verdict* and a non-binding recommendation.
+1. **Assumption intake**: the belief is restated as a precise, testable claim; you confirm the restatement (silence is not confirmation).
+2. **Method selection**: 1–3 methods from the catalog, always including **at least one adversarial method** (Falsification, Counterexample Hunt, Pre-Mortem…). A research run that only seeks confirmation is invalid. The recommendation is non-binding. You can pick, drop, or combine.
+3. **Evidence gathering**: the right tool per method, with Context7 for library claims, web search for published facts, code scans for project-internal behavior. Every finding carries its source; no source, not evidence.
+4. **Curation gate**: after all evidence, an advisor pass pressure-tests it (strong vs weak, contradictions, gaps). If no advisor is available, the curation runs inline with that explicitly stated. The gate is never skipped; only its executor changes.
+5. **Graded verdict**: `Confirmed | Refuted | Inconclusive` with confidence, tied to cited evidence, plus *what would change this verdict* and a non-binding recommendation.
 
 ## Outputs and artifacts
 
@@ -64,7 +64,7 @@ docs/pocket/research/YYYY-MM-DD-kebab-slug/research-report.md
 ## Approval gates and constraints
 
 - The operationalized question must be explicitly confirmed before research starts.
-- The verdict is advisory — the maintainer decides. Next-step options (adopt, run again, carry into grinding/planning, stop) are presented, not executed.
+- The verdict is advisory: the maintainer decides. Next-step options (adopt, run again, carry into grinding/planning, stop) are presented, not executed.
 - A verdict without cited sources cannot be produced; refutation is mandatory.
 
 ## Example
@@ -73,6 +73,6 @@ docs/pocket/research/YYYY-MM-DD-kebab-slug/research-report.md
 
 ## Related documentation
 
-- [Grinding](/docs/pipeline/grinding) — where a confirmed input goes next
+- [Grinding](/docs/pipeline/grinding): where a confirmed input goes next
 - [Structured planning](/docs/pipeline/planning)
 - [Standalone skills](/docs/skills)

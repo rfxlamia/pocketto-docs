@@ -3,7 +3,7 @@
 @import 'fumadocs-ui/css/preset.css';
 
 /* ---------------------------------------------------------------------------
-   Pocketto design tokens — "engineering field manual".
+   Pocketto design tokens: "engineering field manual".
    Warm paper, ink, and one signal color. Every value is deliberate.
 --------------------------------------------------------------------------- */
 
@@ -14,9 +14,10 @@
   --bg-sunk: #f1ede3;
   --fg: #201b15;
   --fg-soft: #57503f;
-  --fg-faint: #8a8071;
+  --fg-faint: #6e6555;
   --line: rgb(32 27 21 / 0.14);
   --line-strong: rgb(32 27 21 / 0.32);
+  --line-control: #8c8472;
 
   --accent: #bd3d0a;
   --accent-strong: #9a3108;
@@ -40,9 +41,10 @@
   --bg-sunk: #120f0b;
   --fg: #ece5d7;
   --fg-soft: #b3a896;
-  --fg-faint: #7d7362;
+  --fg-faint: #9a907d;
   --line: rgb(236 229 215 / 0.13);
   --line-strong: rgb(236 229 215 / 0.3);
+  --line-control: #726857;
 
   --accent: #f57f2f;
   --accent-strong: #f99a58;
@@ -72,6 +74,7 @@
   --color-fg-faint: var(--fg-faint);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
+  --color-line-control: var(--line-control);
 
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
@@ -141,7 +144,7 @@ body {
 --------------------------------------------------------------------------- */
 
 @layer components {
-  /* Field-manual section label: "01 — PIPELINE" */
+  /* Field-manual section label: "01. PIPELINE" */
   .section-label {
     font-family: var(--font-jetbrains), ui-monospace, monospace;
     font-size: 0.75rem;
@@ -167,7 +170,7 @@ body {
     font-weight: 560;
   }
 
-  /* Buttons — respond on press, not only on release. */
+  /* Buttons: respond on press, not only on release. */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -205,7 +208,7 @@ body {
   .btn-outline {
     background: transparent;
     color: var(--fg);
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--line-control);
   }
   .btn-outline:hover {
     border-color: var(--fg);
@@ -222,7 +225,7 @@ body {
     background: var(--bg-sunk);
   }
 
-  /* Lifecycle state chips — the real vocabulary of the pipeline. */
+  /* Lifecycle state chips: the real vocabulary of the pipeline. */
   .chip {
     font-family: var(--font-jetbrains), ui-monospace, monospace;
     font-size: 0.6875rem;

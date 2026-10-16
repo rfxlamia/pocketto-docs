@@ -1,6 +1,6 @@
 ---
 title: brand-design
-description: A brand-aware design system generator — creative brief, math-validated tokens, and HTML preview confirmation.
+description: A brand-aware design system generator with a creative brief, math-validated tokens, and HTML preview confirmation.
 ---
 
 `brand-design` acts as **Head of Brand**: it translates abstract brand language ("we want to feel trustworthy and modern") into a concrete, mathematically-validated, implementation-ready design system, writes `creative-brief.md` as the source of truth for all UI/UX in the project, and can compile it to framework tokens.
@@ -16,8 +16,8 @@ description: A brand-aware design system generator — creative brief, math-vali
 
 **When not to use it:**
 
-- A single component needs building and `creative-brief.md` already exists — just read the brief and build.
-- Only the token export broke — the token file is derived output; re-run the export step, not the whole skill.
+- A single component needs building and `creative-brief.md` already exists: read the brief and build.
+- Only the token export broke: the token file is derived output; re-run the export step, not the whole skill.
 
 ## Prerequisites
 
@@ -35,34 +35,34 @@ On Pi: "brand-design", "design system", "creative brief", "set up UI tokens".
 
 Mode detection first: no `docs/pocket/rule/creative-brief.md` → **discovery mode** (full flow); it exists → **refine mode** (same confirmation gates, scoped).
 
-1. **Brand discovery interview** — the project is scanned first (README, manifests, existing tokens), then the brand questions are asked one at a time. Personality and platform questions must be answered before anything downstream — never invented.
-2. **Semantic translation** — adjectives map to concrete parameters via lookup tables: hue families, border-radius ranges, font category, modular-scale ratio (by platform), copy tone. Every row cites a rule; conflicting adjectives resolve by stated rules, with the winner and why.
-3. **Mathematical design** — OKLCH color derivation, WCAG relative-luminance and contrast computation, modular type scales. **Gate 3: no color pair is exempt** — every text/background pair is calculated; below 4.5:1 (normal) or 3:1 (large), lightness auto-adjusts until valid.
-4. **Atomic states + copy guidelines** — the 5-state component template and tone-matched micro-copy from the references.
-5. **HTML preview** — a preview page is generated from the fixed template for your confirmation.
-6. **Brief written** — only after you confirm the preview ("type OK to finalize").
-7. **Enforcement** — the brief is enforced across the project via a project-scoped rule file (`.claude/rules/brand-design.md`).
-8. **Token export (optional)** — Tailwind v4 `@theme`, Tailwind v3 preset, or plain CSS custom properties, from the fixed mapping.
+1. **Brand discovery interview**: the project is scanned first (README, manifests, existing tokens), then the brand questions are asked one at a time. Personality and platform questions must be answered before anything downstream, never invented.
+2. **Semantic translation**: adjectives map to concrete parameters via lookup tables (hue families, border-radius ranges, font category, modular-scale ratio by platform, copy tone). Every row cites a rule; conflicting adjectives resolve by stated rules, with the winner and why.
+3. **Mathematical design**: OKLCH color derivation, WCAG relative-luminance and contrast computation, modular type scales. **Gate 3: no color pair is exempt**: every text/background pair is calculated; below 4.5:1 (normal) or 3:1 (large), lightness auto-adjusts until valid.
+4. **Atomic states + copy guidelines**: the 5-state component template and tone-matched micro-copy from the references.
+5. **HTML preview**: a preview page is generated from the fixed template for your confirmation.
+6. **Brief written**: only after you confirm the preview ("type OK to finalize").
+7. **Enforcement**: the brief is enforced across the project via a project-scoped rule file (`.claude/rules/brand-design.md`).
+8. **Token export (optional)**: Tailwind v4 `@theme`, Tailwind v3 preset, or plain CSS custom properties, from the fixed mapping.
 
 ## Outputs and artifacts
 
-- `docs/pocket/rule/creative-brief.md` — the source of truth for all UI/UX
+- `docs/pocket/rule/creative-brief.md`: the source of truth for all UI/UX
 - `creative-brief-preview.html`
 - `.claude/rules/brand-design.md`
 - Optional generated token file: `brand.theme.css` / `tailwind.brand.preset.js` / `tokens.css`
 
 ## Approval gates and constraints
 
-- **Gate 1:** the interview's required questions are answered before translation — no assumed brand personality.
-- **Gate 2:** `creative-brief.md` is written only after the HTML preview is confirmed. Refine mode re-confirms too — it is Gate 2 again, scoped.
+- **Gate 1:** the interview's required questions are answered before translation, with no assumed brand personality.
+- **Gate 2:** `creative-brief.md` is written only after the HTML preview is confirmed. Refine mode re-confirms too. It is Gate 2 again, scoped.
 - **Gate 3:** contrast validation cannot be skipped for any pair.
 - This is a standalone skill: its deliverable is the brief + enforcement rule, not a pipeline handoff.
 
 ## Example
 
-*Illustrative:* "professional, trustworthy, for a fintech dashboard" → navy/blue hue family, 4–6px radii, geometric sans, 1.25 modular scale, formal CTA register — every contrast pair computed, preview confirmed, brief written, `@theme` tokens exported.
+*Illustrative:* "professional, trustworthy, for a fintech dashboard" → navy/blue hue family, 4–6px radii, geometric sans, 1.25 modular scale, formal CTA register, every contrast pair computed, preview confirmed, brief written, `@theme` tokens exported.
 
 ## Related documentation
 
-- [Structured research](/docs/skills/structured-research) — validate design assumptions separately
+- [Structured research](/docs/skills/structured-research): validate design assumptions separately
 - [Standalone skills](/docs/skills)

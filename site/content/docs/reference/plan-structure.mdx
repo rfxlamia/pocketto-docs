@@ -3,7 +3,7 @@ title: Plan structure
 description: The execution plan document format, the structuring output, and what the CLI validates.
 ---
 
-An execution plan is the handoff artifact between [planning](/docs/pipeline/planning) and [structuring](/docs/pipeline/structuring). `pocketto-pi structure` parses only one shape — everything else fails the mandatory dry-run.
+An execution plan is the handoff artifact between [planning](/docs/pipeline/planning) and [structuring](/docs/pipeline/structuring). `pocketto-pi structure` parses only one shape: everything else fails the mandatory dry-run.
 
 ## The plan document
 
@@ -33,13 +33,13 @@ Rule: <rule name>
 ## Pocket Packets
 
 ### Task 1: <name> [prereq]
-## OBJECTIVE … (full packet per task — see Pocket Packets)
+## OBJECTIVE … (full packet per task, see Pocket Packets)
 
 ## Plan Summary
 | Task | Name | Depends | Complexity | Key Verification |
 ```
 
-The parser anchors on: the `# EXECUTION PLAN — <name>` title, a `## Pocket Packets` section, and `### Task N: <name> [annotation]` headings. Task count selects no other schema — a plan too small for packets belongs in [hotfix](/docs/skills/hotfix), not in a reduced format.
+The parser anchors on: the `# EXECUTION PLAN — <name>` title (the title uses an em dash; the parser matches it literally), a `## Pocket Packets` section, and `### Task N: <name> [annotation]` headings. Task count selects no other schema. A plan too small for packets belongs in [hotfix](/docs/skills/hotfix), not in a reduced format.
 
 ## Dependency annotations
 
@@ -49,9 +49,9 @@ The parser anchors on: the `# EXECUTION PLAN — <name>` title, a `## Pocket Pac
 | `[depends: T1]` | Must wait for T1 |
 | `[depends: T1, T2]` | Must wait for both |
 | `[parallel: T3]` | Can run concurrently with T3 |
-| `[test-risk]` | Marker: test strategy is non-obvious (audit trigger) — append **after** dependency annotations |
+| `[test-risk]` | Marker: test strategy is non-obvious (audit trigger). Append **after** dependency annotations |
 
-Dependency order is **recommended** — development enforces actual sequencing.
+Dependency order is **recommended**: development enforces actual sequencing.
 
 ## What structuring produces
 
@@ -67,7 +67,7 @@ Single-phase plans still get the index + task files; there is no passthrough bel
 
 ## What the CLI validates
 
-`--dry-run` (mandatory in planning, non-authorizing) checks that the plan parses, conforms to the template, and has a valid dependency order — reporting `NO_TASKS`, `UNKNOWN_TASK_REF`, `CYCLE_DETECTED` (plus duplicate task IDs and dependency-order inversions, enforced since the structure hardening) — and captures `data.action` (`single` | `split`) and `data.executionFlow` (for example `T1→T2,T3(PARALLEL)→T4`). A failed dry-run stops any approval gate.
+`--dry-run` (mandatory in planning, non-authorizing) checks that the plan parses, conforms to the template, and has a valid dependency order, reporting `NO_TASKS`, `UNKNOWN_TASK_REF`, `CYCLE_DETECTED` (plus duplicate task IDs and dependency-order inversions, enforced since the structure hardening), and captures `data.action` (`single` | `split`) and `data.executionFlow` (for example `T1→T2,T3(PARALLEL)→T4`). A failed dry-run stops any approval gate.
 
 ## Related documentation
 

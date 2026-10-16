@@ -1,6 +1,6 @@
 ---
 title: Structuring
-description: pocket-structuring — the CLI decomposes an approved execution plan into an index, per-task files, and phase manifests.
+description: "pocket-structuring: the CLI decomposes an approved execution plan into an index, per-task files, and phase manifests."
 ---
 
 `pocket-structuring` is deliberately thin: the **Pocket CLI** does the work. It turns a completed execution plan into `execution-plan/index.md`, one file per task under `execution-plan/tasks/`, and phase manifests when the plan needs multiple phases. Parsing, decomposition, file generation, and log reconciliation are all CLI-owned; the JSON result is the source of truth.
@@ -13,7 +13,7 @@ description: pocket-structuring — the CLI decomposes an approved execution pla
 **When not to use it:**
 
 - The plan is already structured.
-- You explicitly choose to skip it — the plan then remains flat (a legal choice; development accepts a flat source plan).
+- You explicitly choose to skip it: the plan then remains flat (a legal choice; development accepts a flat source plan).
 
 ## How to invoke it
 
@@ -30,9 +30,9 @@ Parse the JSON envelope; on success it reports the feature, task and phase count
 | *(none)* | Decompose; protects existing execution progress when a changed plan would alter task topology |
 | `--dry-run` | Validate and summarize without writing anything |
 | `--force` | Rebuild topology only when there is **no** execution progress |
-| `--reset` | Discard progress and start a fresh execution log — **never without your explicit authorization** (it discards `WAITING`/`REVIEW`/`DONE`/`BLOCKED` state) |
+| `--reset` | Discard progress and start a fresh execution log, **never without your explicit authorization** (it discards `WAITING`/`REVIEW`/`DONE`/`BLOCKED` state) |
 
-On failure, inspect the error and plan: recoverable causes (wrong path, malformed input) are corrected and the command re-run. A contract mismatch means a compatible CLI version is needed — it is not a plan-format error. If `structure` was interrupted mid-write, re-run with `--reset` on that plan before continuing; do not hand-repair `log.json`.
+On failure, inspect the error and plan: recoverable causes (wrong path, malformed input) are corrected and the command re-run. A contract mismatch means a compatible CLI version is needed. It is not a plan-format error. If `structure` was interrupted mid-write, re-run with `--reset` on that plan before continuing; do not hand-repair `log.json`.
 
 ## Outputs and artifacts
 
@@ -46,15 +46,15 @@ docs/pocket/plans/<date>-<slug>/
 └── log.json                       (created/updated by log init or structure)
 ```
 
-Multi-phase manifests carry phase metadata — "Phase N of M", prerequisite, contained tasks, what it unlocks — and a `## Phase Completion Gate` section development evaluates verbatim.
+Multi-phase manifests carry phase metadata ("Phase N of M", prerequisite, contained tasks, what it unlocks) and a `## Phase Completion Gate` section development evaluates verbatim.
 
 ## Approval gates and constraints
 
-- Structuring authorizes **generation of plan artifacts only** — never implementation. After a successful run it continues to development only if you asked to begin execution or already authorized that handoff; otherwise it reports and stops.
+- Structuring authorizes **generation of plan artifacts only**, never implementation. After a successful run it continues to development only if you asked to begin execution or already authorized that handoff; otherwise it reports and stops.
 - The CLI is the only writer for these files.
 
 ## Related documentation
 
 - [Planning](/docs/pipeline/planning)
-- [Development](/docs/pipeline/development) — the next stage
+- [Development](/docs/pipeline/development): the next stage
 - [Generated files](/docs/reference/files)

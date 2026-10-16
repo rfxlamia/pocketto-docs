@@ -1,13 +1,13 @@
 ---
 title: Quickstart
-description: Run your first Pocketto commands in five minutes — a full pipeline tour and the standalone shortcuts.
+description: Run your first Pocketto commands in five minutes, with a full pipeline tour and the standalone shortcuts.
 ---
 
 Two ways to use Pocketto: the full pipeline for features, or standalone skills for everything smaller. This page shows both.
 
 ## The pipeline, chained
 
-Run a feature through the full pipeline — each stage hands off to the next:
+Run a feature through the full pipeline. Each stage hands off to the next:
 
 ```bash
 /pocketto:pocket-grinding   "add dark mode toggle"   # → spec + acceptance criteria
@@ -19,15 +19,15 @@ Run a feature through the full pipeline — each stage hands off to the next:
 What you will experience at each step:
 
 1. **Grinding** asks focused questions from business, developer, and QA lenses, then writes a spec with Given/When/Then acceptance criteria under `docs/pocket/spec/<date>-<slug>/`. An independent edge-case-hunter subagent reviews the scenarios. **You approve the spec** before anything moves on.
-2. **Planning** converts the approved spec into a TDD-structured execution plan. A spec-reviewer subagent checks coverage and the CLI dry-runs the plan. **You approve the plan** before derived artifacts are generated — plan approval never authorizes implementation.
+2. **Planning** converts the approved spec into a TDD-structured execution plan. A spec-reviewer subagent checks coverage and the CLI dry-runs the plan. **You approve the plan** before derived artifacts are generated. Plan approval never authorizes implementation.
 3. **Development** initializes the execution log, then executes task by task: implementer subagents write code with Pocket Packet contracts, and a read-only auditor reviews every task. When all tasks are done, a phase-level pass reviews the whole phase. The phase ends in `REVIEW`.
-4. **Closing** reconciles the verdicts, advances the phase, and appends a readable section to `closeout.md`. It runs because you asked — a passing verdict alone is not authorization.
+4. **Closing** reconciles the verdicts, advances the phase, and appends a readable section to `closeout.md`. It runs because you asked: a passing verdict alone is not authorization.
 
 <Callout type="info" title="Pi users">
-On Pi, skills are triggered by name or trigger phrase rather than slash commands — for example, say "pocket-grinding" or "before we build" with your topic. The skills themselves behave identically.
+On Pi, skills are triggered by name or trigger phrase rather than slash commands: for example, say "pocket-grinding" or "before we build" with your topic. The skills themselves behave identically.
 </Callout>
 
-## Or just fix something
+## Or fix one thing
 
 ```bash
 /pocketto:bug-hunting   "checkout total is off by one cent"
@@ -35,14 +35,14 @@ On Pi, skills are triggered by name or trigger phrase rather than slash commands
 ```
 
 - `bug-hunting` enforces **confirmed root cause before any fix**: evidence collection, blast-radius mapping, backward tracing, then a failing-test-first resolution.
-- `hotfix` enforces a **brief plan plus independent subagent review** before a single line of implementation — accuracy without full pipeline ceremony.
+- `hotfix` enforces a **brief plan plus independent subagent review** before a single line of implementation: accuracy without full pipeline ceremony.
 
 ## Where things land
 
-After the tour, your repository has durable artifacts — spec, plan, task files, `log.json`, review verdicts, and `closeout.md` — all under `docs/pocket/`. They are the audit trail; see [Execution artifacts](/docs/pipeline/artifacts).
+After the tour, your repository has durable artifacts: spec, plan, task files, `log.json`, review verdicts, and `closeout.md`, all under `docs/pocket/`. They are the audit trail; see [Execution artifacts](/docs/pipeline/artifacts).
 
 ## Next steps
 
 - Want the same tour with every gate explained? [Your first end-to-end project](/docs/getting-started/first-project).
 - Running on Pi for the first time? [Pi setup](/docs/getting-started/pi-setup).
-- Just exploring? Ask the agent **"what is pocket"** — `pocket-help` orients you without loading every skill.
+- Only exploring? Ask the agent **"what is pocket"**: `pocket-help` orients you without loading every skill.

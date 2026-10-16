@@ -1,6 +1,6 @@
 ---
 title: Claude Code setup
-description: Install and configure Pocketto as a Claude Code plugin — commands, memory files, and troubleshooting.
+description: Install and configure Pocketto as a Claude Code plugin, including commands, memory files, and troubleshooting.
 ---
 
 Pocketto distributes for Claude Code as a plugin through a marketplace manifest in the [Pocketto repository](https://github.com/rfxlamia/pocketto).
@@ -13,10 +13,10 @@ Pocketto distributes for Claude Code as a plugin through a marketplace manifest 
 /reload-plugins
 ```
 
-After `/reload-plugins`, every skill is available as a `/pocketto:*` command — for example `/pocketto:pocket-grinding`, `/pocketto:bug-hunting`, `/pocketto:pocket-closing <plan_dir>`.
+After `/reload-plugins`, every skill is available as a `/pocketto:*` command, for example `/pocketto:pocket-grinding`, `/pocketto:bug-hunting`, `/pocketto:pocket-closing <plan_dir>`.
 
 <Callout type="tip" title="First command">
-Run <code>/pocketto:pocket-help</code> — a compact router that explains the system and which skill to use without loading every skill into context.
+Run <code>/pocketto:pocket-help</code>, a compact router that explains the system and which skill to use without loading every skill into context.
 </Callout>
 
 ## The memory file: CLAUDE.md
@@ -26,7 +26,7 @@ Claude Code reads `CLAUDE.md` as project memory. Two Pocketto features write to 
 - **[pocket-init](/docs/skills/pocket-init)** generates a project guide (stack, verified build/test/lint commands, layout, conventions) inside a managed section delimited by `<!-- pocket-init:start -->` and `<!-- pocket-init:end -->`. Only that section is ever rewritten; your own content around it is untouched.
 - **Pocket Education** stores a learner profile in a `## Pocket Education` block *outside* the managed section. Regenerating the project guide never resets calibration.
 
-No extension setup is required on Claude Code — the review-gate, library-docs, and subagent capabilities that Pi loads as extensions come from the host itself.
+No extension setup is required on Claude Code: the review-gate, library-docs, and subagent capabilities that Pi loads as extensions come from the host itself.
 
 ## Claude Code vs Pi
 
@@ -40,12 +40,12 @@ No extension setup is required on Claude Code — the review-gate, library-docs,
 
 ## Troubleshooting
 
-- **Commands missing after install** — run `/reload-plugins`. The marketplace entry tracks the repository, so a re-run of `/plugin install pocketto@pocketto` refreshes it.
-- **CLI errors mentioning a contract** — the skills and the CLI handshake on a version (`--contract 3`). If they disagree, update the plugin or pin the CLI as the error message instructs; see [Compatibility](/docs/core-enterprise/compatibility).
-- **Mid-plan updates** — if a plan is in flight, finish or close it before updating; pipeline markers refuse older plans rather than corrupting state. See the [FAQ](/docs/reference/faq).
+- **Commands missing after install**: run `/reload-plugins`. The marketplace entry tracks the repository, so a re-run of `/plugin install pocketto@pocketto` refreshes it.
+- **CLI errors mentioning a contract**: the skills and the CLI handshake on a version (`--contract 3`). If they disagree, update the plugin or pin the CLI as the error message instructs; see [Compatibility](/docs/core-enterprise/compatibility).
+- **Mid-plan updates**: if a plan is in flight, finish or close it before updating; pipeline markers refuse older plans rather than corrupting state. See the [FAQ](/docs/reference/faq).
 
 ## Related documentation
 
-- [Installation](/docs/getting-started/installation) — both hosts side by side
+- [Installation](/docs/getting-started/installation): both hosts side by side
 - [Quickstart](/docs/getting-started/quickstart)
-- [Core & Enterprise](/docs/core-enterprise) — adding GitHub synchronization later
+- [Core & Enterprise](/docs/core-enterprise): adding GitHub synchronization later

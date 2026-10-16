@@ -16,25 +16,25 @@ Pocketto is MIT-licensed and developed in the open at [github.com/rfxlamia/pocke
 | `scripts/build-surfaces.js` | Stages a release role from the `surfaces.json` manifest |
 | `surfaces.json` | The four-role manifest with includes, forbidden paths, ownership, and the CLI boundary |
 | `assets/` | The pipeline diagram (`pipeline.svg` + Excalidraw source) |
-| `docs/pocket/` | Pocketto's own dogfooded artifacts — real specs, plans, execution logs, and closeout journals produced by the pipeline itself |
+| `docs/pocket/` | Pocketto's own dogfooded artifacts: real specs, plans, execution logs, and closeout journals produced by the pipeline itself |
 | `.claude-plugin/` | The Claude Code marketplace and plugin manifests |
 | `llms.txt`, `README.md`, `CHANGELOG.md`, `AGENTS.md` | Top-level documentation and the Enterprise mode block |
 
 ## Source-of-truth rules
 
-- **`SKILL.md` files are canonical** for skill behavior. Bundled `.skill` archives are derived — rebuild them with `rebuild-skills.sh` after editing skills (the changelog documents this script's role in keeping archives in sync).
-- **The contract files are cited, not restated.** `pocket-development`'s SKILL.md deliberately cites `two-stage-review.md` and `phase-level-pass.md` rather than duplicating their rules — duplicated rules drift.
+- **`SKILL.md` files are canonical** for skill behavior. Bundled `.skill` archives are derived: rebuild them with `rebuild-skills.sh` after editing skills (the changelog documents this script's role in keeping archives in sync).
+- **The contract files are cited, not restated.** `pocket-development`'s SKILL.md deliberately cites `two-stage-review.md` and `phase-level-pass.md` rather than duplicating their rules. Duplicated rules drift.
 - **`surfaces.json` governs packaging.** Any change that adds, moves, or re-owns files must update the manifest's `includes`, `ownership`, and (where relevant) `forbidden_paths`/`forbidden_content`.
 
 ## Where to contribute
 
 - Bugs and features: [GitHub issues](https://github.com/rfxlamia/pocketto/issues).
-- Changes: pull requests against the repository. `CHANGELOG.md` documents every release — notable changes belong there.
+- Changes: pull requests against the repository. `CHANGELOG.md` documents every release. Notable changes belong there.
 - The documentation you are reading is built from the repository's public contract; when behavior changes, the docs' claims change with it.
 
 ## License
 
-MIT — see the `LICENSE` file in the repository.
+MIT. See the `LICENSE` file in the repository.
 
 ## Related documentation
 

@@ -37,3 +37,11 @@ next-env.d.ts
 .idea/
 .vscode/
 Thumbs.db
+
+# agents
+.claude
+.pi
+AGENTS.md
+CLAUDE.md
+.zcode
+anti-slop

@@ -1,6 +1,6 @@
 ---
 title: Recovery and rollback
-description: Repair, drain, disable, and replay — fixing lifecycle problems without destroying state.
+description: Repair, drain, disable, and replay, fixing lifecycle problems without destroying state.
 ---
 
 Recovery in Pocketto follows one rule: **fix forward without destroying state**. Local commits and pending events survive almost every failure mode.
@@ -14,11 +14,11 @@ npx -y pocketto-pi lifecycle repair <spec_dir> --json --contract 3
 npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
 ```
 
-`repair` reconciles lifecycle-owned `log.json` projection fields while preserving task statuses, `done_sha`, corrections, and delivery state. It fails closed (`LIFECYCLE_REPAIR_STATE_UNRECOVERABLE`) when task state is unrecoverable — it never guesses. `drain` then replays the deferred event; it creates no new events.
+`repair` reconciles lifecycle-owned `log.json` projection fields while preserving task statuses, `done_sha`, corrections, and delivery state. It fails closed (`LIFECYCLE_REPAIR_STATE_UNRECOVERABLE`) when task state is unrecoverable. It never guesses. `drain` then replays the deferred event; it creates no new events.
 
 ## Interrupted structuring
 
-If `structure` was killed while writing `execution-plan/` or `log.json`, re-run `structure --reset` on that plan before continuing — it rebuilds both from scratch and is the only way to guarantee they are back in sync. Do not hand-edit `log.json` to fix a partial write.
+If `structure` was killed while writing `execution-plan/` or `log.json`, re-run `structure --reset` on that plan before continuing. It rebuilds both from scratch and is the only way to guarantee they are back in sync. Do not hand-edit `log.json` to fix a partial write.
 
 ## Disabling Enterprise
 
@@ -43,18 +43,18 @@ Replay only after the adapter is pinned to the last compatible v4 release or rei
 npx -y pocketto-pi lifecycle drain <spec_dir> --json --contract 3
 ```
 
-The replay uses the **original event IDs** — no retrospective duplicates.
+The replay uses the **original event IDs**, with no retrospective duplicates.
 
 ## What never happens automatically
 
 - No automatic downgrade or destructive conversion of v4 state.
 - Active v3 plans stay on their v3 path (see [Compatibility](/docs/core-enterprise/compatibility)).
-- A terminal or attempts-exhausted event is never revived by editing lifecycle state — that is a manual-resolution boundary.
+- A terminal or attempts-exhausted event is never revived by editing lifecycle state: that is a manual-resolution boundary.
 - Never delete `lifecycle.json`, `log.json`, or `.pocket-meta.json` to "reset" Enterprise.
 
 ## GH_UNKNOWN recovery (missing label)
 
-If a `spec-approved` delivery reports `GH_UNKNOWN`, that alone is not evidence of a missing label. The documented recovery procedure for [issue #70](https://github.com/rfxlamia/pocketto/issues/70) verifies the origin, performs an exact read-only label lookup, and asks for your explicit consent before creating `pocket-plan` — a documented workaround, not a runtime fix. See [Human authorization](/docs/core-enterprise/human-authorization) and the upstream procedure in the repository's `skills/pocket-enterprise/references/issue-reconciliation.md`.
+If a `spec-approved` delivery reports `GH_UNKNOWN`, that alone is not evidence of a missing label. The documented recovery procedure for [issue #70](https://github.com/rfxlamia/pocketto/issues/70) verifies the origin, performs an exact read-only label lookup, and asks for your explicit consent before creating `pocket-plan`. This is a documented workaround, not a runtime fix. See [Human authorization](/docs/core-enterprise/human-authorization) and the upstream procedure in the repository's `skills/pocket-enterprise/references/issue-reconciliation.md`.
 
 ## Related documentation
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useSyncExternalStore, useState } from 'react';
+import { useCallback, useEffect, useRef, useSyncExternalStore, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { PocketMark } from './pocket-mark';
 import { ThemeToggle } from './theme-toggle';
@@ -22,8 +22,10 @@ function subscribeScroll(callback: () => void) {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Scroll state lives in an external store — no setState-in-effect.
+  // Scroll state lives in an external store, no setState-in-effect.
   const scrolled = useSyncExternalStore(
     subscribeScroll,
     () => window.scrollY > 8,
@@ -32,8 +34,27 @@ export function SiteHeader() {
 
   const closeMenu = useCallback(() => setOpen(false), []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      closeMenu();
+      toggleRef.current?.focus();
+    };
+    const onPointerDown = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) closeMenu();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [open, closeMenu]);
+
   return (
     <header
+      ref={headerRef}
       className="sticky top-0 z-40 border-b transition-colors duration-200"
       style={{
         borderColor: scrolled ? 'var(--line)' : 'transparent',
@@ -55,7 +76,7 @@ export function SiteHeader() {
             <Link
               key={link.url}
               href={link.url}
-              className="rounded-md px-3 py-2 text-sm font-medium text-fg-soft transition-colors duration-150 hover:bg-bg-sunk hover:text-fg"
+              className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-fg-soft transition-colors duration-150 hover:bg-bg-sunk hover:text-fg"
             >
               {link.text}
             </Link>
@@ -66,7 +87,7 @@ export function SiteHeader() {
             href={SITE.repo}
             target="_blank"
             rel="noreferrer noopener"
-            className="btn btn-outline ml-2 !px-3.5 !py-2 text-[13px]"
+            className="btn btn-outline ml-2 min-h-11 !px-3.5 !py-2 text-[13px]"
           >
             GitHub
           </a>
@@ -75,12 +96,13 @@ export function SiteHeader() {
         <div className="flex items-center gap-1 md:hidden">
           <ThemeToggle />
           <button
+            ref={toggleRef}
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
-            className="rounded-md p-2 text-fg-soft transition-colors hover:bg-bg-sunk hover:text-fg"
+            className="inline-flex size-11 items-center justify-center rounded-md text-fg-soft transition-colors hover:bg-bg-sunk hover:text-fg"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -99,7 +121,7 @@ export function SiteHeader() {
               key={link.url}
               href={link.url}
               onClick={closeMenu}
-              className="block rounded-md px-2 py-2.5 text-[15px] font-medium text-fg-soft hover:bg-bg-sunk hover:text-fg"
+              className="flex min-h-11 items-center rounded-md px-2 text-[15px] font-medium text-fg-soft hover:bg-bg-sunk hover:text-fg"
             >
               {link.text}
             </Link>
@@ -108,7 +130,7 @@ export function SiteHeader() {
             href={SITE.repo}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-2 block rounded-md border border-line-strong px-3 py-2.5 text-center text-sm font-medium"
+            className="mt-2 flex min-h-11 items-center justify-center rounded-md border border-line-control px-3 text-center text-sm font-medium"
           >
             View on GitHub
           </a>

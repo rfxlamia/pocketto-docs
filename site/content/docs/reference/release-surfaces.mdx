@@ -3,7 +3,7 @@ title: Release surfaces
 description: The four-role manifest that enforces the Core/Enterprise split at build time.
 ---
 
-Every Pocketto release is built from an explicit manifest — `surfaces.json`, schema `SURFACE_MANIFEST=1` — which defines **exactly four roles**:
+Every Pocketto release is built from an explicit manifest (`surfaces.json`, schema `SURFACE_MANIFEST=1`) which defines **exactly four roles**:
 
 | Role | Host | Contents |
 |------|------|----------|
@@ -32,15 +32,15 @@ An Enterprise stage is an **overlay** on the matching Core stage:
 
 Each role declares `includes`, `requires`, `forbidden_paths`, and `forbidden_content`:
 
-- Core roles forbid the Enterprise paths (`enterprise/`, `skills/create-pr/`, `skills/pocket-enterprise/`, the Enterprise reporting reference, `mode`/`format` commands) — and forbid the content strings that would leak Enterprise behavior into a Core artifact.
-- Enterprise roles forbid Core entry points (`cli/index.js`, `log`/`logjson` internals, `pocket-help`, `pocket-planning`) — the delta cannot become a standalone product.
+- Core roles forbid the Enterprise paths (`enterprise/`, `skills/create-pr/`, `skills/pocket-enterprise/`, the Enterprise reporting reference, `mode`/`format` commands), and forbid the content strings that would leak Enterprise behavior into a Core artifact.
+- Enterprise roles forbid Core entry points (`cli/index.js`, `log`/`logjson` internals, `pocket-help`, `pocket-planning`). The delta cannot become a standalone product.
 
-An ownership map (`ownership`) declares each path as `core`, `enterprise`, or `shared` (the `reconcile` command and identity helpers), and the `cli_boundary` section documents that Core starts without the Enterprise-only modules — `mode`/`format` load lazily through the boundary.
+An ownership map (`ownership`) declares each path as `core`, `enterprise`, or `shared` (the `reconcile` command and identity helpers), and the `cli_boundary` section documents that Core starts without the Enterprise-only modules: `mode`/`format` load lazily through the boundary.
 
 ## What this means for you
 
-- **Install Core alone and nothing Enterprise-flavored can reach you** — not by convention, by construction.
-- **Add Enterprise and you get only its delta** — your Core install stays canonical; never copy a Core skill to add remote behavior.
+- **Install Core alone and nothing Enterprise-flavored can reach you**: not by convention, by construction.
+- **Add Enterprise and you get only its delta**: your Core install stays canonical; never copy a Core skill to add remote behavior.
 - The npm package (`pocketto-pi`) contains both Core and Enterprise sources so either role can be staged from it; it is not itself a Core-only tree.
 
 ## Related documentation

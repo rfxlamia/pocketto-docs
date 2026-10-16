@@ -1,9 +1,9 @@
 ---
 title: CLI commands
-description: The complete pocketto-pi command surface — synopses, flags, the JSON envelope, and the contract handshake.
+description: "The complete pocketto-pi command surface: synopses, flags, the JSON envelope, and the contract handshake."
 ---
 
-The `pocketto-pi` CLI (Node.js ≥ 18) is the cross-platform command surface for the Pocketto skills — and safe to run directly. The synopses below come verbatim from the CLI's help text.
+The `pocketto-pi` CLI (Node.js ≥ 18) is the cross-platform command surface for the Pocketto skills, and safe to run directly. The synopses below come verbatim from the CLI's help text.
 
 ## Core commands
 
@@ -33,7 +33,7 @@ Lifecycle commands always run with `--json --contract 3` in the skills' hands. `
 
 ## Enterprise commands
 
-Available only when the Enterprise role is installed — Core loads them lazily and reports `ENTERPRISE_COMMAND_UNAVAILABLE` otherwise:
+Available only when the Enterprise role is installed. Core loads them lazily and reports `ENTERPRISE_COMMAND_UNAVAILABLE` otherwise:
 
 ```bash
 npx -y pocketto-pi mode [<dir>] [--json]
@@ -60,7 +60,7 @@ Without `--json`, humans get readable text. Exit codes follow the envelope: `ok:
 ## Key flags
 
 <Callout type="info" title="Values that need care">
-  <code>--reset</code> (<code>structure</code>) discards execution state — explicit restart only, never without authorization. <code>--sha</code> (<code>log update</code>) records a task's done commit and requires <code>--task</code> + status <code>DONE</code>. <code>--allow-duplicate-sha</code> is only for tasks that legitimately produced no new commit. <code>--level</code> values: <code>foundation | guided | independent</code>; teaching modes: <code>guided | socratic</code>.
+  <code>--reset</code> (<code>structure</code>) discards execution state: explicit restart only, never without authorization. <code>--sha</code> (<code>log update</code>) records a task's done commit and requires <code>--task</code> + status <code>DONE</code>. <code>--allow-duplicate-sha</code> is only for tasks that legitimately produced no new commit. <code>--level</code> values: <code>foundation | guided | independent</code>; teaching modes: <code>guided | socratic</code>.
 </Callout>
 
 Status values: `WAITING | REVIEW | DONE | BLOCKED` (task: `WAITING → DONE | BLOCKED`; phase: `WAITING → REVIEW → DONE | BLOCKED`).

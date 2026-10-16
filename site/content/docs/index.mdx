@@ -3,32 +3,32 @@ title: Introduction
 description: What Pocketto is, the problems it solves, and how the documentation is organized.
 ---
 
-Pocketto adds engineering discipline to AI coding agents. It is a set of **15 skills** for [Claude Code](https://docs.claude.com/en/docs/claude-code) and [Pi](https://github.com/badlogic/pi-mono) that turn a rough idea into reviewed, shipped code — without the agent improvising.
+Pocketto adds engineering discipline to AI coding agents. It is a set of **15 skills** for [Claude Code](https://docs.claude.com/en/docs/claude-code) and [Pi](https://github.com/badlogic/pi-mono) that turn a rough idea into reviewed, shipped code, without the agent improvising.
 
 Coding agents are good at *writing* code and bad at *not skipping steps*. Pocketto supplies the missing structure:
 
 - **Plan before code.** Specs, acceptance criteria, and TDD-structured plans come before a single line is written.
-- **Delegate with contracts.** Every subagent gets a *Pocket Packet* — objective, verification, stop conditions. No packet, no spawn.
+- **Delegate with contracts.** Every subagent gets a *Pocket Packet*: objective, verification, stop conditions. No packet, no spawn.
 - **Gate before done.** Independent reviews and a hard close step keep finished work from rotting in `IN_PROGRESS` limbo.
 
-Everything is **local-first**: the Core pipeline works with no GitHub credentials, no remote, and no Enterprise installation. If your team opts in, [Pocket Enterprise](/docs/core-enterprise) consumes Core's durable lifecycle events and owns GitHub reconciliation — Core itself never calls `gh`. And if you are learning, opt into [Pocket Education](/docs/skills/pocket-education): you write the code, the agent teaches, reviews, and guides.
+Everything is **local-first**: the Core pipeline works with no GitHub credentials, no remote, and no Enterprise installation. If your team opts in, [Pocket Enterprise](/docs/core-enterprise) consumes Core's durable lifecycle events and owns GitHub reconciliation. Core itself never calls `gh`. And if you are learning, opt into [Pocket Education](/docs/skills/pocket-education): you write the code, the agent teaches, reviews, and guides.
 
 ## The three layers
 
 | Layer | What it is | Requires |
 |---|---|---|
-| **Core** | The six-stage pipeline, nine standalone skills, and the lifecycle CLI. Local-first. | Nothing — no remote, no credentials |
+| **Core** | The six-stage pipeline, nine standalone skills, and the lifecycle CLI. Local-first. | Nothing: no remote, no credentials |
 | **Enterprise** | An optional, additive adapter that synchronizes the lifecycle with GitHub. | A matching Core install + explicit opt-in |
-| **Education** | An opt-in mentor mode where the human implements. | Nothing — independent of Enterprise |
+| **Education** | An opt-in mentor mode where the human implements. | Nothing: independent of Enterprise |
 
 ## How the documentation is organized
 
-- **[Getting started](/docs/getting-started)** — concepts, installation, quickstart, and setup for both hosts.
-- **[Pipeline](/docs/pipeline)** — the six stages, their approval gates, and the artifacts they produce.
-- **[Skills](/docs/skills)** — a full page for every standalone skill.
-- **[Core & Enterprise](/docs/core-enterprise)** — architecture, boundaries, lifecycle events, compatibility, recovery.
-- **[Reference](/docs/reference)** — CLI commands, generated files, Pocket Packets, troubleshooting, FAQ, glossary.
-- **[Contributing](/docs/contributing)** — repository organization and how to build and test Pocketto.
+- **[Getting started](/docs/getting-started)**: concepts, installation, quickstart, and setup for both hosts.
+- **[Pipeline](/docs/pipeline)**: the six stages, their approval gates, and the artifacts they produce.
+- **[Skills](/docs/skills)**: a full page for every standalone skill.
+- **[Core & Enterprise](/docs/core-enterprise)**: architecture, boundaries, lifecycle events, compatibility, recovery.
+- **[Reference](/docs/reference)**: CLI commands, generated files, Pocket Packets, troubleshooting, FAQ, glossary.
+- **[Contributing](/docs/contributing)**: repository organization and how to build and test Pocketto.
 
 ## Where to go next
 

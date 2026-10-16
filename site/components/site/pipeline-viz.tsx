@@ -6,23 +6,23 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { PIPELINE_STAGES } from '@/lib/site';
 
 /**
- * Presentation copy for each stage — written from the stage SKILL.md files in
+ * Presentation copy for each stage, written from the stage SKILL.md files in
  * the Pocketto repository (inspected at the commit recorded in
  * SOURCE-INVENTORY.md). The structured facts come from PIPELINE_STAGES.
  */
 const DESCRIPTIONS: Record<string, string> = {
   'pocket-pitching':
-    'For ideas that have not become problems yet. Pocketto scans your project, runs structured brainstorming methods, curates the results through an independent advisor, resolves technical unknowns with spikes, and converges on a problem statement with two or three approach directions. It stops there on purpose — solutions come later.',
+    'For ideas that have not become problems yet. Pocketto scans your project, runs structured brainstorming methods, curates the results through an independent advisor, resolves technical unknowns with spikes, and converges on a problem statement with two or three approach directions. It stops there on purpose. Solutions come later.',
   'pocket-grinding':
     'Requirement discovery with BDD discipline: context scan, scope and boundaries, questioning from business, developer, and QA lenses, then concrete Given/When/Then scenarios. An independent edge-case-hunter subagent reviews the scenarios before any design is proposed, and architecture claims are validated against the actual codebase.',
   'pocket-planning':
-    'Converts the approved spec into a TDD-structured execution plan: file mapping, dependency-annotated tasks, and a full Pocket Packet per task — objective, verification, stop conditions. A separate spec-reviewer subagent checks coverage, and the CLI dry-runs the plan to catch malformed dependencies before anything is approved.',
+    'Converts the approved spec into a TDD-structured execution plan: file mapping, dependency-annotated tasks, and a full Pocket Packet per task: objective, verification, stop conditions. A separate spec-reviewer subagent checks coverage, and the CLI dry-runs the plan to catch malformed dependencies before anything is approved.',
   'pocket-structuring':
-    'The Pocket CLI decomposes the approved plan into execution-plan/index.md and one file per task — plus phase manifests when the plan spans multiple phases. The CLI owns parsing, decomposition, and log reconciliation; nothing is inferred from prose. Execution still requires its own approval.',
+    'The Pocket CLI decomposes the approved plan into execution-plan/index.md and one file per task, plus phase manifests when the plan spans multiple phases. The CLI owns parsing, decomposition, and log reconciliation; nothing is inferred from prose. Execution still requires its own approval.',
   'pocket-development':
-    'The main agent coordinates; implementers write code; a read-only auditor reviews. Every delegation is a Pocket Packet contract — no packet, no spawn. Each task passes a mechanical gate and an independent audit; when every task is done, a phase-level pass reviews the whole phase before the phase may enter REVIEW.',
+    'The main agent coordinates; implementers write code; a read-only auditor reviews. Every delegation is a Pocket Packet contract: no packet, no spawn. Each task passes a mechanical gate and an independent audit; when every task is done, a phase-level pass reviews the whole phase before the phase may enter REVIEW.',
   'pocket-closing':
-    'Closing never re-reviews code. It reconciles task verdicts against the execution log, refuses missing or stale verdicts, advances only a passing phase, and appends a readable section to closeout.md. When every phase is done, it closes the plan and records the final summary — because you asked, not because a verdict alone allowed it.',
+    'Closing never re-reviews code. It reconciles task verdicts against the execution log, refuses missing or stale verdicts, advances only a passing phase, and appends a readable section to closeout.md. When every phase is done, it closes the plan and records the final summary, because you asked, not because a verdict alone allowed it.',
 };
 
 const FACT_KEYS = [
@@ -70,7 +70,7 @@ export function PipelineViz() {
           role="tablist"
           aria-label="Pocket pipeline stages"
           onKeyDown={onKeyDown}
-          className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-4 [scrollbar-color:var(--line-control)_transparent] [scrollbar-width:thin]"
         >
           {PIPELINE_STAGES.map((s, i) => {
             const selected = i === active;
@@ -96,7 +96,7 @@ export function PipelineViz() {
                       }
                     : {
                         background: 'var(--bg-raised)',
-                        borderColor: 'var(--line)',
+                        borderColor: 'var(--line-control)',
                         color: 'var(--fg-soft)',
                       }
                 }
@@ -165,7 +165,7 @@ export function PipelineViz() {
                 </span>
               ) : (
                 <span>
-                  The plan is closed — <strong className="font-semibold text-fg">closeout.md</strong> holds the full
+                  The plan is closed. <strong className="font-semibold text-fg">closeout.md</strong> holds the full
                   record.
                 </span>
               )}

@@ -5,34 +5,34 @@ description: Verdict artifacts, freshness semantics, and the phase-pass records 
 
 Review state in Pocketto lives in files, not in chat. Three artifact types under `<plan_dir>/reviews/` carry it.
 
-## Per-task verdicts — `<task_id>-review.json`
+## Per-task verdicts: `<task_id>-review.json`
 
 Written by the in-loop auditor after the implementer reports `DONE` (and the mechanical gate passes). Contract:
 
 - `task_id`, `overall` (`REVIEW_PASS` | `REVIEW_FAIL` | `REVIEW_BLOCKED`), `reviewed_sha` (the exact commit the auditor read), `fix_instructions` (empty on PASS)
-- `stage_1` — spec compliance; `stage_2` — code quality including the QUALITY BAR and refactor heuristics, with findings labeled `Critical | Important | Minor`
-- `loop_info` — durable recovery state per window: `recovery_window` (starts 1), `current_cycle`, `max_cycles: 2`, `cycles_remaining`, `strategies`, `prior_windows`
+- `stage_1`: spec compliance; `stage_2`: code quality including the QUALITY BAR and refactor heuristics, with findings labeled `Critical | Important | Minor`
+- `loop_info`: durable recovery state per window, with `recovery_window` (starts 1), `current_cycle`, `max_cycles: 2`, `cycles_remaining`, `strategies`, `prior_windows`
 - when blocked: `blocked_category` (`audit-failed` | `auditor-unavailable`)
 
-Severity semantics: `Critical`/`Important` force a fix round and block `DONE`; `Minor` is non-blocking and **carried forward** to the closeout summary. Re-audits re-emit still-unfixed Minors — the rewritten artifact is the sole source of the current finding set.
+Severity semantics: `Critical`/`Important` force a fix round and block `DONE`; `Minor` is non-blocking and **carried forward** to the closeout summary. Re-audits re-emit still-unfixed Minors: the rewritten artifact is the sole source of the current finding set.
 
-**Empty-diff tasks** (no file changes in the audit range) skip the auditor and get a verbatim `REVIEW_PASS` stub with `reviewed_sha == done_sha` and `skip_reason: "no_file_changes"` — a valid current verdict for closing.
+**Empty-diff tasks** (no file changes in the audit range) skip the auditor and get a verbatim `REVIEW_PASS` stub with `reviewed_sha == done_sha` and `skip_reason: "no_file_changes"`, a valid current verdict for closing.
 
-## Freshness — what makes a verdict current
+## Freshness: what makes a verdict current
 
-A verdict proves correctness only for the SHA it reviewed. A task's **latest owned SHA** is its `done_sha` plus any correction commits attributed to it (via `--correction --for-task` or file ownership). The verdict is current iff `reviewed_sha` equals that value. [Closing](/docs/pipeline/closing) refuses stale verdicts with `CLOSE_BLOCKED` — corrected-after-review code must re-run the phase-level pass before the phase can close.
+A verdict proves correctness only for the SHA it reviewed. A task's **latest owned SHA** is its `done_sha` plus any correction commits attributed to it (via `--correction --for-task` or file ownership). The verdict is current iff `reviewed_sha` equals that value. [Closing](/docs/pipeline/closing) refuses stale verdicts with `CLOSE_BLOCKED`: corrected-after-review code must re-run the phase-level pass before the phase can close.
 
-## Phase pass — `phase-pass-<phase_key>.json`
+## Phase pass: `phase-pass-<phase_key>.json`
 
 The phase-level pass record (`PHASE_PASS_CLEAN` | `PHASE_PASS_RESOLVED` | suspended `RECOVERY_CHECKPOINT` | `PHASE_BLOCKED` with findings). It looks **only** for what per-task audits cannot see: cross-task duplication, integration mismatch, cross-file regression, spec-level gaps, wrong architecture assumptions. Key rules:
 
-- Dispatched as a read-only subagent (single-task phases take a documented fast path with a `main-agent` skip record — no reviewer needed where no cross-task domain exists).
-- The phase may enter `REVIEW` **only after** this record exists with a terminal result — the ordering makes an interrupted pass detectable and resumable.
+- Dispatched as a read-only subagent (single-task phases take a documented fast path with a `main-agent` skip record, no reviewer needed where no cross-task domain exists).
+- The phase may enter `REVIEW` **only after** this record exists with a terminal result: the ordering makes an interrupted pass detectable and resumable.
 - Phase-level fixes are **append-only corrections**: recorded via `log update --correction <sha> [--for-task TN]`; `done_sha` never moves.
 
-## Phase notes — `phase-notes-<phase_key>.json`
+## Phase notes: `phase-notes-<phase_key>.json`
 
-A factual handoff for closeout (obstacles resolved, decisions, verification summary). It never establishes or changes a verdict — closing reads it for narrative, not for the gate.
+A factual handoff for closeout (obstacles resolved, decisions, verification summary). It never establishes or changes a verdict: closing reads it for narrative, not for the gate.
 
 ## Who reads what
 

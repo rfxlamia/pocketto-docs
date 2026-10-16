@@ -5,7 +5,7 @@ description: Run the Pocketto test suite, rebuild skill archives, and stage rele
 
 ## Requirements
 
-Node.js ≥ 18. No external dependencies are installed for the test suite — Pocketto's tests run on the Node built-in test runner.
+Node.js ≥ 18. No external dependencies are installed for the test suite: Pocketto's tests run on the Node built-in test runner.
 
 ## Running the tests
 
@@ -15,7 +15,7 @@ The `test` script in `package.json` runs the full suite:
 npm test
 ```
 
-It executes (verify against `package.json` at your checkout — the list grows with the code):
+It executes (verify against `package.json` at your checkout: the list grows with the code):
 
 ```bash
 node --test test/cli.test.js test/package.test.js test/lifecycle-contract.test.js \
@@ -33,13 +33,13 @@ node --test test/cli.test.js test/package.test.js test/lifecycle-contract.test.j
 
 The suites map to the boundaries they guard:
 
-- **CLI behavior** (`cli`, `package`) — the envelope, parsing, packaging.
-- **Lifecycle** (`lifecycle-contract`, `lifecycle-store`, `lifecycle-cli`, `lifecycle-dispatch`) — the event journal, store, commands, and adapter dispatch.
-- **Surfaces** (`surfaces`, `skill-surfaces`) — the manifest contract and per-role skill content.
-- **Enterprise** (`enterprise-*`) — protocol, issue/phase/closure handlers, ownership, stack bodies, phase branches.
-- **Compatibility & regression** (`compatibility`, `release-regression`) — the cross-version rules and release invariants.
-- **Documentation** (`documentation`) — checks that documentation claims match the implementation.
-- **Integration** (`integration/lifecycle-enterprise`) — the Core ↔ adapter path end to end.
+- **CLI behavior** (`cli`, `package`): the envelope, parsing, packaging.
+- **Lifecycle** (`lifecycle-contract`, `lifecycle-store`, `lifecycle-cli`, `lifecycle-dispatch`): the event journal, store, commands, and adapter dispatch.
+- **Surfaces** (`surfaces`, `skill-surfaces`): the manifest contract and per-role skill content.
+- **Enterprise** (`enterprise-*`): protocol, issue/phase/closure handlers, ownership, stack bodies, phase branches.
+- **Compatibility & regression** (`compatibility`, `release-regression`): the cross-version rules and release invariants.
+- **Documentation** (`documentation`): checks that documentation claims match the implementation.
+- **Integration** (`integration/lifecycle-enterprise`): the Core ↔ adapter path end to end.
 
 ## Rebuilding skill archives
 
@@ -55,7 +55,7 @@ Skills ship with bundled `.skill` archives derived from the SKILL.md sources. Af
 node scripts/build-surfaces.js --role <role> --output <artifact-dir>
 ```
 
-`<role>` is one of `pi/core`, `pi/enterprise`, `claude/core`, `claude/enterprise`. The output directory contains only that role — the way to verify what a role ships before publishing. See [Release surfaces](/docs/reference/release-surfaces).
+`<role>` is one of `pi/core`, `pi/enterprise`, `claude/core`, `claude/enterprise`. The output directory contains only that role, the way to verify what a role ships before publishing. See [Release surfaces](/docs/reference/release-surfaces).
 
 ## Dogfooding note
 

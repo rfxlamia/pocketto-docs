@@ -1,7 +1,7 @@
 /**
  * Central product facts. Everything here is verified against the Pocketto
  * repository at the commit recorded in SOURCE-INVENTORY.md. Update this file
- * (and that inventory) together when Pocketto releases a new version — pages
+ * (and that inventory) together when Pocketto releases a new version. Pages
  * must not hardcode these values individually.
  */
 export const SITE = {
@@ -59,9 +59,9 @@ export const PIPELINE_STAGES = [
     name: 'Pitching',
     slug: 'pipeline/pitching',
     tagline: 'Explore the problem before it exists',
-    receives: 'A rough idea — no clear problem statement yet',
+    receives: 'A rough idea, no clear problem statement yet',
     produces: 'A pitch exploration doc with a problem statement and 2–3 approach directions',
-    gate: 'No auto-chain — you choose whether to continue to Grinding',
+    gate: 'No auto-chain: you choose whether to continue to Grinding',
     next: 'The user decides: start Grinding, iterate, or stop here',
   },
   {
@@ -116,7 +116,7 @@ export const PIPELINE_STAGES = [
     tagline: 'Reconcile verdicts and close, on your word',
     receives: 'log.json, task verdict artifacts, phase notes',
     produces: 'closeout.md entries, advanced phases, a closed plan and plan-closed event',
-    gate: 'A passing verdict alone is not authorization — you must request closeout',
+    gate: 'A passing verdict alone is not authorization: you must request closeout',
     next: 'All phases DONE → log close and the final summary',
   },
 ] as const;

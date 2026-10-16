@@ -1,5 +1,5 @@
 {
   "title": "Reference",
-  "description": "Commands, configuration, generated files, and formats — the full Pocketto contract.",
+  "description": "Commands, configuration, generated files, and formats: the full Pocketto contract.",
   "pages": ["index", "cli", "configuration", "files", "pocket-packets", "plan-structure", "review-reports", "lifecycle-state", "release-surfaces", "troubleshooting", "faq", "glossary"]
 }

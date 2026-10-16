@@ -1,13 +1,13 @@
 ---
 title: Configuration
-description: What Pocketto stores, where — memory files, the Education block, Enterprise mode, and .pocket-meta.json.
+description: "What Pocketto stores, where: memory files, the Education block, Enterprise mode, and .pocket-meta.json."
 ---
 
-Pocketto keeps configuration in a few well-defined places. The rule that unifies them: **managed blocks are CLI-owned** — skills write through commands, never by hand.
+Pocketto keeps configuration in a few well-defined places. The rule that unifies them: **managed blocks are CLI-owned**. Skills write through commands, never by hand.
 
 ## The project memory file
 
-`CLAUDE.md` (Claude Code) or `AGENTS.md` (Pi) — one per project. Two Pocket-managed things live there:
+`CLAUDE.md` (Claude Code) or `AGENTS.md` (Pi), one per project. Two Pocket-managed things live there:
 
 ### The pocket-init managed section
 
@@ -48,7 +48,7 @@ skill.typescript: independent
 skill.testing: foundation
 ```
 
-Owned by the `edu` CLI — **never edit it by hand**. Malformed blocks fail loudly (`EDU_CONFIG_INVALID`) instead of reading as disabled. Levels: `foundation | guided | independent`; teaching modes: `guided | socratic`. Manage it with:
+Owned by the `edu` CLI: **never edit it by hand**. Malformed blocks fail loudly (`EDU_CONFIG_INVALID`) instead of reading as disabled. Levels: `foundation | guided | independent`; teaching modes: `guided | socratic`. Manage it with:
 
 ```bash
 npx -y pocketto-pi edu [--json --contract 3]                      # report
@@ -77,8 +77,8 @@ create_pr: true
 | File | Owner | Purpose |
 |------|-------|---------|
 | `.pocket-meta.json` | `meta get/set` (local, no GitHub calls) | Project metadata; Enterprise stores PR/issue identity and reconciliation fingerprints here |
-| `.pocket/lifecycle-adapter.json` | `enterprise install` | The adapter registration. Committable when it uses the default portable registration; custom `--argv` values are machine-specific — commit only when portable |
-| `lifecycle.json` | `lifecycle` CLI | Lifecycle state, event journal, delivery state — committed with the spec directory. See [Lifecycle events](/docs/core-enterprise/lifecycle-events) |
+| `.pocket/lifecycle-adapter.json` | `enterprise install` | The adapter registration. Committable when it uses the default portable registration; custom `--argv` values are machine-specific, commit only when portable |
+| `lifecycle.json` | `lifecycle` CLI | Lifecycle state, event journal, delivery state, committed with the spec directory. See [Lifecycle events](/docs/core-enterprise/lifecycle-events) |
 | `log.json` | `log` CLI | The execution log projection. See [Lifecycle state](/docs/reference/lifecycle-state) |
 
 ## What is not configurable

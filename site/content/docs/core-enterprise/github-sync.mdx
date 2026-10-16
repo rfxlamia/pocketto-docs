@@ -1,6 +1,6 @@
 ---
 title: GitHub synchronization
-description: What actually appears on GitHub when lifecycle events drain — issues, phase PRs, stacked branches, and tasklists.
+description: What actually appears on GitHub when lifecycle events drain, including issues, phase PRs, stacked branches, and tasklists.
 ---
 
 Enterprise reconciles GitHub only when a **lifecycle drain** runs:
@@ -17,7 +17,7 @@ The `spec-approved` delivery finds or creates **one** issue for the approved spe
 
 ## Phase PRs (non-stacked)
 
-`phase-complete` reconciles an **existing** PR for the phase: the phase summary is upserted under a canonical marker, and inline review findings are reconciled by fingerprint — new findings posted, unchanged threads retained, resolved findings closed out. A missing PR returns `PR_REQUIRED`; the adapter does not create one — that is [create-pr](/docs/skills/create-pr)'s explicit job.
+`phase-complete` reconciles an **existing** PR for the phase: the phase summary is upserted under a canonical marker, and inline review findings are reconciled by fingerprint: new findings posted, unchanged threads retained, resolved findings closed out. A missing PR returns `PR_REQUIRED`; the adapter does not create one: that is [create-pr](/docs/skills/create-pr)'s explicit job.
 
 ## Stacked phase branches
 
@@ -26,14 +26,14 @@ With `--phase-branches stacked` (the install default), each phase gets its own b
 - **Phase 1** targets the root base recorded at `log init --phase-branches stacked`.
 - **Phase N** targets the phase N-1 branch, and its PR links the parent PR.
 - `log handoff` (run by [closing](/docs/pipeline/closing)) commits the `phase-closed` event; delivery then verifies every artifact hash, checks consent, pushes the phase branch **fast-forward only**, creates or reuses the PR, and upserts the stack-context block, summary, and findings.
-- Multi-phase PR bodies end with `refs #N` — GitHub closes an issue only on a merge into the default branch, and the adapter never closes issues, so **close the linked issue by hand after the last phase**.
+- Multi-phase PR bodies end with `refs #N`: GitHub closes an issue only on a merge into the default branch, and the adapter never closes issues, so **close the linked issue by hand after the last phase**.
 
 ## Push consent
 
-- **Durable:** `--push-consent phase-branches` at install allows fast-forward pushes of Pocket phase branches only — never `main`, never other branches, never force.
+- **Durable:** `--push-consent phase-branches` at install allows fast-forward pushes of Pocket phase branches only, never `main`, never other branches, never force.
 - **Per-commit:** without it, each push stops with `PUSH_CONSENT_REQUIRED` until you approve the exact commit via `consent-push <project-root> <spec_dir> <phase_key> --sha <40-hex>`. Approval is never recorded on your behalf.
 
-Ordered drain means a held (consent-waiting) event holds later events too — including `plan-closed`. Nothing is lost; a later drain replays in order.
+Ordered drain means a held (consent-waiting) event holds later events too, including `plan-closed`. Nothing is lost; a later drain replays in order.
 
 ## Blocking cases
 
@@ -41,14 +41,14 @@ Ordered drain means a held (consent-waiting) event holds later events too — in
 |------|---------|-----------|
 | `PR_REQUIRED` | No PR exists for the phase | Run [create-pr](/docs/skills/create-pr) |
 | `PUSH_CONSENT_REQUIRED` | Push needs approval | Approve the exact SHA with `consent-push`, then drain |
-| `PR_BLOCKED` (retryable) | `parent PR merged` — no reusable child PR | Open/retarget the child PR on GitHub against the base the parent merged into, then `publish-phase` (each drain rerun spends one of 6 delivery attempts) |
+| `PR_BLOCKED` (retryable) | `parent PR merged`, no reusable child PR | Open/retarget the child PR on GitHub against the base the parent merged into, then `publish-phase` (each drain rerun spends one of 6 delivery attempts) |
 | `PR_BLOCKED` (terminal) | `base retargeted`, `duplicate open PR`, `parent PR closed`, `remote branch diverged`, … | Fix on GitHub; Pocket never retargets, closes duplicates, rebases, or force-pushes |
-| `FORK_PR_IGNORED` | A fork PR reusing the phase head name | Informational notice — the fork is never adopted or edited |
-| Delivery attempts exhausted | 6 total attempts (1 + 5 retries) per event | Terminal — resolve manually |
+| `FORK_PR_IGNORED` | A fork PR reusing the phase head name | Informational notice: the fork is never adopted or edited |
+| Delivery attempts exhausted | 6 total attempts (1 + 5 retries) per event | Terminal: resolve manually |
 
 ## Final tasklist
 
-`plan-closed` delivery upserts exactly one `<!-- pocket-tasklist -->` comment on the linked issue, rendered from the final `log.json` (via `format tasklist`). The marker is the idempotency key. The adapter still does not close the issue — that stays human.
+`plan-closed` delivery upserts exactly one `<!-- pocket-tasklist -->` comment on the linked issue, rendered from the final `log.json` (via `format tasklist`). The marker is the idempotency key. The adapter still does not close the issue: that stays human.
 
 ## Related documentation
 

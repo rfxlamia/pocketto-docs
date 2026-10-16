@@ -1,6 +1,6 @@
 ---
 title: Integration boundaries
-description: The ownership table — which lifecycle event triggers which Enterprise action, and what neither side ever does.
+description: The ownership table, showing which lifecycle event triggers which Enterprise action and what neither side ever does.
 ---
 
 Core and Enterprise have a strict ownership split, enforced by the [release manifest](/docs/reference/release-surfaces) and restated in both sides' contracts. This page is the routing table.
@@ -9,9 +9,9 @@ Core and Enterprise have a strict ownership split, enforced by the [release mani
 
 | Event (Core-emitted) | Enterprise-owned action |
 |----------------------|-------------------------|
-| `spec-approved` | Reconcile the approved spec with its owned issue. May **create one issue** for the approved spec — the only creation the adapter performs. See [GitHub synchronization](/docs/core-enterprise/github-sync). |
-| `phase-complete` | Reconcile an **existing** phase PR: upsert the phase summary, reconcile inline review findings by fingerprint. A missing PR is `PR_REQUIRED` — never auto-created. For stacked plans this event is deferred to `phase-closed`. |
-| `phase-closed` (stacked only) | Publish the closed phase PR with its stack identity, summary, findings, and stack proof — pushing the phase branch **only with consent**. |
+| `spec-approved` | Reconcile the approved spec with its owned issue. May **create one issue** for the approved spec, the only creation the adapter performs. See [GitHub synchronization](/docs/core-enterprise/github-sync). |
+| `phase-complete` | Reconcile an **existing** phase PR: upsert the phase summary, reconcile inline review findings by fingerprint. A missing PR is `PR_REQUIRED`, never auto-created. For stacked plans this event is deferred to `phase-closed`. |
+| `phase-closed` (stacked only) | Publish the closed phase PR with its stack identity, summary, findings, and stack proof, pushing the phase branch **only with consent**. |
 | `plan-closed` | Upsert the final `<!-- pocket-tasklist -->` proof on the linked issue. Never closes the issue. |
 
 ## The never lists
@@ -33,15 +33,15 @@ Core and Enterprise have a strict ownership split, enforced by the [release mani
 
 ## Ambiguity stops
 
-When an issue, PR, marker, or owner is ambiguous — multiple matches, foreign ownership, closed entities, identity conflicts — the adapter **stops with an actionable manual-resolution request** and makes no mutation. That is a design property, not a failure mode: a wrong guess on a shared remote is worse than a paused drain.
+When an issue, PR, marker, or owner is ambiguous (multiple matches, foreign ownership, closed entities, identity conflicts), the adapter **stops with an actionable manual-resolution request** and makes no mutation. That is a design property, not a failure mode: a wrong guess on a shared remote is worse than a paused drain.
 
 ## create-pr's place
 
-[create-pr](/docs/skills/create-pr) is a **separate, explicit user-triggered recorder** — not part of the event flow. It creates or discovers a PR and records its identity. Phase summaries and inline findings belong to the Enterprise adapter when a `phase-complete`/`phase-closed` event is drained; the recorder does not post them.
+[create-pr](/docs/skills/create-pr) is a **separate, explicit user-triggered recorder**, not part of the event flow. It creates or discovers a PR and records its identity. Phase summaries and inline findings belong to the Enterprise adapter when a `phase-complete`/`phase-closed` event is drained; the recorder does not post them.
 
 ## Metadata ownership
 
-Remote identity (issue numbers, PR numbers/URLs, fingerprints, stack proofs) lives in Enterprise-owned `.pocket-meta.json`. The Core journal stores only **opaque proof references** — never GitHub IDs or credentials. Reconciliation reads metadata first, then falls back to marker-based search of the current repository only.
+Remote identity (issue numbers, PR numbers/URLs, fingerprints, stack proofs) lives in Enterprise-owned `.pocket-meta.json`. The Core journal stores only **opaque proof references**, never GitHub IDs or credentials. Reconciliation reads metadata first, then falls back to marker-based search of the current repository only.
 
 ## Related documentation
 

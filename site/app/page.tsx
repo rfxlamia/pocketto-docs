@@ -48,7 +48,7 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pb-28">
         <div>
-          <p className="section-label">Pocketto v{POCKETTO.version} — open source, MIT</p>
+          <p className="section-label">Pocketto v{POCKETTO.version}, open source, MIT</p>
           <h1 className="display mt-5 text-[2.6rem] leading-[1.04] sm:text-6xl lg:text-[4.2rem]">
             AI writes the code.
             <br />
@@ -62,17 +62,17 @@ function Hero() {
           </h1>
           <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-fg-soft">
             Pocketto adds engineering discipline to Claude Code and Pi: plan before code, delegate with contracts,
-            review independently, and close on your word — from a rough idea to reviewed, shipped code, without the
+            review independently, and close on your word, taking you from a rough idea to reviewed, shipped code without the
             agent improvising.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/docs/getting-started/quickstart" className="btn btn-primary">
-              Get started <ArrowRight className="size-4" aria-hidden />
+              Run the quickstart
             </Link>
             <Link href="/docs" className="btn btn-outline">
               <BookOpen className="size-4" aria-hidden />
-              Explore documentation
+              Read the docs
             </Link>
             <a
               href={SITE.repo}
@@ -94,7 +94,7 @@ function Hero() {
         <div className="lg:pt-10">
           <ExecutionLedger />
           <p className="mt-3 text-center font-mono text-xs text-fg-faint">
-            execution state is durable, local, and readable — log.json, verdicts, closeout.md
+            execution state is durable, local, and readable: log.json, verdicts, closeout.md
           </p>
         </div>
       </div>
@@ -102,12 +102,12 @@ function Hero() {
   );
 }
 
-/** A realistic view of Pocket's durable artifacts — real vocabulary, no fake terminal. */
+/** A realistic view of Pocket's durable artifacts, real vocabulary, no fake terminal. */
 function ExecutionLedger() {
   const phases = [
     { id: 1, status: 'DONE', chip: 'chip-pass', tasks: 'T1–T4', verdict: 'REVIEW_PASS' },
     { id: 2, status: 'REVIEW', chip: 'chip-warn', tasks: 'T5–T7', verdict: 'REVIEW_PASS' },
-    { id: 3, status: 'WAITING', chip: '', tasks: 'T8–T9', verdict: '—' },
+    { id: 3, status: 'WAITING', chip: '', tasks: 'T8–T9', verdict: 'none' },
   ];
   return (
     <figure className="ledger-card overflow-hidden" aria-label="Illustration of a Pocket execution log">
@@ -150,11 +150,11 @@ function ExecutionLedger() {
           <br />
           <span style={{ color: 'var(--pass)' }}>ok</span> · phase-2 → DONE · closeout.md appended
           <br />
-          <span style={{ color: 'var(--warn)' }}>held</span> · phase-3 WAITING — run pocket-development next
+          <span style={{ color: 'var(--warn)' }}>held</span> · phase-3 WAITING, run pocket-development next
         </div>
       </div>
       <figcaption className="sr-only">
-        Illustrative output showing phases advancing only after review — labelled as an illustration, not a real run.
+        Illustrative output showing phases advancing only after review, labelled as an illustration, not a real run.
       </figcaption>
     </figure>
   );
@@ -166,13 +166,13 @@ const FAILURE_MODES = [
   {
     problem: 'Implementation before requirements are clear',
     answer:
-      'Grinding turns a vague ask into a BDD spec — scope, boundaries, and Given/When/Then acceptance criteria — and an independent edge-case-hunter reviews it before any design is proposed.',
+      'Grinding turns a vague ask into a BDD spec (scope, boundaries, and Given/When/Then acceptance criteria), and an independent edge-case-hunter reviews it before any design is proposed.',
     ref: '/docs/pipeline/grinding',
   },
   {
     problem: 'Ambiguous delegation',
     answer:
-      'Every subagent dispatch is a Pocket Packet: objective, references, deliverables, quality bar, stop conditions. Six iron laws enforce it — no packet, no spawn.',
+      'Every subagent dispatch is a Pocket Packet: objective, references, deliverables, quality bar, stop conditions. Six iron laws enforce it: no packet, no spawn.',
     ref: '/docs/reference/pocket-packets',
   },
   {
@@ -184,13 +184,13 @@ const FAILURE_MODES = [
   {
     problem: 'Untraceable decisions',
     answer:
-      'Specs, plans, task files, verdicts, and corrections live under docs/pocket/ and log.json — durable, inspectable files you can read months later, not chat scrollback.',
+      'Specs, plans, task files, verdicts, and corrections live under docs/pocket/ and log.json, durable and inspectable files you can read months later, not chat scrollback.',
     ref: '/docs/reference/files',
   },
   {
     problem: 'Incomplete phase closeout',
     answer:
-      'Closing refuses stale or missing verdicts, advances only passing phases, appends closeout.md, and runs log close only when every phase is DONE — because you explicitly asked for closeout.',
+      'Closing refuses stale or missing verdicts, advances only passing phases, appends closeout.md, and runs log close only when every phase is DONE, because you explicitly asked for closeout.',
     ref: '/docs/pipeline/closing',
   },
 ];
@@ -199,15 +199,15 @@ function WhySection() {
   return (
     <section id="why" className="border-t border-line">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <p className="section-label">01 — Why Pocketto exists</p>
+        <p className="section-label">01. Why Pocketto exists</p>
         <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
           <h2 className="display text-3xl sm:text-4xl">
-            Coding agents are great at writing code — and bad at not skipping steps.
+            Coding agents are great at writing code and bad at not skipping steps.
           </h2>
           <p className="max-w-prose self-end text-[15px] leading-relaxed text-fg-soft">
             Left unconstrained, an agent starts implementing before the problem is defined, delegates without
             contracts, reviews its own work, and drifts on. Pocketto does not make the model smarter. It puts the
-            process in a harness: explicit stages, explicit artifacts, explicit gates — and a hard close that nothing
+            process in a harness: explicit stages, explicit artifacts, explicit gates, and a hard close that nothing
             slips past.
           </p>
         </div>
@@ -240,12 +240,12 @@ function PipelineSection() {
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="section-label">02 — The pipeline</p>
+            <p className="section-label">02. The pipeline</p>
             <h2 className="display mt-5 max-w-2xl text-3xl sm:text-4xl">
               Six stages. Every stage hands an artifact to the next.
             </h2>
             <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-soft">
-              This is the actual workflow, not a metaphor — each stage consumes the previous stage&apos;s file, runs its
+              This is the actual workflow, not a metaphor. Each stage consumes the previous stage&apos;s file, runs its
               own review gate, and stops for your approval where the design says it must. Select a stage to see what it
               receives, what it produces, and where it needs you.
             </p>
@@ -289,7 +289,7 @@ const CAPABILITIES = [
   {
     icon: ShieldCheck,
     title: 'Independent review and quality gates',
-    body: 'Edge-case hunters, spec reviewers, in-loop auditors, and a phase-level pass — all read-only, all separate from the agent that wrote the code.',
+    body: 'Edge-case hunters, spec reviewers, in-loop auditors, and a phase-level pass, all read-only, all separate from the agent that wrote the code.',
     href: '/docs/pipeline/approval-gates',
   },
   {
@@ -301,13 +301,13 @@ const CAPABILITIES = [
   {
     icon: CheckCircle2,
     title: 'Local-first Core',
-    body: 'The full pipeline works with zero GitHub credentials. Core commits state and events locally first and never calls gh — no remote required, ever.',
+    body: 'The full pipeline works with zero GitHub credentials. Core commits state and events locally first and never calls gh. No remote required, ever.',
     href: '/docs/core-enterprise/core-architecture',
   },
   {
     icon: Split,
     title: 'Optional Enterprise adapter',
-    body: 'Opt in, and an additive adapter consumes Core\u2019s events and reconciles GitHub — issues, phase PRs, tasklists. It never merges a PR or closes an issue; humans keep those gates.',
+    body: 'Opt in, and an additive adapter consumes Core\u2019s events and reconciles GitHub: issues, phase PRs, tasklists. It never merges a PR or closes an issue; humans keep those gates.',
     href: '/docs/core-enterprise',
   },
   {
@@ -319,7 +319,7 @@ const CAPABILITIES = [
   {
     icon: Wrench,
     title: 'Standalone workflows',
-    body: 'Bug hunting with confirmed root causes, hotfixes with plan review, brand-aware design systems, research with graded verdicts — no pipeline ceremony required.',
+    body: 'Bug hunting with confirmed root causes, hotfixes with plan review, brand-aware design systems, research with graded verdicts, with no pipeline ceremony required.',
     href: '/docs/skills',
   },
 ];
@@ -328,16 +328,16 @@ function CapabilitiesSection() {
   return (
     <section id="capabilities" className="border-t border-line">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <p className="section-label">03 — Capabilities</p>
+        <p className="section-label">03. Capabilities</p>
         <h2 className="display mt-5 max-w-2xl text-3xl sm:text-4xl">
           {POCKETTO.skills.total} skills. One discipline.
         </h2>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-soft">
-          Six pipeline stages for features that deserve the ceremony, nine standalone skills for everything else — all
+          Six pipeline stages for features that deserve the ceremony, nine standalone skills for everything else, all
           built on the same principle: verification over confidence.
         </p>
 
-        <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-px overflow-hidden rounded-xl border border-line-control bg-line sm:grid-cols-2 lg:grid-cols-4">
           {CAPABILITIES.map((cap) => (
             <Link
               key={cap.title}
@@ -381,7 +381,7 @@ const ROUTES = [
   },
   {
     saying: '\u201cIt\u2019s a small, clear change.\u201d',
-    body: 'A brief plan, an independent subagent review, then implement — accuracy without the ceremony.',
+    body: 'A brief plan, an independent subagent review, then implement: accuracy without the ceremony.',
     href: '/docs/skills/hotfix',
     cta: 'hotfix',
   },
@@ -393,7 +393,7 @@ const ROUTES = [
   },
   {
     saying: '\u201cMy team works through GitHub.\u201d',
-    body: 'Add the optional Enterprise adapter: issue reconciliation, stacked phase PRs, final tasklists — human gates preserved.',
+    body: 'Add the optional Enterprise adapter: issue reconciliation, stacked phase PRs, final tasklists, with human gates preserved.',
     href: '/docs/core-enterprise',
     cta: 'Pocket Enterprise',
   },
@@ -403,7 +403,7 @@ function ChooserSection() {
   return (
     <section id="start" className="border-t border-line bg-bg-sunk/60">
       <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-        <p className="section-label">04 — Choose your workflow</p>
+        <p className="section-label">04. Choose your workflow</p>
         <h2 className="display mt-5 max-w-2xl text-3xl sm:text-4xl">Start where you actually are.</h2>
 
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -411,7 +411,7 @@ function ChooserSection() {
             <Link
               key={r.saying}
               href={r.href}
-              className="ledger-card group flex flex-col p-6 transition-colors duration-150 hover:border-line-strong"
+              className="ledger-card group flex flex-col p-6 transition-colors duration-150 border-line-control hover:border-fg-soft"
             >
               <p className="display text-xl">{r.saying}</p>
               <p className="mt-3 text-sm leading-relaxed text-fg-soft">{r.body}</p>
@@ -434,11 +434,11 @@ function InstallSection() {
     <section id="install" className="border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:py-24 lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div>
-          <p className="section-label">05 — Installation</p>
+          <p className="section-label">05. Installation</p>
           <h2 className="display mt-5 text-3xl sm:text-4xl">Two hosts. One install each.</h2>
           <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-fg-soft">
             Pocketto ships as a Pi package and a Claude Code plugin, built from the same local-first Core. Pick your
-            host — everything else (pipeline, standalone skills, Education) behaves the same.
+            host. Everything else (pipeline, standalone skills, Education) behaves the same.
           </p>
           <ul className="mt-6 space-y-3 text-sm text-fg-soft">
             <li className="flex gap-3">
@@ -461,7 +461,7 @@ function InstallSection() {
             <li className="flex gap-3">
               <CircleDashed className="mt-0.5 size-4 shrink-0" style={{ color: 'var(--accent)' }} aria-hidden />
               <span>
-                Node.js ≥ 18. Enterprise is a separate, explicit install — Core never requires it. See{' '}
+                Node.js ≥ 18. Enterprise is a separate, explicit install. Core never requires it. See{' '}
                 <Link href="/docs/core-enterprise" className="link-underline text-fg">
                   Enterprise setup
                 </Link>
@@ -471,7 +471,7 @@ function InstallSection() {
           </ul>
           <p className="mt-6 text-sm text-fg-soft">
             New here? Run{' '}
-            <code className="font-mono text-[13px] text-fg">/pocketto:pocket-help</code> — a compact router that
+            <code className="font-mono text-[13px] text-fg">/pocketto:pocket-help</code>, a compact router that
             explains the system without loading every skill.
           </p>
         </div>
@@ -489,17 +489,17 @@ function FinalCta() {
   return (
     <section className="border-t border-line bg-bg-sunk/60">
       <div className="mx-auto max-w-6xl px-5 py-24 text-center sm:py-28">
-        <p className="section-label justify-center">Get started</p>
+        <p className="section-label justify-center">Your first run</p>
         <h2 className="display mx-auto mt-6 max-w-3xl text-3xl sm:text-5xl">
           Your next feature deserves a paper trail.
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-fg-soft">
           Install Pocketto, run one command, and watch a rough ask become a spec, a plan, reviewed code, and a closed
-          plan — with every step on the record.
+          plan, with every step on the record.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link href="/docs/getting-started/quickstart" className="btn btn-primary">
-            Read the quickstart <ArrowRight className="size-4" aria-hidden />
+            Read the quickstart
           </Link>
           <a href={SITE.repo} target="_blank" rel="noreferrer noopener" className="btn btn-outline">
             <GithubIcon className="size-4" aria-hidden />
@@ -536,7 +536,7 @@ function JsonLd() {
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Node.js',
     description:
-      'Structured AI coding workflows for Claude Code and Pi: BDD specs, TDD plans, contract-based delegation, independent review, and a hard close — local-first, open source.',
+      'Structured AI coding workflows for Claude Code and Pi: BDD specs, TDD plans, contract-based delegation, independent review, and a hard close. Local-first, open source.',
     softwareVersion: POCKETTO.version,
     datePublished: POCKETTO.releaseDate,
     license: `https://spdx.org/licenses/${SITE.license}`,

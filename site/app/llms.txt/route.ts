@@ -5,7 +5,7 @@ import { source } from '@/lib/source';
 export const dynamic = 'force-static';
 
 /**
- * llms.txt — a documentation index for AI-assisted discovery.
+ * llms.txt: a documentation index for AI-assisted discovery.
  * Lists every docs page with its title and one-line description.
  */
 export function GET() {

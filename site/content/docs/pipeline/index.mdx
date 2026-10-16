@@ -1,6 +1,6 @@
 ---
 title: Pipeline overview
-description: The six-stage Pocketto pipeline — what each stage receives, produces, and where it stops for you.
+description: "The six-stage Pocketto pipeline: what each stage receives, produces, and where it stops for you."
 ---
 
 The Pocket pipeline is six chained skills for real features and non-trivial work. Each stage produces an artifact that the next stage consumes, and each stage has explicit gates.
@@ -25,11 +25,11 @@ pocket-pitching → pocket-grinding → pocket-planning → pocket-structuring �
 
 The chain is not automatic everywhere, and that is deliberate:
 
-- **`pocket-pitching` does not auto-chain** — after the brief you choose whether to start grinding, iterate, or stop.
+- **`pocket-pitching` does not auto-chain**: after the brief you choose whether to start grinding, iterate, or stop.
 - **`pocket-grinding` hands an approved spec to `pocket-planning`** after your approval, emitting the `spec-approved` lifecycle event.
 - **`pocket-planning` routes every plan to `pocket-structuring`** after plan approval and a mandatory CLI dry-run.
 - **`pocket-structuring` hands off to `pocket-development`** when your instruction already authorizes execution; otherwise it asks once.
-- **`pocket-development` leaves a passing phase in `REVIEW`** and names `pocket-closing` as the next step — it does not close on its own.
+- **`pocket-development` leaves a passing phase in `REVIEW`** and names `pocket-closing` as the next step. It does not close on its own.
 - **`pocket-closing` runs only when you ask for closeout** (directly, or via an explicit end-to-end request).
 
 ## The state model
@@ -46,6 +46,6 @@ For everyday work the pipeline is ceremony. Reach for a [standalone skill](/docs
 
 ## Related documentation
 
-- [Approval gates](/docs/pipeline/approval-gates) — every stop point, enumerated
-- [Execution artifacts](/docs/pipeline/artifacts) — what lands on disk
-- [Pocket Packets](/docs/reference/pocket-packets) — the delegation contract
+- [Approval gates](/docs/pipeline/approval-gates): every stop point, enumerated
+- [Execution artifacts](/docs/pipeline/artifacts): what lands on disk
+- [Pocket Packets](/docs/reference/pocket-packets): the delegation contract

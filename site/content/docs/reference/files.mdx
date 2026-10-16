@@ -3,7 +3,7 @@ title: Generated files and directory conventions
 description: The docs/pocket tree, project-level files, and which command writes each one.
 ---
 
-All durable Pocket artifacts live under `docs/pocket/`. Names are conventions the skills and CLI rely on — keep them.
+All durable Pocket artifacts live under `docs/pocket/`. Names are conventions the skills and CLI rely on. Keep them.
 
 ## The tree
 
@@ -41,19 +41,19 @@ lifecycle.json                          ← committed with the spec directory (l
 
 ## Conventions that matter
 
-- **Slug pairing.** Spec and plan share the same `<date>-<slug>` directory name — `create-pr`, reconciliation, and lifecycle identity resolve through it.
-- **Execution order, not task ID.** `index.md`'s Task Index renders in phase-group (execution) order — the same order `log init` seeds dispatch state, so plans authored out of numeric sequence dispatch as written.
+- **Slug pairing.** Spec and plan share the same `<date>-<slug>` directory name: `create-pr`, reconciliation, and lifecycle identity resolve through it.
+- **Execution order, not task ID.** `index.md`'s Task Index renders in phase-group (execution) order, the same order `log init` seeds dispatch state, so plans authored out of numeric sequence dispatch as written.
 - **Canonical phase identity.** `phase_key = phase-${order}` comes from `log.json`, never from a filename; closeout markers (`<!-- pocket-closeout:phase-${order} -->`) use the same key.
-- **Reviews live beside the plan.** Per-task verdicts, phase-pass records, and phase notes are all under `<plan_dir>/reviews/` — artifact-only state, no hidden side channels.
+- **Reviews live beside the plan.** Per-task verdicts, phase-pass records, and phase notes are all under `<plan_dir>/reviews/`, artifact-only state, no hidden side channels.
 
 ## Ownership and recovery
 
 The **CLI is the only writer** of `log.json` and lifecycle state. Skills run commands; nobody edits state files by hand. If `structure` was interrupted mid-write, re-run `structure --reset` on that plan (explicit, discards execution state) rather than repairing files manually. `--force` only rebuilds when there is no execution progress; `--dry-run` previews without writing. See [Troubleshooting](/docs/reference/troubleshooting).
 
-Git-ignored artifacts produce a warning — events reference artifacts by SHA-256, and a missing or changed artifact is terminal `STALE_ARTIFACT` at delivery.
+Git-ignored artifacts produce a warning: events reference artifacts by SHA-256, and a missing or changed artifact is terminal `STALE_ARTIFACT` at delivery.
 
 ## Related documentation
 
-- [Execution artifacts](/docs/pipeline/artifacts) — who writes what, when
+- [Execution artifacts](/docs/pipeline/artifacts): who writes what, when
 - [Lifecycle state](/docs/reference/lifecycle-state)
 - [Configuration](/docs/reference/configuration)

@@ -1,9 +1,9 @@
 ---
 title: Planning
-description: pocket-planning — converts an approved spec into a TDD-structured execution plan of full Pocket Packets.
+description: "pocket-planning: converts an approved spec into a TDD-structured execution plan of full Pocket Packets."
 ---
 
-`pocket-planning` bridges the grinding spec and development execution. It scans codebase context, maps file structure, decomposes acceptance criteria into TDD-structured tasks, generates **Pocket Packets** with test-first steps and commits, then runs a spec-reviewer subagent — plus a conditional test-strategy audit — before handoff.
+`pocket-planning` bridges the grinding spec and development execution. It scans codebase context, maps file structure, decomposes acceptance criteria into TDD-structured tasks, generates **Pocket Packets** with test-first steps and commits, then runs a spec-reviewer subagent, plus a conditional test-strategy audit, before handoff.
 
 **Core principle:** Every task is red → green → refactor → commit. Steps live inside the task. Planning owns test *intent*; development owns test *implementation*.
 
@@ -15,8 +15,8 @@ description: pocket-planning — converts an approved spec into a TDD-structured
 
 **When not to use it:**
 
-- No completed grinding spec exists — run [grinding](/docs/pipeline/grinding) first.
-- The task is already in execution — use [development](/docs/pipeline/development) directly.
+- No completed grinding spec exists: run [grinding](/docs/pipeline/grinding) first.
+- The task is already in execution: use [development](/docs/pipeline/development) directly.
 
 ## How to invoke it
 
@@ -28,14 +28,14 @@ Usually invoked by grinding, or by you with the spec path.
 
 ## How it works
 
-1. **Phase 0 — Preflight.** Codebase scan of the affected areas (plus reusable-helper search so tasks import instead of reinventing), test-framework detection, and version-matched library docs (Context7 `resolve-library-id` → `query-docs` when available) for every dependency whose behavior affects a task.
-2. **Phase 1 — Parse the spec.** Extract design decision, constraints, acceptance criteria, out-of-scope, open questions, rollback plan. Flag duplicate/contradictory rules and rules missing GWT.
-3. **Phase 2 — File structure mapping.** Every rule gets exact `Create` / `Modify` / `Test` paths — no wildcards. Shared logic across 2+ files becomes a named, domain-scoped helper; every non-trivial implementation file gets a test file.
-4. **Phase 3 — Decompose.** Six decomposition rules, including: one task = one bounded deliverable; steps live inside the task; scaffolding is always its own `[prereq]` task; cross-unit scenarios get their integration verification decided here. Tasks carry dependency annotations (`[prereq]`, `[depends: T1]`, `[parallel: T3]`, `[test-risk]`), and the chain is walked for cycles before presentation. Plans with 10+ tasks get a recommended phase grouping.
-5. **Phase 4 — Generate Pocket Packets.** A complete 7-field packet per task. Behavioral tasks carry **test intent, not test code**: test file, level, GWT intent, boundary, test doubles, expected RED reason, and the exact command — never the test's source.
-6. **Phase 5 — Spec reviewer.** An independent subagent verifies spec coverage, usable test intent, and no placeholder failures (`Approved` / `Issues Found` / `Needs Context`). Bounded recovery: two materially different rounds, then `RECOVERY_CHECKPOINT` — never an unreviewed handoff.
-7. **Phase 6 — Test strategy audit (conditional, skip by default).** Dispatched only when a trigger fires: cross-unit GWT scenarios, genuinely ambiguous test levels, persistence/concurrency/network behavior that changes how a task must be tested, or a `[test-risk]` task.
-8. **Phase 7 — Output and validation.** The plan is saved, then dry-run validated (mandatory, non-authorizing).
+1. **Phase 0: Preflight.** Codebase scan of the affected areas (plus reusable-helper search so tasks import instead of reinventing), test-framework detection, and version-matched library docs (Context7 `resolve-library-id` → `query-docs` when available) for every dependency whose behavior affects a task.
+2. **Phase 1: Parse the spec.** Extract design decision, constraints, acceptance criteria, out-of-scope, open questions, rollback plan. Flag duplicate/contradictory rules and rules missing GWT.
+3. **Phase 2: File structure mapping.** Every rule gets exact `Create` / `Modify` / `Test` paths, no wildcards. Shared logic across 2+ files becomes a named, domain-scoped helper; every non-trivial implementation file gets a test file.
+4. **Phase 3: Decompose.** Six decomposition rules, including: one task = one bounded deliverable; steps live inside the task; scaffolding is always its own `[prereq]` task; cross-unit scenarios get their integration verification decided here. Tasks carry dependency annotations (`[prereq]`, `[depends: T1]`, `[parallel: T3]`, `[test-risk]`), and the chain is walked for cycles before presentation. Plans with 10+ tasks get a recommended phase grouping.
+5. **Phase 4: Generate Pocket Packets.** A complete 7-field packet per task. Behavioral tasks carry **test intent, not test code**: test file, level, GWT intent, boundary, test doubles, expected RED reason, and the exact command, never the test's source.
+6. **Phase 5: Spec reviewer.** An independent subagent verifies spec coverage, usable test intent, and no placeholder failures (`Approved` / `Issues Found` / `Needs Context`). Bounded recovery: two materially different rounds, then `RECOVERY_CHECKPOINT`, never an unreviewed handoff.
+7. **Phase 6: Test strategy audit (conditional, skip by default).** Dispatched only when a trigger fires: cross-unit GWT scenarios, genuinely ambiguous test levels, persistence/concurrency/network behavior that changes how a task must be tested, or a `[test-risk]` task.
+8. **Phase 7: Output and validation.** The plan is saved, then dry-run validated (mandatory, non-authorizing).
 
 ## Outputs and artifacts
 
@@ -59,11 +59,11 @@ npx -y pocketto-pi structure "docs/pocket/plans/{date}-{slug}/execution-plan.md"
 
 ## Example
 
-*Illustrative:* the JWT-refresh spec yields T1 `[prereq]` token-store schema, T2–T3 `[parallel: T2]` issue/verify endpoints, T4 `[depends: T2, T3] [test-risk]` rotation-on-reuse — each packet carrying its RED-cycle test intent and exact test commands.
+*Illustrative:* the JWT-refresh spec yields T1 `[prereq]` token-store schema, T2–T3 `[parallel: T2]` issue/verify endpoints, T4 `[depends: T2, T3] [test-risk]` rotation-on-reuse, each packet carrying its RED-cycle test intent and exact test commands.
 
 ## Related documentation
 
-- [Grinding](/docs/pipeline/grinding) — where the spec comes from
-- [Structuring](/docs/pipeline/structuring) — the next stage
+- [Grinding](/docs/pipeline/grinding): where the spec comes from
+- [Structuring](/docs/pipeline/structuring): the next stage
 - [Pocket Packets](/docs/reference/pocket-packets)
 - [Plan structure](/docs/reference/plan-structure)

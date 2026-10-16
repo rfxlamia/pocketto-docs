@@ -8,10 +8,10 @@ export default function NotFound() {
       <SiteHeader />
       <main className="flex flex-1 items-center justify-center px-5 py-24">
         <div className="w-full max-w-xl text-center">
-          <p className="section-label justify-center">404 — not found</p>
+          <p className="section-label justify-center">404: not found</p>
           <h1 className="display mt-6 text-4xl sm:text-5xl">This page never made it past review.</h1>
           <p className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-fg-soft">
-            The page you asked for does not exist. In Pocketto terms: the request was rejected before implementation —
+            The page you asked for does not exist. In Pocketto terms: the request was rejected before implementation.
             no artifacts were written.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

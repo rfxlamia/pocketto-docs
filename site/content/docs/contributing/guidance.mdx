@@ -1,26 +1,26 @@
 ---
 title: Contribution guidance
-description: The rules that keep Pocketto's boundaries intact — skills, CLI, surfaces, and versioning discipline.
+description: The rules that keep Pocketto's boundaries intact, covering skills, CLI, surfaces, and versioning discipline.
 ---
 
 These guidelines come from how the repository actually enforces its own boundaries. They are the differences between a change that passes `npm test` and one that breaks a release role.
 
 ## Changing a skill
 
-1. Edit `skills/<name>/SKILL.md` and its `references/` — keep the frontmatter `description` accurate: it drives trigger matching in both hosts.
-2. Cite normative references instead of restating their rules (the repository removed duplicated contract text deliberately — see the 3.1.3 changelog entry).
+1. Edit `skills/<name>/SKILL.md` and its `references/`. Keep the frontmatter `description` accurate: it drives trigger matching in both hosts.
+2. Cite normative references instead of restating their rules (the repository removed duplicated contract text deliberately; see the 3.1.3 changelog entry).
 3. Rebuild the bundled archives with `rebuild-skills.sh`.
-4. Check `surfaces.json`: if you added, moved, or re-owned files, update `includes` and `ownership` for every affected role. Remember the content rules — a Core role must not contain Enterprise paths or the string `Pocket Enterprise`.
+4. Check `surfaces.json`: if you added, moved, or re-owned files, update `includes` and `ownership` for every affected role. Remember the content rules: a Core role must not contain Enterprise paths or the string `Pocket Enterprise`.
 
 ## Changing the CLI
 
-1. Commands under `cli/commands/` are eagerly loaded in every Core role. **`mode` and `format` are Enterprise-only lazy commands** — they must stay loadable-or-absent without breaking Core startup (the boundary is declared in `surfaces.json`'s `cli_boundary`).
-2. Update the help text in `cli/index.js` — the CLI reference documentation mirrors it.
+1. Commands under `cli/commands/` are eagerly loaded in every Core role. **`mode` and `format` are Enterprise-only lazy commands**: they must stay loadable-or-absent without breaking Core startup (the boundary is declared in `surfaces.json`'s `cli_boundary`).
+2. Update the help text in `cli/index.js`: the CLI reference documentation mirrors it.
 3. Keep the JSON envelope stable: `{ ok, command, data }` / `{ ok, error: { code, message } }`. New fields are additive; changing shapes is a contract bump.
 
 ## Versioning discipline
 
-`CONTRACT`, `PIPELINE`, `LIFECYCLE_SCHEMA`, `ADAPTER_CONTRACT`, and `SURFACE_MANIFEST` are **independent** version boundaries. Do not bump one because another changed; each guards a different consumer. A contract change without a matching skills update fails loudly in the field — that is the design working, not a bug to fix by loosening the handshake.
+`CONTRACT`, `PIPELINE`, `LIFECYCLE_SCHEMA`, `ADAPTER_CONTRACT`, and `SURFACE_MANIFEST` are **independent** version boundaries. Do not bump one because another changed; each guards a different consumer. A contract change without a matching skills update fails loudly in the field: that is the design working, not a bug to fix by loosening the handshake.
 
 ## Tests and documentation
 

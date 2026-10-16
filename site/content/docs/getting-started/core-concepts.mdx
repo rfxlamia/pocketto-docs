@@ -1,6 +1,6 @@
 ---
 title: Core concepts
-description: The vocabulary of Pocketto — pipeline, Pocket Packets, execution logs, lifecycle states, and the three layers.
+description: The vocabulary of Pocketto, including pipeline, Pocket Packets, execution logs, lifecycle states, and the three layers.
 ---
 
 Pocketto is a small system with a precise vocabulary. These are the terms used throughout the documentation.
@@ -31,7 +31,7 @@ reviewed phase
 
 Two properties matter more than the individual stages:
 
-- **Handoffs are real.** A stage does not "move on" mentally — it saves an artifact to disk and hands its path to the next stage.
+- **Handoffs are real.** A stage does not "move on" mentally. It saves an artifact to disk and hands its path to the next stage.
 - **Gates are explicit.** Several transitions require your approval, and closing additionally requires you to ask for closeout. See [Approval gates](/docs/pipeline/approval-gates).
 
 ## Standalone skills
@@ -40,11 +40,11 @@ Nine single-purpose skills sit outside the chain for everyday work: `pocket-help
 
 ## Pocket Packets
 
-A **Pocket Packet** is the contract handed to a subagent before it implements anything. It has seven mandatory fields — objective, references loaded, approach justification, sandwich context, deliverable, quality bar, and stop conditions — plus an eighth `WORKTREE` field for parallel groups. The rule is absolute: **no packet, no spawn**. See [Pocket Packets](/docs/reference/pocket-packets).
+A **Pocket Packet** is the contract handed to a subagent before it implements anything. It has seven mandatory fields (objective, references loaded, approach justification, sandwich context, deliverable, quality bar, and stop conditions), plus an eighth `WORKTREE` field for parallel groups. The rule is absolute: **no packet, no spawn**. See [Pocket Packets](/docs/reference/pocket-packets).
 
 ## The execution log
 
-Every plan has an execution log — `log.json` in the plan directory — that records each task and phase with a lifecycle state. The CLI is its only writer; skills run commands, they never edit the file by hand.
+Every plan has an execution log, `log.json` in the plan directory, that records each task and phase with a lifecycle state. The CLI is its only writer; skills run commands, they never edit the file by hand.
 
 | State | Applies to | Meaning |
 |---|---|---|
@@ -53,11 +53,11 @@ Every plan has an execution log — `log.json` in the plan directory — that re
 | `REVIEW` | phases only | All tasks done and the phase-level pass recorded; awaiting close |
 | `BLOCKED` | tasks, phases | Requires a specific human decision, access, information, or authorization |
 
-Tasks go `WAITING → DONE | BLOCKED`. Phases go `WAITING → REVIEW → DONE | BLOCKED`. A passing verdict alone never moves a phase — [closing](/docs/pipeline/closing) does, on your word.
+Tasks go `WAITING → DONE | BLOCKED`. Phases go `WAITING → REVIEW → DONE | BLOCKED`. A passing verdict alone never moves a phase. [Closing](/docs/pipeline/closing) does, on your word.
 
 ## Lifecycle events
 
-Alongside `log.json`, Core commits **neutral lifecycle events** to `lifecycle.json`: `spec-approved`, `phase-complete`, `phase-closed` (stacked plans only), and `plan-closed`. Events store artifact references and opaque proof references — never GitHub IDs or credentials. Without Enterprise they simply stay pending locally; with it, they drive [GitHub synchronization](/docs/core-enterprise/github-sync).
+Alongside `log.json`, Core commits **neutral lifecycle events** to `lifecycle.json`: `spec-approved`, `phase-complete`, `phase-closed` (stacked plans only), and `plan-closed`. Events store artifact references and opaque proof references: never GitHub IDs or credentials. Without Enterprise they stay pending locally; with it, they drive [GitHub synchronization](/docs/core-enterprise/github-sync).
 
 ## The three layers
 
@@ -67,4 +67,4 @@ Alongside `log.json`, Core commits **neutral lifecycle events** to `lifecycle.js
 
 ## Where files live
 
-All durable artifacts live under `docs/pocket/`: specs in `spec/`, plans in `plans/`, research in `research/`, the brand brief in `rule/`, learning journals in `learning/`. The full tree — including `log.json`, `reviews/`, and `closeout.md` — is documented under [Generated files](/docs/reference/files).
+All durable artifacts live under `docs/pocket/`: specs in `spec/`, plans in `plans/`, research in `research/`, the brand brief in `rule/`, learning journals in `learning/`. The full tree (including `log.json`, `reviews/`, and `closeout.md`) is documented under [Generated files](/docs/reference/files).

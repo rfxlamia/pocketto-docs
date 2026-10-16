@@ -43,7 +43,7 @@ export function SiteFooter() {
               <span className="font-display text-[17px] font-semibold tracking-tight">Pocketto</span>
             </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-fg-soft">
-              Structured AI coding workflows for Claude Code and Pi. AI writes the code — Pocketto makes the process
+              Structured AI coding workflows for Claude Code and Pi. AI writes the code. Pocketto makes the process
               accountable.
             </p>
             <p className="mt-4 font-mono text-xs text-fg-faint">
@@ -56,7 +56,7 @@ export function SiteFooter() {
           {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
               <h3 className="font-mono text-xs uppercase tracking-[0.12em] text-fg-faint">{col.title}</h3>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-2">
                 {col.links.map((link) => (
                   <li key={link.url}>
                     {link.url.startsWith('http') ? (
@@ -64,12 +64,12 @@ export function SiteFooter() {
                         href={link.url}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="text-sm text-fg-soft transition-colors hover:text-fg"
+                        className="flex min-h-11 items-center text-sm text-fg-soft transition-colors hover:text-fg"
                       >
                         {link.text}
                       </a>
                     ) : (
-                      <Link href={link.url} className="text-sm text-fg-soft transition-colors hover:text-fg">
+                      <Link href={link.url} className="flex min-h-11 items-center text-sm text-fg-soft transition-colors hover:text-fg">
                         {link.text}
                       </Link>
                     )}
@@ -81,7 +81,7 @@ export function SiteFooter() {
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t border-line pt-6 font-mono text-xs text-fg-faint sm:flex-row sm:items-center sm:justify-between">
           <span>
-            Documenting {SITE.name} v{POCKETTO.version} — inspected at commit{' '}
+            Documenting {SITE.name} v{POCKETTO.version}, inspected at commit{' '}
             <a
               href={`${SITE.repo}/commit/${POCKETTO.inspectedCommit}`}
               target="_blank"
