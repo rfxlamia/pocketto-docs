@@ -99,41 +99,27 @@ function Hero() {
         </div>
 
         <div className="lg:pt-2">
-          <ExecutionLedger />
+          <AgentJourney />
         </div>
       </div>
     </section>
   );
 }
 
-/**
- * Generated illustration of Pocket's durable artifacts (gpt-image-bridge), one per theme.
- * Both <img> render; the `.dark` class toggles which is displayed. Neither is `priority`,
- * so the hidden one is never fetched. Regenerate if the ledger vocabulary changes.
- */
-function ExecutionLedger() {
-  const img = 'h-auto w-full';
+function AgentJourney() {
   return (
-    <figure aria-label="Illustration of a Pocket execution log">
+    <figure className="mx-auto w-full max-w-80 lg:max-w-none">
       <Image
-        src="/execution-ledger-light.png"
-        alt="Pocket execution log for plan auth refactor, status IN_PROGRESS. phase-1, tasks T1 to T4, REVIEW_PASS, DONE. phase-2, tasks T5 to T7, REVIEW_PASS, REVIEW. phase-3, tasks T8 to T9, no verdict, WAITING. Closing output: phase-2 DONE and closeout.md appended; phase-3 held until pocket-development runs next."
-        width={1357}
-        height={910}
-        sizes="(min-width: 1024px) 520px, 100vw"
-        className={`${img} dark:hidden`}
-      />
-      <Image
-        src="/execution-ledger-dark.png"
-        alt=""
-        aria-hidden
-        width={1513}
-        height={1139}
-        sizes="(min-width: 1024px) 520px, 100vw"
-        className={`${img} hidden dark:block`}
+        src="/hero-agent-map.webp"
+        alt="An orange AI agent walking along a winding painted map with six checkpoints, illustrating Pocketto's guided engineering workflow."
+        width={1024}
+        height={1536}
+        sizes="(min-width: 1152px) 456px, (min-width: 1024px) calc(42.5vw - 34px), (min-width: 360px) 320px, calc(100vw - 40px)"
+        className="h-auto w-full"
+        preload
       />
       <figcaption className="sr-only">
-        Illustration of phases advancing only after review, not a real run.
+        An illustration of Pocketto&apos;s six-stage workflow, not a live execution map.
       </figcaption>
     </figure>
   );

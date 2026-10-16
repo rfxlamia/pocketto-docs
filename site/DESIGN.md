@@ -35,6 +35,12 @@ The Hero and install section use explicit single-column grids before their deskt
 
 ## Components
 
+### Hero journey illustration
+
+The right hero column uses `public/hero-agent-map.webp`, converted from the user-edited transparent `public/hero-concepts/2026-10-17/03-no-bg.png`. The selected oil-painted map depicts one walking agent and six checkpoints as an illustration of the guided workflow, not live project progress. Parchment terrain and the orange route carry the existing field-manual palette into the image.
+
+The WebP retains the source's 1024 x 1536 dimensions and exact alpha channel. A single `next/image` serves both themes, with intrinsic dimensions, responsive sizes, and a preload for the hero. The image fills the desktop column and is centered at up to 320px wide below the desktop breakpoint. Its natural portrait ratio preserves the whole map without cropping. The image is static and adds no animation.
+
 ### Landing workflow explorer
 
 One bordered, raised surface pairs a project-condition index with a stage recommendation. The index asks what the visitor already has, so choosing an entry point starts with their available artifact. The recommendation shows the stage's purpose, prerequisite, and documentation link above an illustrative input -> selected stage -> output comparison. A compact six-stage map preserves the workflow order; its highlight identifies the stage being viewed, not project progress.

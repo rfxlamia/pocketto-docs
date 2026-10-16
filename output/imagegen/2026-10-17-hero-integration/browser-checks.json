@@ -1,0 +1,171 @@
+{
+  "results": [
+    {
+      "width": 455.59375,
+      "theme": "light",
+      "height": 683.390625,
+      "naturalWidth": 456,
+      "naturalHeight": 684,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=640&q=75",
+      "viewport": 1440,
+      "scrollWidth": 1440,
+      "background": "rgb(250, 248, 243)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 455.59375,
+      "theme": "dark",
+      "height": 683.390625,
+      "naturalWidth": 456,
+      "naturalHeight": 684,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=640&q=75",
+      "viewport": 1440,
+      "scrollWidth": 1440,
+      "background": "rgb(23, 19, 14)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 401.203125,
+      "theme": "light",
+      "height": 601.796875,
+      "naturalWidth": 401,
+      "naturalHeight": 601,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=640&q=75",
+      "viewport": 1024,
+      "scrollWidth": 1024,
+      "background": "rgb(250, 248, 243)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 401.203125,
+      "theme": "dark",
+      "height": 601.796875,
+      "naturalWidth": 401,
+      "naturalHeight": 601,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=640&q=75",
+      "viewport": 1024,
+      "scrollWidth": 1024,
+      "background": "rgb(23, 19, 14)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 320,
+      "theme": "light",
+      "height": 480,
+      "naturalWidth": 320,
+      "naturalHeight": 480,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=384&q=75",
+      "viewport": 768,
+      "scrollWidth": 768,
+      "background": "rgb(250, 248, 243)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "height": 480,
+      "naturalWidth": 320,
+      "naturalHeight": 480,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=384&q=75",
+      "viewport": 768,
+      "scrollWidth": 768,
+      "background": "rgb(23, 19, 14)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 320,
+      "theme": "light",
+      "height": 480,
+      "naturalWidth": 320,
+      "naturalHeight": 480,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=384&q=75",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "background": "rgb(250, 248, 243)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 320,
+      "theme": "dark",
+      "height": 480,
+      "naturalWidth": 320,
+      "naturalHeight": 480,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=640&q=75",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "background": "rgb(23, 19, 14)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 280,
+      "theme": "light",
+      "height": 420,
+      "naturalWidth": 280,
+      "naturalHeight": 419,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=384&q=75",
+      "viewport": 320,
+      "scrollWidth": 320,
+      "background": "rgb(250, 248, 243)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "width": 280,
+      "theme": "dark",
+      "height": 420,
+      "naturalWidth": 280,
+      "naturalHeight": 419,
+      "currentSrc": "http://localhost:3000/_next/image?url=%2Fhero-agent-map.webp&w=384&q=75",
+      "viewport": 320,
+      "scrollWidth": 320,
+      "background": "rgb(23, 19, 14)",
+      "imagesInHero": 1,
+      "preload": true
+    },
+    {
+      "action": "Theme toggle",
+      "result": "Changes page theme; same hero stays loaded"
+    },
+    {
+      "action": "Claude Code install tab",
+      "result": "Selects matching installation commands"
+    },
+    {
+      "action": "Pi install tab",
+      "result": "Selects matching installation commands"
+    },
+    {
+      "action": "Hero copy button",
+      "result": "Copies displayed installation command"
+    },
+    {
+      "action": "Run the quickstart",
+      "result": "Navigates to /docs/getting-started/quickstart"
+    },
+    {
+      "action": "Read the docs",
+      "result": "Navigates to /docs"
+    },
+    {
+      "action": "Hero GitHub link",
+      "result": "Existing GitHub destination and new-tab attributes retained; external site not navigated"
+    },
+    {
+      "action": "Keyboard install tabs",
+      "result": "ArrowRight selects and focuses Claude Code"
+    },
+    {
+      "action": "Mobile menu",
+      "result": "Opens and closes with Escape"
+    }
+  ],
+  "errors": []
+}
