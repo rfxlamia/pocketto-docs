@@ -48,7 +48,7 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pb-28">
         <div>
-          <p className="section-label">Pocketto v{POCKETTO.version}, open source, MIT</p>
+          <p className="section-label">Pocketto, open source, MIT</p>
           <h1 className="display mt-5 text-[2.6rem] leading-[1.04] sm:text-6xl lg:text-[4.2rem]">
             AI writes the code.
             <br />
@@ -537,7 +537,6 @@ function JsonLd() {
     operatingSystem: 'Node.js',
     description:
       'Structured AI coding workflows for Claude Code and Pi: BDD specs, TDD plans, contract-based delegation, independent review, and a hard close. Local-first, open source.',
-    softwareVersion: POCKETTO.version,
     datePublished: POCKETTO.releaseDate,
     license: `https://spdx.org/licenses/${SITE.license}`,
     author: { '@type': 'Person', name: SITE.repoOwner, url: SITE.repo },

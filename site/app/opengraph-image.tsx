@@ -34,18 +34,6 @@ export default function Image() {
             <div style={{ width: 14, height: 26, background: '#bd3d0a', borderRadius: 2 }} />
           </div>
           <div style={{ fontSize: 34, fontWeight: 600, letterSpacing: -1 }}>Pocketto</div>
-          <div
-            style={{
-              marginLeft: 12,
-              padding: '6px 14px',
-              borderRadius: 6,
-              border: '2px solid rgba(32,27,21,0.25)',
-              fontSize: 20,
-              color: '#57503f',
-            }}
-          >
-            v4.2.2
-          </div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>

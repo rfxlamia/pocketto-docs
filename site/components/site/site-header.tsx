@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useSyncExternalStore, useState } from '
 import { Menu, X } from 'lucide-react';
 import { PocketMark } from './pocket-mark';
 import { ThemeToggle } from './theme-toggle';
-import { POCKETTO, SITE } from '@/lib/site';
+import { SITE } from '@/lib/site';
 
 const links = [
   { text: 'Docs', url: '/docs' },
@@ -66,9 +66,6 @@ export function SiteHeader() {
         <Link href="/" className="flex items-center gap-2.5 text-fg" aria-label="Pocketto home" onClick={closeMenu}>
           <PocketMark className="size-[22px]" />
           <span className="font-display text-[17px] font-semibold tracking-tight">Pocketto</span>
-          <span className="chip hidden sm:inline-flex" style={{ fontSize: '0.625rem' }}>
-            v{POCKETTO.version}
-          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
