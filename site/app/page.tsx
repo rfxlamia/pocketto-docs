@@ -23,12 +23,12 @@ import { PipelineViz } from '@/components/site/pipeline-viz';
 import { SiteFooter } from '@/components/site/site-footer';
 import { SiteHeader } from '@/components/site/site-header';
 import { INSTALL, PIPELINE_STAGES, POCKETTO, SITE } from '@/lib/site';
-import pitchIllustration from '@/public/pitch-land.png';
-import pipelineIllustration from '@/public/pipeline-land.png';
-import bugHuntIllustration from '@/public/bug-hunt-land.png';
-import hotfixIllustration from '@/public/hotfix-land.png';
-import educationIllustration from '@/public/edu-land.png';
-import enterpriseIllustration from '@/public/enterprise-land.png';
+import pitchIllustration from '@/public/pitch-land.webp';
+import pipelineIllustration from '@/public/pipeline-land.webp';
+import bugHuntIllustration from '@/public/bug-hunt-land.webp';
+import hotfixIllustration from '@/public/hotfix-land.webp';
+import educationIllustration from '@/public/edu-land.webp';
+import enterpriseIllustration from '@/public/enterprise-land.webp';
 
 export const metadata: Metadata = {
   alternates: {
