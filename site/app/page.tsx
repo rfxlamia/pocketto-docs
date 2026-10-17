@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image, { getImageProps } from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import {
@@ -80,10 +80,10 @@ function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/docs/getting-started/quickstart" className="btn btn-primary">
+            <Link href="/docs/getting-started/quickstart" prefetch={false} className="btn btn-primary">
               Run the quickstart
             </Link>
-            <Link href="/docs" className="btn btn-outline">
+            <Link href="/docs" prefetch={false} className="btn btn-outline">
               <BookOpen className="size-4" aria-hidden />
               Read the docs
             </Link>
@@ -113,17 +113,25 @@ function Hero() {
 }
 
 function AgentJourney() {
+  const image = {
+    src: '/hero-agent-map.webp',
+    alt: "An orange AI agent walking along a winding painted map with six checkpoints, illustrating Pocketto's guided engineering workflow.",
+    width: 1024,
+    height: 1536,
+    sizes: '(min-width: 1152px) 456px, (min-width: 1024px) calc(42.5vw - 34px), (min-width: 360px) 320px, calc(100vw - 40px)',
+  };
+  const { props } = getImageProps(image);
+
   return (
     <figure className="mx-auto w-full max-w-80 lg:max-w-none">
-      <Image
-        src="/hero-agent-map.webp"
-        alt="An orange AI agent walking along a winding painted map with six checkpoints, illustrating Pocketto's guided engineering workflow."
-        width={1024}
-        height={1536}
-        sizes="(min-width: 1152px) 456px, (min-width: 1024px) calc(42.5vw - 34px), (min-width: 360px) 320px, calc(100vw - 40px)"
-        className="h-auto w-full"
-        preload
+      <link
+        rel="preload"
+        as="image"
+        media="(min-width: 1024px)"
+        imageSrcSet={props.srcSet}
+        imageSizes={props.sizes}
       />
+      <Image {...image} alt={image.alt} className="h-auto w-full" />
       <figcaption className="sr-only">
         An illustration of Pocketto&apos;s six-stage workflow, not a live execution map.
       </figcaption>

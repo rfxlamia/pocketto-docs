@@ -72,7 +72,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable}`}>
       <body className="flex min-h-screen flex-col font-sans">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider search={{ preload: false }}>{children}</RootProvider>
         <Analytics />
         <SpeedInsights />
       </body>

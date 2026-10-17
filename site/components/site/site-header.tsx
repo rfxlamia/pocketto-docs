@@ -64,7 +64,7 @@ export function SiteHeader() {
       }}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
-        <Link href="/" className="flex items-center gap-2.5 text-fg" aria-label="Pocketto home" onClick={closeMenu}>
+        <Link href="/" prefetch={false} className="flex items-center gap-2.5 text-fg" aria-label="Pocketto home" onClick={closeMenu}>
           <PocketMark className="size-[22px]" />
           <span className="font-display text-[17px] font-semibold tracking-tight">Pocketto</span>
         </Link>
@@ -74,6 +74,7 @@ export function SiteHeader() {
             <Link
               key={link.url}
               href={link.url}
+              prefetch={false}
               className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-fg-soft transition-colors duration-150 hover:bg-bg-sunk hover:text-fg"
             >
               {link.text}
@@ -119,6 +120,7 @@ export function SiteHeader() {
             <Link
               key={link.url}
               href={link.url}
+              prefetch={false}
               onClick={closeMenu}
               className="flex min-h-11 items-center rounded-md px-2 text-[15px] font-medium text-fg-soft hover:bg-bg-sunk hover:text-fg"
             >

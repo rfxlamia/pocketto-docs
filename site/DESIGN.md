@@ -39,7 +39,11 @@ The Hero and install section use explicit single-column grids before their deskt
 
 The right hero column uses `public/hero-agent-map.webp`, converted from the user-edited transparent `public/hero-concepts/2026-10-17/03-no-bg.png`. The selected oil-painted map depicts one walking agent and six checkpoints as an illustration of the guided workflow, not live project progress. Parchment terrain and the orange route carry the existing field-manual palette into the image.
 
-The WebP retains the source's 1024 x 1536 dimensions and exact alpha channel. A single `next/image` serves both themes, with intrinsic dimensions, responsive sizes, and a preload for the hero. The image fills the desktop column and is centered at up to 320px wide below the desktop breakpoint. Its natural portrait ratio preserves the whole map without cropping. The image is static and adds no animation.
+The WebP retains the source's 1024 x 1536 dimensions and exact alpha channel. A single `next/image` serves both themes, with intrinsic dimensions and responsive sizes. A media-qualified preload applies from 1024px, where the image is visible beside the headline; below that breakpoint, native lazy loading lets the browser schedule the image without a forced preload. The preload derives its sources from the same image properties so it requests the displayed variant. The image fills the desktop column and is centered at up to 320px wide below the desktop breakpoint. A 560px optimizer width matches that mobile size at 1.75x pixel density. Its natural portrait ratio preserves the whole map without cropping. The image is static and adds no animation.
+
+### Initial loading
+
+The header and the two hero documentation links navigate on activation rather than prefetching documentation routes during the opening render. This keeps docs bundles out of the landing page's initial network traffic. The shared search dialog loads on its first activation; its keyboard shortcut and the documentation search controls remain available.
 
 ### Landing entry-point illustrations
 

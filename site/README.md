@@ -21,7 +21,18 @@ Node.js ≥ 22 recommended (bun 1.3+ as the package manager).
 bun run typecheck   # tsc --noEmit (strict)
 bun run lint        # eslint (eslint-config-next)
 bun run check:links # internal /docs/... link checker for content + components
+bun run test        # workflow unit tests
 ```
+
+The browser tests use a production build and cover initial mobile requests, deferred search, responsive hero images, navigation, themes, and workflow controls:
+
+```bash
+bunx playwright install chromium
+bun run build
+bun run test:e2e
+```
+
+Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to use an existing Chromium executable. The tests start a production server on `127.0.0.1:3100`; locally, they can reuse a server already running on that port.
 
 ## Deploy
 
