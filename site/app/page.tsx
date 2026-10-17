@@ -464,7 +464,7 @@ function FinalCta() {
     <section className="border-t border-line bg-bg-sunk/60">
       <div className="mx-auto max-w-6xl px-5 py-24 text-center sm:py-28">
         <h2 className="display mx-auto max-w-3xl text-3xl sm:text-5xl">
-          Your next feature deserves a paper trail.
+          Your next feature deserves a trail.
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-fg-soft">
           Install Pocketto, run one command, and watch a rough ask become a spec, a plan, reviewed code, and a closed
